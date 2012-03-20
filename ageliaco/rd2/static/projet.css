@@ -1,0 +1,491 @@
+.description{
+	margin:10px; 
+	padding:5px;
+}
+
+/* root element for tabs  */
+.tabs { 
+	list-style:none; 
+	margin:0; 
+	padding:0;
+	height:30px;
+	border-bottom:1px solid #CCC;	
+	margin-bottom: 1em;
+}
+
+/* single tab */
+.tabs li { 
+	float:left;	 
+	text-indent:0;
+	padding:0;
+	margin:0;
+	list-style-image:none; 
+	list-style:none;
+}
+
+/* link inside the tab. uses a background image */
+.tabs a { 
+	background: #EEC url(blue.png) no-repeat -652px 0;
+	font-size:11px;
+	display:block;
+	height: 30px;  
+	line-height:30px;
+	width: 111px;
+	text-align:center;	
+	text-decoration:none;
+	color:#000;
+	padding:0px;
+	margin:0px;	
+	position:relative;
+	top:1px;
+	border-bottom:0.1em solid #ccc;	
+	border-top:0.1em solid #ccc;	
+	border-right:0.1em solid #ccc;	
+}
+
+.tabs a:active {
+	outline:none;	
+	background : #EFE;
+	border-bottom:0em solid #ccc;	
+
+}
+
+/* when mouse enters the tab move the background image */
+.tabs a:hover {
+	background-position: -652px -31px;	
+	color:#fff;	
+	background : #FFE;
+}
+
+.tabs li a.current {
+	background : #FFF;
+	border-top:1px solid #666;	
+	border-left:1px solid #666;	
+	border-right:1px solid #666;	
+    border-bottom: 0em solid #CCCCCC;	
+}
+
+
+/* active tab uses a class name "current". it's highlight is also done by moving the background image. */
+.tabs .current, .tabs .current:hover, .tabs li.current a {
+	background-position: -652px -62px;		
+	cursor:default; 
+	color:#000;
+	background : #FFE;
+}
+
+/* Different widths for tabs: use a class name: w1, w2, w3 or w2 */
+
+
+/* width 1 */
+.tabs .w1 			{ background-position: -519px 0; width:134px; }
+.tabs .w1:hover 	{ background-position: -519px -31px; }
+.tabs .w1.current { background-position: -519px -62px; }
+
+/* width 2 */
+.tabs .w2 			{ background-position: -366px -0px; width:154px; }
+.tabs .w2:hover 	{ background-position: -366px -31px; }
+.tabs .w2.current { background-position: -366px -62px; }
+
+
+/* width 3 */
+.tabs .w3 			{ background-position: -193px -0px; width:174px; }
+.tabs .w3:hover 	{ background-position: -193px -31px; }
+.tabs .w3.current { background-position: -193px -62px; }
+
+/* width 4 */
+.tabs .w4 			{ background-position: -0px -0px; width:194px; }
+.tabs .w4:hover 	{ background-position: -0px -31px; }
+.tabs .w4.current { background-position: -0px -62px; }
+
+
+/* initially all panes are hidden */ 
+.panes .pane {
+	display:none;		
+}
+
+/* tab pane styling  */
+.panes div {
+	padding:1px;
+	font-size:12px;
+	background:#FFF;
+	line-height: 1.50em;
+} 
+
+
+#content-core {
+  background : #EEC;
+  color   : brown;
+  padding : 3px;
+}
+
+#projets  {
+  color   : black;
+}
+
+/*
+.projet_odd, tr.projet_odd {
+    background : #C1C1C1;
+	border  :   5px yellow; 
+	margin  :   5px; 
+	padding :   10px;
+}
+
+.projet_even {
+  background : #FFFFFF;
+	margin:5; 
+	padding:10;
+}
+
+.listing_projets {
+	margin  :   5px; 
+	margin  :   5px; 
+	border  :   5px; 
+	padding :   10px;
+}
+*/
+
+#all_projets dl{ 
+	margin: 0 0 0 0; 
+	padding:1px;
+}
+
+.opened-projet {
+  background : red
+}
+.draft-projet {
+  background : yellow
+}
+.closed-projet {
+  background : green
+}
+.completed-projet {
+  background : #22FF22;
+}
+.all-projet {
+  background : white
+}
+.pending-projet {
+  background : orange
+}
+
+
+/*
+#cycles dl
+{
+	margin: 0 0;
+	padding: 0;
+	width: 20em;
+}
+*/
+
+.duration
+{
+	background-color: #333230;
+}
+.projets dt
+{
+	margin: 0 0 0 1px;
+	background-color: #F3F2F0;
+	color: #959289;
+	font-weight: bold;
+	text-align: left;
+	text-transform: uppercase;
+
+	float:left;	 
+    clear : left;
+    padding-left : 1px;
+
+
+}
+.overdated
+{
+    color : red;
+    padding-left : 3px;
+    padding-right: 3px;
+    margin-left : 3px;
+    margin-right: 3px;
+    width: 12em;
+	border-top:1px transparent;	
+	border-left:1px solid #DDD;	
+	border-bottom:1px solid #AAA;	
+	border-right:1px solid #AAA;	
+}
+
+.underdated
+{
+    color : black;
+    padding-left : 3px;
+    padding-right: 3px;
+    margin-left : 3px;
+    margin-right: 3px;
+    width: 12em;
+	border-top:1px solid #DDD;	
+	border-left:1px solid #DDD;	
+	border-bottom:1px solid #AAA;	
+	border-right:1px solid #AAA;	
+}
+
+/* dl dt dd */ 
+.projets dd, .projets div
+{
+	margin: 0 0 0 1px;
+	text-align: left;
+	font-style: italic;
+	float:left;	 
+    padding : 1em 0 0 0;
+    float:left;	 
+    clear : left;
+    margin-left : 1em;
+
+}
+
+#local_projets dt {
+    font-weight: bold;
+    margin-bottom: 0;
+    margin-left: 10px;
+    margin-right: 0;
+    padding-top: 10px;
+}
+
+#cycle-projets div {
+    margin: 0 0 0 1px;
+    clear : left;
+}
+
+#local-projets dd {
+    margin: 0 0 0 1px;
+}
+
+#cycle dd dt {
+    margin: 0 0 0 1px;
+    padding : 1px;
+	float:left;	 
+}
+
+
+
+dt.opened
+{
+	background: #FF8888;
+}
+dt.draft
+{
+	background: #FFFFC1;
+}
+dt.closed-projet
+{
+	background: grey;
+}
+dt.pending
+{
+	background: orange;
+}
+dt.completed
+{
+  background : #CCFFCC;
+}
+
+
+.draft
+{
+    margin: 0 0 0 0;
+}
+
+.panes
+{
+	display:block;
+	margin-top: 1em;
+
+}
+
+#cycles dd {
+    margin-left: 1px;
+	float:left;	 
+    padding : 1px;
+}
+#cycles ul {
+    margin-left: 1px;
+	float:left;	 
+    padding : 1px;
+	border-bottom:0px;	
+}
+
+#local_projets dd{
+    float: left;
+    margin-left: 1px;
+    padding: 1px;
+}
+#local_projets ul{
+    float: left;
+    margin-left: 1px;
+    padding: 1px;
+	border-bottom:0px;	
+}
+
+#uncomplete_folder {
+    background : yellow;
+    vertical-align : center;
+    text-align : center;
+}
+
+
+
+/* root element for tabs  */
+ul.css-tabs {  
+	margin:0 !important; 
+	padding:0;
+	height:30px;
+	border-bottom:1px solid #666;	 	
+}
+
+/* single tab */
+ul.css-tabs li {  
+	float:left;	 
+	padding:0; 
+	margin:0;  
+	list-style-type:none;	
+}
+
+/* link inside the tab. uses a background image */
+ul.css-tabs a { 
+	float:left;
+	font-size:13px;
+	display:block;
+	padding:5px 30px;	
+	text-decoration:none;
+	border:1px solid #666;	
+	border-bottom:0px;
+	height:18px;
+	background-color:#efefef;
+	color:#777;
+	margin-right:2px;
+	position:relative;
+	top:1px;	
+	outline:0;
+	-moz-border-radius:4px 4px 0 0;	
+    -webkit-border-radius: 4px 4px 0 0;
+    -khtml-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+
+}
+
+ul.css-tabs a:hover {
+	background-color:#F7F7F7;
+	color:#333;
+}
+	
+/* selected tab */
+#content ul.css-tabs a.current {
+	background-color:#ddd;
+	border-bottom:0.1em solid #ddd;	
+	color:#000;	
+	cursor:default;
+}
+
+	
+/* tab pane */
+.css-panes div.single {
+	display:none;
+	border:1px solid #666;
+	border-width:0 1px 1px 1px;
+	min-height:150px;
+	padding:15px 20px;
+	background-color:#ddd;	
+}
+
+/* root element for accordion. decorated with rounded borders and gradient background image */
+#accordion {
+	background:#333 url(h600.png) 0 0;
+	width: 300px;
+	border:1px solid #333;	
+	background:#666;
+}
+
+/* accordion header */
+#accordion h2 {
+	background:#ccc url(h30.png);
+	margin:0;
+	padding:5px 15px;
+	font-size:14px;
+	font-weight:normal;
+	border:1px solid #fff;
+	border-bottom:1px solid #ddd;
+	cursor:pointer;	
+	color:#fff;
+}
+
+/* currently active header */
+#accordion h2.current {
+	cursor:default;
+	background-color:#fff;
+}
+
+/* accordion pane */
+#accordion  span.pane{
+	border:1px solid #fff;
+	border-width:0 2px;
+	display:none;
+	padding:15px;
+	color:#000;
+	font-size:12px;
+}
+
+/* a title inside pane */
+#accordion .pane h3 {
+	font-weight:normal;
+	margin:0 0 -5px 0;
+	font-size:16px;
+	color:#999;
+	padding:15px;
+}
+
+/* 
+	Web20 Table Style
+	written by Netway Media, http://www.netway-media.com
+*/
+.listing_projets, .listing_auteurs {
+  border-collapse: collapse;
+  border-bottom : 2px solid #CCCCCC;
+  border-right : 2px solid #CCCCCC;
+  border-left : 1px solid #DDDDDD;
+  font: normal 11px verdana, arial, helvetica, sans-serif;
+  color: #363636;
+  background: #f6f6f6;
+  text-align:left;
+    -moz-border-radius:4px;	
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    border-radius: 4px;
+  }
+caption {
+  text-align: center;
+  font: bold 16px arial, helvetica, sans-serif;
+  background: transparent;
+  padding:6px 4px 8px 0px;
+  color: #CC00FF;
+  text-transform: uppercase;
+}
+thead, tfoot {
+background:url(bg1.png) repeat-x;
+text-align:left;
+height:30px;
+}
+table a {
+color: #333333;
+text-decoration:none;
+}
+table a:hover {
+text-decoration:underline;
+}
+tr.projet_odd {
+background: #f1f1f1;
+}
+tbody th, tbody td {
+padding:5px;
+}
+thead th, tfoot th {
+padding:5px;
+	background-color:#ddd;
+    width : 100%
+}

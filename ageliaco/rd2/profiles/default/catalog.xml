@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<object name="portal_catalog">
+    <index name="firstname" meta_type="FieldIndex">
+        <indexed_attr value="firstname"/>
+    </index>
+    <column value="firstname"/>
+    <index name="lastname" meta_type="FieldIndex">
+        <indexed_attr value="lastname"/>
+    </index>
+    <column value="lastname"/>
+    <index name="email" meta_type="FieldIndex">
+        <indexed_attr value="email"/>
+    </index>
+    <column value="email"/>
+    <index name="address" meta_type="FieldIndex">
+        <indexed_attr value="address"/>
+    </index>
+    <column value="address"/>
+    <index name="school" meta_type="FieldIndex">
+        <indexed_attr value="school"/>
+    </index>
+    <column value="school"/>
+    <index name="num" meta_type="FieldIndex">
+        <indexed_attr value="num"/>
+    </index>
+    <column value="num"/>
+    <index name="authors" meta_type="KeywordIndex">
+        <indexed_attr value="authors"/>
+    </index>
+    <column value="authors"/>
+    <index name="cycles" meta_type="KeywordIndex">
+        <indexed_attr value="cycles"/>
+    </index>
+    <column value="cycles"/>
+</object>

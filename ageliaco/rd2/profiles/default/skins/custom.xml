@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<object name="custom" meta_type="Folder">
+ <property name="title"></property>
+ <object name="contact-info" meta_type="Controller Page Template"/>
+ <object name="file_view" meta_type="Page Template"/>
+ <object name="main_template" meta_type="Page Template"/>
+</object>

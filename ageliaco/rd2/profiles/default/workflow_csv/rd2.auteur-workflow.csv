@@ -1,0 +1,16 @@
+[Workflow],,,,,,,,,,
+Id:,rd2.auteur-workflow,,,,,,,,,
+Title:,Auteur workflow,,,,,,,,,
+Description:,Workflow pour les auteurs de projets de R et D,,,,,,,,,
+Initial state:,draft,,,,,,,,,
+,,,,,,,,,,
+[State],,,,,,,,,,
+Id:,draft,,,,,,,,,
+Title:,Brouillon,,,,,,,,,
+Description:,The proposal is being drafted.,,,,,,,,,
+Transitions,,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
+View,N,,X,,X,X,,,X,X
+Access contents information,N,,,,X,X,,,X,X
+Modify portal content,N,,,,X,X,,,X,
+,,,,,,,,,,

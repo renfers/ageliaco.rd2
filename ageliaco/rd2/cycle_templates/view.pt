@@ -1,0 +1,197 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="ageliaco.rd2">
+      
+
+    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
+            />
+
+<!--
+    <script tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/jquery.jqDock.min.js"
+            type="text/javascript" src="jquery.jqDock.min.js">
+            jQuery(document).ready(function($){
+  // Apply jqDock with no options...
+  $('#menu').jqDock();
+});</script>
+
+	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
+-->
+    </metal:block>
+    <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <script type="text/javascript"  tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
+            src="jquery.jqDock.min.js">
+
+        </script>
+	<!-- include the Tools -->
+    </metal:block>
+      
+      
+<body>
+
+<metal:main fill-slot="main">
+    <tal:main-macro metal:define-macro="main"
+        tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime">
+
+        <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+        <h1 class="documentFirstHeading" tal:content="context/title" />
+        
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
+
+        <p class="documentDescription" tal:content="context/description" />
+
+<div>
+<h1 tal:condition="python:not context.id == context.title" tal:content="context/id">titre</h1>
+
+<h2  i18n:translate="heading_auteurs">Auteurs</h2>
+<!-- the tabs -->
+<ul  >
+	<tal:block repeat="auteur view/auteurs">
+
+	
+	 <li   class="auteur" tal:condition="auteur"> 
+	    <span class="genericButton" ><a class='editAuteur'  tal:condition="view/canModifyContent" 
+	        tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
+	        tal:attributes="href python:auteur.getURL() + '/edit'" href="#">
+	        Auteur id
+            </a></span>
+	    <span class="genericButton" ><a class='editAuteur'  tal:condition="python:not view.canModifyContent()" 
+	        tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
+	        tal:attributes="href python:auteur.getURL()" href="#">
+	        Auteur id
+            </a></span>
+
+            <p ><span tal:replace="python: auteur.__getattribute__('school')"/> 
+            <span tal:replace="auteur/email"/></p>
+    </li>
+	
+<!--	
+	<tal:li define="author auteur/getObject">
+	<li class="auteur" tal:condition="not: here/portal_membership/isAnonymousUser"> 
+	    <span class="genericButton" 
+	          tal:condition="not: here/portal_membership/isAnonymousUser" >
+    	<a class='editAuteur'
+	        tal:content="string: ${author/firstname} ${author/lastname}" 
+	        tal:attributes="href python:view.cycle_url() + '/' + author.id + '/view'" href="#">
+	        Auteur id
+        </a> <span tal:condition="author/school" tal:content="string: (${author/school})"/>
+    	<a class='editAuteur'  tal:condition="view/canModifyContent" 
+	        tal:content="string: [Editer]" 
+	        tal:attributes="href python:view.cycle_url() + '/' + author.id + '/edit'" href="#">
+	        Auteur id
+        </a> 
+        </span>
+        <span tal:define="contributeur python:view.contributeur(author.id)" tal:condition="contributeur">
+            <p tal:condition="python:not view.canModifyContent()"><span tal:replace="contributeur/firstname"/> 
+                <span tal:replace="contributeur/lastname"/>
+            </p>
+        </span>
+    </li>
+    <li     tal:define="author auteur/getObject"
+            class="auteur" tal:condition="here/portal_membership/isAnonymousUser" >
+        <span tal:define="contributeur python:view.contributeur(author.id)" tal:condition="contributeur">
+            <p tal:condition="python:not view.canModifyContent()"><span tal:replace="contributeur/firstname"/> 
+                <span tal:replace="contributeur/lastname"/>
+                <span tal:condition="author/school" tal:content="string: (${author/school})"/>
+            </p>
+        </span>
+    </li>
+    </tal:li>
+    -->
+    
+	</tal:block>
+	
+            <span class="genericButton"  tal:condition="view/canModifyContent">
+              <a class="addAuteur" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur">Ajouter un auteur</a>
+            </span>
+    
+</ul>
+
+</div>
+    <span tal:condition="context/problematique">
+    <h2  i18n:translate="heading_problematique">Problématique</h2>
+    
+        <div class="description" tal:content="structure context/problematique/output" />
+    </span>
+    <span tal:condition="context/objectifs">
+    <h2  i18n:translate="heading_objectifs">Objectifs</h2>
+        <div class="description" tal:content="structure context/objectifs/output" />
+    </span>
+    <span tal:condition="context/resultats">
+    <h2  i18n:translate="heading_resultats">Résultats</h2>
+        <div class="description" tal:content="structure context/resultats/output" />
+    </span>
+    <span tal:condition="context/moyens">
+    <h2  i18n:translate="heading_moyens">Moyens</h2>
+        <div class="description" tal:content="structure context/moyens/output" />
+    </span>
+
+<!--
+<script>
+
+$(document).ready(function(){$("a[rel]").prepOverlay({
+        subtype: 'iframe',
+        config: {expose:{color:'#00f'};
+                onClose: function() { location.reload(); }
+            }
+        });
+ });
+</script>
+
+        <script tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
+            type="text/javascript" src="jquery.jqDock.min.js">
+
+        </script>
+-->
+
+
+
+<!-- overlayed element -->
+<div class="apple_overlay" id="overlay">
+
+	<!-- the external content is loaded inside this tag -->
+	<div class="contentWrap"></div>
+
+</div>
+       <div tal:replace="structure provider:plone.belowcontentbody" /> 
+
+    </tal:main-macro>
+</metal:main>
+<div />
+
+</body>
+</html>
+
+<!--
+ $(function() {
+
+	// if the function argument is given to overlay,
+	// it is assumed to be the onBeforeLoad event listener
+	$("a[rel]").overlay({
+
+		mask: 'darkred',
+		effect: 'apple',
+        //filter: '#content>*',
+        //formselector: 'form[id="form"]',
+
+		onBeforeLoad: function() {
+
+			// grab wrapper element inside content
+			var wrap = this.getOverlay().find(".contentWrap");
+
+			// load the page specified in the trigger
+			wrap.load(this.getTrigger().attr("href").filter("#content>*"));
+		}
+
+	});
+});
+-->

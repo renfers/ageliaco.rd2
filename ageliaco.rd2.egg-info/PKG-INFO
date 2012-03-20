@@ -1,0 +1,27 @@
+Metadata-Version: 1.0
+Name: ageliaco.rd2
+Version: 0.1
+Summary: new implementantion of RD service
+Home-page: http://svn.plone.org/svn/collective/
+Author: Serge Renfer
+Author-email: serge.renfer@gmail.com
+License: GPL
+Description: Introduction
+        ============
+        
+        
+        
+        This product may contain traces of nuts.
+        
+        Changelog
+        =========
+        
+        0.1dev (unreleased)
+        -------------------
+        
+        - Initial release
+        
+Keywords: ageliaco rd project management
+Platform: UNKNOWN
+Classifier: Framework :: Plone
+Classifier: Programming Language :: Python

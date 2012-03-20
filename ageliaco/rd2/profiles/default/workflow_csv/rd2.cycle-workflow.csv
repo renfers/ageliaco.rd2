@@ -1,0 +1,63 @@
+[Workflow],,,,,,,,,,
+Id:,rd2.cycle-workflow,,,,,,,,,
+Title:,Cycle workflow,,,,,,,,,
+Description:,Workflow pour les cycles d administration de projets de R et D,,,,,,,,,
+Initial state:,draft,,,,,,,,,
+,,,,,,,,,,
+[State],,,,,,,,,,
+Id:,draft,,,,,,,,,
+Title:,Brouillon,,,,,,,,,
+Description:,Le cycle est en cours d elaboration,,,,,,,,,
+Transitions,activate,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
+View,N,,,,X,X,X,,X,X
+Access contents information,N,,,,X,X,X,,X,X
+Modify portal content,N,,,,X,X,X,,X,X
+ageliaco.rd2 : Add Note,N,,,,X,,,,,
+ageliaco.rd2 : Add Bilan,N,,,,X,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+[State],,,,,,,,,,
+Id:,active,,,,,,,,,
+Title:,En cours,,,,,,,,,
+Description:,Le cycle est actif,,,,,,,,,
+Transitions:,finish,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
+View,N,,X,,X,X,X,,X,X
+Access contents information,N,,X,,X,X,X,,X,X
+Modify portal content,N,,,,X,X,X,,X,X
+ageliaco.rd2 : Add Note,N,,,,X,,,,,X
+ageliaco.rd2 : Add Bilan,N,,,,X,X,X,,X,
+,,,,,,,,,,
+[State],,,,,,,,,,
+Id:,over,,,,,,,,,
+Title:,Fini,,,,,,,,,
+Description:,Le cycle est fini,,,,,,,,,
+Transitions:,,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
+View,N,,X,,X,X,X,,X,X
+Access contents information,N,,X,,X,X,X,,X,X
+Modify portal content,N,,,,X,,,,,
+ageliaco.rd2 : Add Note,N,,,,X,,,,,
+ageliaco.rd2 : Add Bilan,N,,,,X,,,,,
+,,,,,,,,,,
+[Transition],,,,,,,,,,
+Id:,reject,,,,,,,,,
+Title:,Rejeter,,,,,,,,,
+Description:,Rejet du cycle du projet,,,,,,,,,
+Target state:,draft,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,
+,,,,,,,,,,
+[Transition],,,,,,,,,,
+Id:,activate,,,,,,,,,
+Title:,Activer le cycle,,,,,,,,,
+Description:,Activer le cycle,,,,,,,,,
+Target state:,active,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,
+,,,,,,,,,,
+[Transition],,,,,,,,,,
+Id:,finish,,,,,,,,,
+Title:,Fermer le cycle,,,,,,,,,
+Description:,Fermer le cycle,,,,,,,,,
+Target state:,over,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,
