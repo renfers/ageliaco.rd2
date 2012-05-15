@@ -161,7 +161,14 @@ class View(grok.View):
                            sort_on="modified", sort_order="reverse")     
                 return cat
         return None
-        
+    
+    def hasRealisation(self):
+        context = aq_inner(self.context)
+        if not context.has_key('realisation'):
+            return ""
+        if len(context['realisation'].keys()):
+            return context['realisation'].absolute_url()
+        return ""
     
 
 #     def cycles(self):

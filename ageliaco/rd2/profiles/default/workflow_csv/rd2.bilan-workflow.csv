@@ -24,9 +24,9 @@ Worklist label:,Bilan pending review,,,,,,,,,
 Worklist guard permission:,Review portal content,,,,,,,,,
 Transitions:,"reject, publish",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,X,X,,X
-Access contents information,N,,,,X,X,X,X,,X
-Modify portal content,N,,,,X,,X,,,X
+View,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X
+Modify portal content,N,,,,X,X,X,,X,X
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,published,,,,,,,,,
@@ -51,7 +51,7 @@ Title:,Rejeter,,,,,,,,,
 Description:,Rejet du bilan par R et D (a completer),,,,,,,,,
 Target state:,draft,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
-Script after:,ageliaco.rd.Extentions.transitionscripts.bilanReject,,,,,,,,,
+Script after:,ageliaco.rd.Extensions.transitionscripts.bilanReject,,,,,,,,,
 ,,,,,,,,,,
 [Transition],,,,,,,,,,
 Id:,publish,,,,,,,,,
@@ -59,4 +59,4 @@ Title:,Publier,,,,,,,,,
 Description:,Publication du bilan,,,,,,,,,
 Target state:,published,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
-Script after:,ageliaco.rd.Extentions.transitionscripts.bilanFeedback,,,,,,,,,
+Script after:,ageliaco.rd.Extensions.transitionscripts.bilanFeedback,,,,,,,,,

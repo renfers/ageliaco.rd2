@@ -8,4 +8,3 @@ collective.wtf
 plone.namedfile[blobs]
 plone.formwidget.namedfile
 collective.z3cform.datagridfield
-ageliaco.p10userdata

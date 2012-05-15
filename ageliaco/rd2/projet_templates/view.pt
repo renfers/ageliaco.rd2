@@ -32,30 +32,8 @@
 
         <h1 class="documentFirstHeading" tal:content="context/title" />
         
-        
-<ul class="css-tabs">
-        <li><a id="t1" href="#player_tab">Présentation</a></li>
-        <tal:block repeat="cycle view/cycles_obj" condition="not: here/portal_membership/isAnonymousUser">
-        <li  
-            tal:define="turn repeat/cycle/number"
-                >
-            <a tal:content="python:cycle.id" 
-            tal:attributes="id python:str(int(turn) + 1)"
 
-            href="#">cycle</a></li>
-        </tal:block>
-</ul>
-<!-- panes -->
-<div  class="css-panes">
-
-	<!-- remove the space between tabs and panes <br clear="all" /> -->
-	
-
-	<div class="single" tal:define="has_logo python:'logo-projet.png' in context.objectIds()"	
-	>
-
-		<p class="documentDescription" 
-		    tal:content="context/description" />
+<!-- overlay triggers. overlay is referenced in the 'rel' attribute -->
         <div tal:define="picture nocall:context/picture"
              tal:condition="nocall:picture">
             <img tal:attributes="src string:${context/absolute_url}/@@download/picture/${picture/filename};
@@ -63,14 +41,22 @@
                                  width picture/_width | nothing;"
                 style="float:left;margin:0 30px 30px 0;"
                 />
-        </div>		    
-<!--
-		<img tal:condition="has_logo" tal:attributes="src  python:context['logo-projet.png'].absolute_url()  or  navroot + '/++resource++ageliaco.rd2/screens.png'" 
-		    src="http://static.flowplayer.org/img/title/screens.png" alt="Flying screens" style="float:left;margin:0 30px 30px 0; width : 200px" />
-		<img tal:condition="not:has_logo" tal:attributes="src  python:navroot + '/++resource++ageliaco.rd2/screens.png'" 
-		    src="http://static.flowplayer.org/img/title/screens.png" alt="Flying screens" style="float:left;margin:0 30px 30px 0; width : 200px" />
--->
-        <span tal:content="structure context/presentation/output" />
+        </div>
+<div  tal:condition="python:len(view.cycles_obj())" id="cycleList">
+<h3 tal:condition="python: view.hasRealisation()"><a tal:attributes="href view/hasRealisation">Réalisation</a></h3>
+<h3 class="cycleListTitle">Cycles</h3>
+<ul class="cycleList">
+        <tal:block repeat="cycle view/cycles_obj">
+	    <li class="genericButton" ><a class='editAuteur'  
+	        tal:content="cycle/id" 
+	        tal:attributes="href python:cycle.getURL()" href="#">
+	        Cycle id
+            </a></li>
+        
+        </tal:block>
+</ul>
+</div>
+        <span tal:condition="context/presentation" tal:content="structure context/presentation/output" />
         
         <span class="discreet" tal:condition="python: not view.isRepository()" >
             <tal:block condition="context/start">
@@ -83,71 +69,7 @@
                 an(s)
             </tal:block>
         </span>
-        
-    </div>
-    
-    <tal:block  repeat="cycle_brain view/cycles_obj">
-    
-      <div class="single">
- 	        <a tal:condition="python:view.canModifyContent() or view.canRequestReview()" 
-	            tal:attributes="href cycle_brain/getURL"
-	            style="float:right">Accéder
-	        </a> 
-      <span tal:define="cycle cycle_brain/getObject">
-     <ul  >
-    
-     <tal:block repeat="auteur python:view.contributeurs(cycle.id)">
-        
-         <li   class="auteur" tal:condition="auteur"> 
-            <span class="genericButton" ><a class='editAuteur'  tal:condition="view/canModifyContent" 
-                tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
-                tal:attributes="href python:auteur.getURL() + '/edit'" href="#">
-                Auteur id
-                </a></span>
-            <span class="genericButton" ><a class='editAuteur'  tal:condition="python:not view.canModifyContent()" 
-                tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
-                tal:attributes="href python:auteur.getURL()" href="#">
-                Auteur id
-                </a></span>
-    
-                <p ><span tal:replace="python: auteur.__getattribute__('school')"/> 
-                <span tal:replace="auteur/email"/></p>
-        </li>
-        </tal:block>
-        </ul>
-        <span >
-            <span id="accordion">
-                <h2 class="current">Problématique</h2>
-                <span class="pane" style="display:block"
-                    tal:content="structure cycle/problematique/output | nothing"/>
-                <h2>Objectifs</h2>
-                <span class="pane" tal:content="structure cycle/objectifs/output | nothing"/>
-                <h2>Résultats</h2>
-                <span class="pane" tal:content="structure cycle/resultats/output | nothing"/>
-                <h2>Moyens</h2>
-                <span class="pane" tal:content="structure cycle/moyens/output | nothing"/>
-            </span>
-        </span>
-                 
-
-    </span>
-    </div>
-        
-    </tal:block>
-     
-</div>
-        
-<!-- activate tabs with JavaScript -->
-<script>
-$(function() {
-	$("ul.css-tabs").tabs("div.css-panes > div");
-});
-</script>	
-<script>
-    
-    $("#accordion").tabs("#accordion span.pane", {tabs: 'h2', effect: 'slide', initialIndex: 0});
-</script>	
-        
+ 
 
         <div tal:replace="structure provider:plone.belowcontentbody" />
 

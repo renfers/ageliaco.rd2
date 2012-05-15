@@ -15,8 +15,11 @@ ageliaco/rd2/__init__.py
 ageliaco/rd2/auteur.py
 ageliaco/rd2/bilan.py
 ageliaco/rd2/cycle.py
+ageliaco/rd2/interface.py
 ageliaco/rd2/note.py
 ageliaco/rd2/projet.py
 ageliaco/rd2/projets.py
 ageliaco/rd2/setuphandlers.py
 ageliaco/rd2/tests.py
+ageliaco/rd2/Extensions/__init__.py
+ageliaco/rd2/Extensions/transitionscripts.py

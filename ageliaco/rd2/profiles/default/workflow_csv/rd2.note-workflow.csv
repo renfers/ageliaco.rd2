@@ -10,9 +10,9 @@ Title:,Brouillon,,,,,,,,,
 Description:,The proposal is being drafted.,,,,,,,,,
 Transitions,submit,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,,,X,X
-Access contents information,N,,,,X,X,,,X,X
-Modify portal content,N,,,,X,X,,,X,
+View,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X
+Modify portal content,N,,,,X,X,X,,X,
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -24,8 +24,8 @@ Worklist label:,Note pending review,,,,,,,,,
 Worklist guard permission:,Review portal content,,,,,,,,,
 Transitions:,"reject, accepted",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,,,X,X
-Access contents information,N,,,,X,X,,,X,X
+View,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X
 Modify portal content,N,,,,X,,,,X,X
 ,,,,,,,,,,
 [State],,,,,,,,,,

@@ -22,7 +22,6 @@ from zope.schema.fieldproperty import FieldProperty
 
 
 from ageliaco.rd2 import _
-from ageliaco.rd2.auteur import IAuteur
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 
 import datetime
@@ -46,6 +45,13 @@ from Acquisition import aq_inner, aq_parent
 from zope.component import getUtility
 from Products.CMFCore.interfaces import ISiteRoot
 from zope.security import checkPermission
+
+from ageliaco.rd2 import _
+
+#from projet import IProjet
+from interface import ICycle, IAuteur
+
+
 
 """
 <model xmlns="http://namespaces.plone.org/supermodel/schema">
@@ -83,92 +89,35 @@ from zope.security import checkPermission
 </model>
 """
 
-class GroupMembers(object):
-    """Context source binder to provide a vocabulary of users in a given
-    group.
-    """
+
+class Single_view(dexterity.DisplayForm):
+    grok.context(ICycle)
+    grok.require('zope2.View')
+    grok.name('single_view')
     
-    grok.implements(IContextSourceBinder)
-    
-    def __init__(self, group_name):
-        self.group_name = group_name
-    
-    def __call__(self, context):
-        acl_users = getToolByName(context, 'acl_users')
-        group = acl_users.getGroupById(self.group_name)
-        terms = []
-        terms.append(SimpleVocabulary.createTerm('', str(''), ''))
-        if group is not None:
-            for member_id in group.getMemberIds():
-                user = acl_users.getUserById(member_id)
-                if user is not None:
-                    member_name = user.getProperty('fullname') or member_id
-                    terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_name))
-            
-        return SimpleVocabulary(terms)    
-
-
-
-class ICycle(form.Schema):
-    """
-    Cycle de projet RD
-    """
-    
-    # -*- Your Zope schema definitions here ... -*-
-    id = schema.TextLine(
-            title=_(u"Année"),
-            description=_(u"L'année d'administration du projet"),
-            required=True,
-        )
-    title = schema.TextLine(
-            title=_(u"Titre"),
-            description=_(u"Titre du projet"),
-            required=True,
-        )
-
-    # Data grid
-    #form.fieldset('Auteurs', label=_(u"Auteurs"), fields=['auteurs'])
-    #if DataGridFieldFactory is not None:
-    #    form.widget(auteurs=DataGridFieldFactory)
-    #form.widget(auteurs=AutocompleteMultiFieldWidget)
-    #auteurs = schema.List(
-    #        title=_(u"Auteurs"),
-    #        required=False,
-    #        value_type=schema.Object(title=u'Auteurs',
-    #                                     schema=IAuteur),
-    #    )
-            
-    dexterity.write_permission(supervisor='cmf.ReviewPortalContent')
-    supervisor = schema.Choice(
-            title=_(u"Superviseur"),
-            description=_(u"Personne de R&D qui supervise ce projet"),
-            source=GroupMembers('superviseur'),
-            required=False,
-        )
-
-    problematique = RichText(
-            title=_(u"Problématique"),
-            description=_(u"Problématique et contexte du projet pour l'année à venir"),
-            required=False,
-        )    
+    def canRequestReview(self):
+        return checkPermission('cmf.RequestReview', self.context)
         
-    objectifs = RichText(
-            title=_(u"Objectifs"),
-            description=_(u"Objectifs du projet pour l'année"),
-            required=False,
-        )    
+    def canAddContent(self):
+        return checkPermission('cmf.AddPortalContent', self.context)
+        
+    def canModifyContent(self):
+        return checkPermission('cmf.ModifyPortalContent', self.context)
+                
+    
+    def parent_url(self):
+        context = aq_inner(self.context)
+        parent = context.aq_parent
+        print parent.absolute_url()
+        return parent.absolute_url()
+    
+    def setaddress(self):
+        for c in self.w.keys():
+            print "champ : %s => %s" % (c,self.w[c])
+        
+        context = aq_inner(self.context)
 
-    resultats = RichText(
-            title=_(u"Résultats"),
-            description=_(u"Retombées (profs et/ou élèves) du projet pour l'année"),
-            required=False,
-        )    
-
-    moyens = RichText(
-            title=_(u"Moyens"),
-            description=_(u"Moyens nécessaires pour l'année"),
-            required=False,
-        )    
+        print context.keys()
 
 # class View(dexterity.DisplayForm):
 #     grok.context(ICycle)
@@ -199,11 +148,6 @@ class ICycle(form.Schema):
 #         print context.keys()
 
 
-
-@form.default_value(field=ICycle['id'])
-def idDefaultValue(data):
-    # To get hold of the folder, do: context = data.context
-    return str(datetime.datetime.today().year)
 
 # @grok.subscribe(ICycle, IObjectAddedEvent)
 # @grok.subscribe(ICycle, IObjectModifiedEvent)

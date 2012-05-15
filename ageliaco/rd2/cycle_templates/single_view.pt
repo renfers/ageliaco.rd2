@@ -1,0 +1,90 @@
+<h3 tal:condition="python:not context.id == context.title" tal:content="context/id">titre</h3>
+
+<h2  i18n:translate="heading_auteurs">Auteurs</h2>
+<!-- the tabs -->
+<ul  >
+	<tal:block repeat="auteur view/auteurs">
+
+	
+	 <li   class="auteur" tal:condition="auteur"> 
+	    <span class="genericButton" ><a class='editAuteur'  tal:condition="view/canModifyContent" 
+	        tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
+	        tal:attributes="href python:auteur.getURL() + '/edit'" href="#">
+	        Auteur id
+            </a></span>
+	    <span class="genericButton" ><a class='editAuteur'  tal:condition="python:not view.canModifyContent()" 
+	        tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
+	        tal:attributes="href python:auteur.getURL()" href="#">
+	        Auteur id
+            </a></span>
+
+            <p ><span tal:replace="python: auteur.__getattribute__('school')"/> 
+            <span tal:replace="auteur/email"/></p>
+    </li>
+	
+<!--	
+	<tal:li define="author auteur/getObject">
+	<li class="auteur" tal:condition="not: here/portal_membership/isAnonymousUser"> 
+	    <span class="genericButton" 
+	          tal:condition="not: here/portal_membership/isAnonymousUser" >
+    	<a class='editAuteur'
+	        tal:content="string: ${author/firstname} ${author/lastname}" 
+	        tal:attributes="href python:view.cycle_url() + '/' + author.id + '/view'" href="#">
+	        Auteur id
+        </a> <span tal:condition="author/school" tal:content="string: (${author/school})"/>
+    	<a class='editAuteur'  tal:condition="view/canModifyContent" 
+	        tal:content="string: [Editer]" 
+	        tal:attributes="href python:view.cycle_url() + '/' + author.id + '/edit'" href="#">
+	        Auteur id
+        </a> 
+        </span>
+        <span tal:define="contributeur python:view.contributeur(author.id)" tal:condition="contributeur">
+            <p tal:condition="python:not view.canModifyContent()"><span tal:replace="contributeur/firstname"/> 
+                <span tal:replace="contributeur/lastname"/>
+            </p>
+        </span>
+    </li>
+    <li     tal:define="author auteur/getObject"
+            class="auteur" tal:condition="here/portal_membership/isAnonymousUser" >
+        <span tal:define="contributeur python:view.contributeur(author.id)" tal:condition="contributeur">
+            <p tal:condition="python:not view.canModifyContent()"><span tal:replace="contributeur/firstname"/> 
+                <span tal:replace="contributeur/lastname"/>
+                <span tal:condition="author/school" tal:content="string: (${author/school})"/>
+            </p>
+        </span>
+    </li>
+    </tal:li>
+    -->
+    
+	</tal:block>
+	
+            <span class="genericButton"  tal:condition="view/canModifyContent">
+              <a class="addAuteur" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur">Ajouter un auteur</a>
+            </span>
+    
+</ul>
+
+</div>
+    <span tal:condition="context/problematique">
+    <h2  i18n:translate="heading_problematique">Problématique</h2>
+    
+        <div class="description" tal:content="structure context/problematique/output" />
+    </span>
+    <span tal:condition="context/objectifs">
+    <h2  i18n:translate="heading_objectifs">Objectifs</h2>
+        <div class="description" tal:content="structure context/objectifs/output" />
+    </span>
+    <span tal:condition="context/resultats">
+    <h2  i18n:translate="heading_resultats">Résultats</h2>
+        <div class="description" tal:content="structure context/resultats/output" />
+    </span>
+    <span tal:condition="context/moyens">
+    <h2  i18n:translate="heading_moyens">Moyens</h2>
+        <div class="description" tal:content="structure context/moyens/output" />
+    </span>
+    <span tal:condition="python:context.projet">
+    <h2 >Projet</h2>
+        <a tal:attributes="href python:context.projet.to_object.absolute_url()">
+            <div class="description" tal:content="python: context.projet.to_object.title" />
+        </a>
+    </span>

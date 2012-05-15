@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.2'
+version = '0.4'
 
 setup(name='ageliaco.rd2',
       version=version,
@@ -35,8 +35,7 @@ setup(name='ageliaco.rd2',
           'plone.namedfile[blobs]',
           'plone.formwidget.namedfile',
           'collective.z3cform.datagridfield',
-          'ageliaco.p10userdata',
-      ],
+        ],
       entry_points="""
       # -*- Entry points: -*-
 

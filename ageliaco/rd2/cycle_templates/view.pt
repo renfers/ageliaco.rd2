@@ -49,7 +49,7 @@
         <p class="documentDescription" tal:content="context/description" />
 
 <div>
-<h1 tal:condition="python:not context.id == context.title" tal:content="context/id">titre</h1>
+<h3 tal:condition="python:not context.id == context.title" tal:content="context/id">titre</h3>
 
 <h2  i18n:translate="heading_auteurs">Auteurs</h2>
 <!-- the tabs -->
@@ -63,14 +63,21 @@
 	        tal:attributes="href python:auteur.getURL() + '/edit'" href="#">
 	        Auteur id
             </a></span>
-	    <span class="genericButton" ><a class='editAuteur'  tal:condition="python:not view.canModifyContent()" 
+	    <span class="genericButton" ><a class='editAuteur'  
+	        tal:condition="python:not view.canModifyContent() and not here.portal_membership.isAnonymousUser" 
 	        tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
 	        tal:attributes="href python:auteur.getURL()" href="#">
 	        Auteur id
             </a></span>
+	    <span class="genericButton"   
+	        tal:condition="python:here.portal_membership.isAnonymousUser" 
+	        tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
+	        >
+	        Auteur id
+            </span>
 
             <p ><span tal:replace="python: auteur.__getattribute__('school')"/> 
-            <span tal:replace="auteur/email"/></p>
+            <span tal:replace="auteur/email"  tal:condition="not: here/portal_membership/isAnonymousUser"/></p>
     </li>
 	
 <!--	
@@ -132,6 +139,12 @@
     <span tal:condition="context/moyens">
     <h2  i18n:translate="heading_moyens">Moyens</h2>
         <div class="description" tal:content="structure context/moyens/output" />
+    </span>
+    <span tal:condition="python:context.projet">
+    <h2 >Projet</h2>
+        <a tal:attributes="href python:context.projet">
+            <div class="description" tal:content="python: context.projet" />
+        </a>
     </span>
 
 <!--
