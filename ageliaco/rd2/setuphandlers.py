@@ -40,6 +40,7 @@ def add_catalog_indexes(context, logger=None):
               ('num', 'FieldIndex'),
               ('authors', 'KeywordIndex'),
               ('cycles', 'KeywordIndex'),
+              ('SearchableText', 'ZCTextIndex'),
               )
     indexables = []
     for name, meta_type in wanted:

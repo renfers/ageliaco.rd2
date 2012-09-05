@@ -108,16 +108,24 @@ class View(grok.View):
 
     def authors(self, projectPath):
         """Return a catalog search result of authors from a project
+        problem : same author appears several times 
         """
-        
+        auteurs = []
+        auteurIDs = []
         context = aq_inner(self.context)
         catalog = getToolByName(self.context, 'portal_catalog')
         log( 'authors : ' + projectPath)
         cat = catalog(object_provides=[IAuteur.__identifier__],
                        path={'query': projectPath, 'depth': 2},
                        sort_on='sortable_title')
+        for auteur in cat:
+            print auteur.id, auteur.firstname, auteur.lastname, auteur.email
+            
+            if auteur.id not in auteurIDs:
+                auteurs.append(auteur)
+                auteurIDs.append(auteur.id)
         
-        return cat
+        return auteurs
 
     def getPortal(self):
         return getSite()

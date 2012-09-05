@@ -8,3 +8,4 @@ collective.wtf
 plone.namedfile[blobs]
 plone.formwidget.namedfile
 collective.z3cform.datagridfield
+collective.z3cform.wizard

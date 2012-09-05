@@ -37,6 +37,20 @@ jQuery(function($) {
     }
     );
 
+    // delete dialog
+    $('a.delAuteur').prepOverlay(
+    {
+        subtype: 'ajax',
+        filter: common_content_filter,
+        formselector: '#content-core>#addform>form',
+        noform: function(el) {
+            return noformerrorshow(el, 'reload');
+        },
+        closeselector: '[name=form.buttons  .Cancel]',
+        width: '50%'
+    }
+    );
+
     // edit dialog
     $('a.editAuteur').prepOverlay(
     {

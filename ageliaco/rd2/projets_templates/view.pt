@@ -70,8 +70,7 @@
                     'published': navroot + '/++resource++ageliaco.rd/DocumentsFolderIcon.png',
                     'repository': navroot + '/++resource++ageliaco.rd/WorkingFolderIcon.png',
                     'Tous': navroot + '/++resource++ageliaco.rd/MultiFolderIcon.png'
-                };
-                fromProjets python: view.getPortal()['projets']">
+                };">
 
 <div  tal:define="workflowstates_projets python:[
                 ('encours',view.projets('encours'),u'En cours',1),

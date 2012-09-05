@@ -12,14 +12,15 @@
             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
             />
     </metal:block>
-    <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<!--     <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         <script type="text/javascript"  tal:define="navroot context/@@plone_portal_state/navigation_root_url"
             tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
             src="jquery.jqDock.min.js">
 
         </script>
-	<!-- include the Tools -->
+	
     </metal:block>
+ -->
 </head>
 <body>
 
@@ -28,22 +29,11 @@
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
                 navroot context/@@plone_portal_state/navigation_root_url">
 
-        <div tal:replace="structure provider:plone.abovecontenttitle" />
-
-        <h1 class="documentFirstHeading" tal:content="context/title" />
-        
-
-<!-- overlay triggers. overlay is referenced in the 'rel' attribute -->
-        <div tal:define="picture nocall:context/picture"
-             tal:condition="nocall:picture">
-            <img tal:attributes="src string:${context/absolute_url}/@@download/picture/${picture/filename};
-                                 height picture/_height | nothing;
-                                 width picture/_width | nothing;"
-                style="float:left;margin:0 30px 30px 0;"
-                />
-        </div>
-<div  tal:condition="python:len(view.cycles_obj())" id="cycleList">
+<div id="realisation" tal:condition="python: view.hasLink() or view.hasRealisation()">
+<h3 tal:condition="python: view.hasLink()"><a tal:attributes="href view/hasLink">lien vers réalisation</a></h3>
 <h3 tal:condition="python: view.hasRealisation()"><a tal:attributes="href view/hasRealisation">Réalisation</a></h3>
+</div>
+<div  tal:condition="python:len(view.cycles_obj())" id="cycleList">
 <h3 class="cycleListTitle">Cycles</h3>
 <ul class="cycleList">
         <tal:block repeat="cycle view/cycles_obj">
@@ -56,6 +46,21 @@
         </tal:block>
 </ul>
 </div>
+        
+        <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+        <h1 class="documentFirstHeading" tal:content="context/title" />
+
+
+<!-- overlay triggers. overlay is referenced in the 'rel' attribute -->
+        <div tal:define="picture nocall:context/picture"
+             tal:condition="nocall:picture">
+            <img tal:attributes="src string:${context/absolute_url}/@@download/picture/${picture/filename};
+                                 height picture/_height | nothing;
+                                 width picture/_width | nothing;"
+                style="float:left;margin:0 30px 30px 0;"
+                />
+        </div>
         <span tal:condition="context/presentation" tal:content="structure context/presentation/output" />
         
         <span class="discreet" tal:condition="python: not view.isRepository()" >

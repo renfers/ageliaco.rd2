@@ -9,6 +9,8 @@ from plone.z3cform.textlines import TextLinesFieldWidget
 
 from zope.interface import invariant, Invalid
 
+from interface import IProjet
+
 from plone.app.textfield.value import RichTextValue
 from DateTime import DateTime
 from plone.indexer import indexer
@@ -20,47 +22,17 @@ from plone.namedfile.field import NamedImage
 from Acquisition import aq_inner, aq_parent
 from Products.CMFCore.utils import getToolByName
 from zope.security import checkPermission
-
+from zope.app.content import queryContentType
+from zope.schema import getFieldsInOrder
+from plone.dexterity.interfaces import IDexterityFTI 
+from zope.component import queryUtility
+ 
 from cycle import ICycle
 from auteur import IAuteur
 
 from ageliaco.rd2 import _
 
-class IProjet(form.Schema):
-    """
-    Projet RD
-    """
-    start = schema.TextLine(
-            title=_(u"Année"),
-            description=_(u"L'année à laquelle le projet a commencé ou devrait commencer"),
-            required=True,
-        )
-
-    duration = schema.Int(
-            title=_(u"Durée"),
-            description=_(u"Durée (en années) du projet, prévue ou effective"),
-            required=True,
-        )
-    
-    dexterity.write_permission(num='cmf.ReviewPortalContent')
-    num = schema.Int(
-            title=_(u"Numéro"),
-            description=_(u"Numéro du projet"),
-            default=0,
-            required=True,
-        )
-
-    presentation = RichText(
-            title=_(u"Présentation"),
-            description=_(u"Présentation synthétique du projet (présentation publiée)"),
-            required=True,
-        )    
-
-    picture = NamedImage(
-            title=_(u"Chargez une image pour le projet"),
-            required=False,
-        )
-    
+import pdb
     
 @grok.subscribe(IProjet, IObjectAddedEvent)
 def setRealisation(projet, event):
@@ -75,6 +47,16 @@ def setRealisation(projet, event):
     #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
     return #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
     
+@indexer(IProjet)
+def searchableIndexer(context):
+    keywords = " ".join(context.keywords)
+    return "%s %s %s %s" % (context.title, context.description, context.presentation, keywords)
+
+grok.global_adapter(searchableIndexer, name="SearchableText")
+
+    
+
+
 class View(grok.View):
     grok.context(IProjet)
     grok.require('zope2.View')
@@ -169,6 +151,18 @@ class View(grok.View):
         if len(context['realisation'].keys()):
             return context['realisation'].absolute_url()
         return ""
+    
+    
+    def hasLink(self):
+        context = aq_inner(self.context)
+        #pdb.set_trace()
+        
+        if getattr(context,'lien',0):
+            print context.getAttribute('lien')
+            return context.lien
+        else:
+            print "no Property 'link'"
+        return ''
     
 
 #     def cycles(self):

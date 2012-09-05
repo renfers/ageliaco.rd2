@@ -214,6 +214,12 @@ class View(dexterity.DisplayForm):
                        path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
                        sort_on='sortable_title')
         
+
+    def delAuteur(self,auteur):
+        context = aq_inner(self.context)
+        if auteur in context.keys():
+            del context[auteur]
+        return context.absolute_url()
     
     def parent_url(self):
         context = aq_inner(self.context)
@@ -240,7 +246,23 @@ class View(dexterity.DisplayForm):
         if auteur in context.keys():
             return context[auteur]
         return None
-        
+    
+@indexer(ICycle)
+def searchableIndexer(context):
+    keywords = " ".join(context.subject)
+    return "%s %s %s %s %s %s %s %s %s %s" % (context.title, 
+                            context.description, 
+                            context.problematique, 
+                            context.objectifsGlobaux,
+                            context.resultatsGlobaux,
+                            context.planificationGlobale,
+                            context.objectifs,
+                            context.resultats,
+                            context.moyens,
+                            keywords)
+
+grok.global_adapter(searchableIndexer, name="SearchableText")
+
 
 
 # @indexer(ICycle)

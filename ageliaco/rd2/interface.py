@@ -230,14 +230,6 @@ class IProjet(form.Schema):
             required=True,
         )
     
-    dexterity.write_permission(num='cmf.ReviewPortalContent')
-    num = schema.Int(
-            title=_(u"Numéro"),
-            description=_(u"Numéro du projet"),
-            default=0,
-            required=True,
-        )
-
     presentation = RichText(
             title=_(u"Présentation"),
             description=_(u"Présentation synthétique du projet (présentation publiée)"),
@@ -249,7 +241,12 @@ class IProjet(form.Schema):
             required=False,
         )
 
-    
+    lien = schema.TextLine(
+            title=_(u"Lien vers la réalisation"),
+            description=_(u"Lien extérieur vers la réalisation"),
+            required=False,
+        )
+
     
 @grok.subscribe(IProjet, IObjectAddedEvent)
 def setRealisation(projet, event):
@@ -312,13 +309,31 @@ class ICycle(form.Schema):
             source=GroupMembers('superviseur'),
             required=False,
         )
-
+        
     problematique = RichText(
             title=_(u"Problématique"),
-            description=_(u"Problématique et contexte du projet pour l'année à venir"),
+            description=_(u"Problématique et contexte du projet"),
             required=False,
         )    
         
+    objectifsGlobaux = RichText(
+            title=_(u"Objectifs généraux"),
+            description=_(u"Objectifs du projet (sur l'ensemble du projet)"),
+            required=False,
+        )    
+
+    resultatsGlobaux = RichText(
+            title=_(u"Résultats attendus"),
+            description=_(u"Retombées (profs et/ou élèves) du projet"),
+            required=False,
+        )    
+
+    planificationGlobale = RichText(
+            title=_(u"Planification et organisation prévues sur l'ensemble du projet"),
+            description=_(u""),
+            required=False,
+        )    
+
     objectifs = RichText(
             title=_(u"Objectifs"),
             description=_(u"Objectifs du projet pour l'année"),
@@ -333,7 +348,7 @@ class ICycle(form.Schema):
 
     moyens = RichText(
             title=_(u"Moyens"),
-            description=_(u"Moyens nécessaires pour l'année"),
+            description=_(u"Moyens nécessaires pour l'année, dégrèvement demandé par auteur, ressources supplémentaires, modalité de travail"),
             required=False,
         )    
 

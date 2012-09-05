@@ -63,6 +63,7 @@ def activateCycle(self, state_change):
             print "try cut OK!"
             projet.manage_pasteObjects(parent.manage_cutObjects(contentObject.id)) 
         except: 
+            print "couldn't cut => then copy instead"
             projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id))   
     return  
 #         dest_folder = projet
