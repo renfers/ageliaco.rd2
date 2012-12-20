@@ -49,7 +49,7 @@ from zope.component import getUtility
 from Products.CMFCore.interfaces import ISiteRoot
 from zope.security import checkPermission
 
-
+from AccessControl.interfaces import IRoleManager
 
 schools = {u"ECGGR":[u"EC Bougeries",u"CEC"],
     u"CEBOU":[u"Nicolas-Bouvier",u"CEC"],
@@ -294,6 +294,17 @@ class ICycle(form.Schema):
             description=_(u"Titre du projet"),
             required=True,
         )
+    description = schema.TextLine(
+            title=_(u"Sous-titre"),
+            description=_(u"Sous-titre du projet"),
+            required=False,
+        )
+    presentation = RichText(
+            title=_(u"Présentation succincte du projet"),
+            description=_(u"Présentation succincte du projet (synopsis)"),
+            required=True,
+        )    
+
     #form.widget(projet=AutocompleteFieldWidget)
     projet = schema.Choice(
             title=_(u"Projet existant"),
@@ -316,39 +327,9 @@ class ICycle(form.Schema):
             required=False,
         )    
         
-    objectifsGlobaux = RichText(
-            title=_(u"Objectifs généraux"),
-            description=_(u"Objectifs du projet (sur l'ensemble du projet)"),
-            required=False,
-        )    
-
-    resultatsGlobaux = RichText(
-            title=_(u"Résultats attendus"),
-            description=_(u"Retombées (profs et/ou élèves) du projet"),
-            required=False,
-        )    
-
-    planificationGlobale = RichText(
-            title=_(u"Planification et organisation prévues sur l'ensemble du projet"),
-            description=_(u""),
-            required=False,
-        )    
-
     objectifs = RichText(
             title=_(u"Objectifs"),
-            description=_(u"Objectifs du projet pour l'année"),
-            required=False,
-        )    
-
-    resultats = RichText(
-            title=_(u"Résultats"),
-            description=_(u"Retombées (profs et/ou élèves) du projet pour l'année"),
-            required=False,
-        )    
-
-    moyens = RichText(
-            title=_(u"Moyens"),
-            description=_(u"Moyens nécessaires pour l'année, dégrèvement demandé par auteur, ressources supplémentaires, modalité de travail"),
+            description=_(u"Objectifs, moyens nécessaires et résultats escomptés du projet pour l'année"),
             required=False,
         )    
 
@@ -358,6 +339,14 @@ def idDefaultValue(data):
     # To get hold of the folder, do: context = data.context
     return str(datetime.datetime.today().year)
     
+@grok.subscribe(ICycle, IObjectModifiedEvent)
+def setSupervisor(cycle, event):
+    if not cycle.supervisor:
+        return
+    if IRoleManager.providedBy(cycle):
+        cycle.manage_addLocalRoles(cycle.supervisor, ['Reader', 'Contributor', 'Editor'])
+    log("Role added to %s for %s"%(cycle.id,cycle.supervisor))
+
 @grok.subscribe(ICycle, IObjectAddedEvent)
 def setAuteurs(cycle, event):
     print "Projet lié à %s ==> %s ==> %s" % (cycle.id,cycle.projet,cycle.supervisor)

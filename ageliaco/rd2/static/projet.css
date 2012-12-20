@@ -1,3 +1,28 @@
+.newprojet {
+	background: #CC1 url(blue.png) no-repeat -652px 0;
+    padding:10px 10px 10px 10px;
+    font-size:11px;
+    color:#fff;
+	top:1px;
+	border-bottom:0.1em solid #aaa;	
+	border-top:0.1em solid #fff;	
+	border-left:0.1em solid #fff;	
+	border-right:0.1em solid #aaa;	
+}
+
+.reconductprojet {
+	background: #1CC url(blue.png) no-repeat -652px 0;
+    padding:10px 10px 10px 10px;
+    font-size:11px;
+    color:#fff;
+	top:1px;
+	border-bottom:0.1em solid #aaa;	
+	border-top:0.1em solid #fff;	
+	border-left:0.1em solid #fff;	
+	border-right:0.1em solid #aaa;	
+}
+
+
  #cycleList {
 	background: #CCC url(blue.png) no-repeat -652px 0;
     float : right;

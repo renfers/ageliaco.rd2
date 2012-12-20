@@ -132,35 +132,19 @@
     
         <div class="description" tal:content="structure context/problematique/output" />
     </span>
-    <span tal:condition="context/objectifsGlobaux">
-    <h2  i18n:translate="heading_objectifsGlobaux">Objectifs globaux (sur l'ensemble du projet)</h2>
-        <div class="description" tal:content="structure context/objectifsGlobaux/output" />
-    </span>
-    <span tal:condition="context/resultatsGlobaux">
-    <h2  i18n:translate="heading_resultatsGlobaux">Résultats globaux (sur l'ensemble du projet)</h2>
-        <div class="description" tal:content="structure context/resultatsGlobaux/output" />
-    </span>
-    <span tal:condition="context/planificationGlobale">
-    <h2  i18n:translate="heading_planificationGlobale">Planification globale (sur l'ensemble du projet)</h2>
-        <div class="description" tal:content="structure context/planificationGlobale/output" />
-    </span>
     <span tal:condition="context/objectifs">
     <h2  i18n:translate="heading_objectifs">Objectifs de l'année</h2>
         <div class="description" tal:content="structure context/objectifs/output" />
-    </span>
-    <span tal:condition="context/resultats">
-    <h2  i18n:translate="heading_resultats">Résultats (Retombées (profs et/ou élèves) du projet pour l'année)</h2>
-        <div class="description" tal:content="structure context/resultats/output" />
-    </span>
-    <span tal:condition="context/moyens">
-    <h2  i18n:translate="heading_moyens">Moyens</h2>
-        <div class="description" tal:content="structure context/moyens/output" />
     </span>
     <span tal:condition="python:context.projet">
     <h2 >Projet</h2>
         <a tal:attributes="href python:context.projet">
             <div class="description" tal:content="python: context.projet" />
         </a>
+    </span>
+    <span tal:condition="python:context.supervisor">
+    <h2 >Accompagnateur R et D </h2>
+            <div class="description" tal:content="python: context.supervisor" />
     </span>
 
 <!--

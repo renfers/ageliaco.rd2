@@ -10,7 +10,6 @@
   <!-- -*- extra stuff goes here -*- -->
   <object name="ageliaco.rd2.projets" meta_type="Dexterity FTI" />
   <object name="ageliaco.rd2.projet" meta_type="Dexterity FTI" />
-  <object name="ageliaco.rd2.bilan" meta_type="Dexterity FTI" />
   <object name="ageliaco.rd2.note" meta_type="Dexterity FTI" />
   <object name="ageliaco.rd2.cycle" meta_type="Dexterity FTI" />
   <object name="ageliaco.rd2.auteur" meta_type="Dexterity FTI" />

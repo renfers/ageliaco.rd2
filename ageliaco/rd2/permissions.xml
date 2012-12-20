@@ -6,11 +6,6 @@
         id="ageliaco.rd2.AddNote"
         title="ageliaco.rd2 : Add Note"
         />
-
-    <permission
-        id="ageliaco.rd2.AddBilan"
-        title="ageliaco.rd2 : Add Bilan"
-        />
         
     <permission
         id="ageliaco.rd2.AddCycle"

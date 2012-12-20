@@ -10,9 +10,6 @@
         <type type_id="ageliaco.rd2.cycle">
             <bound-workflow workflow_id="rd2.cycle-workflow"/>
         </type>
-        <type type_id="ageliaco.rd2.bilan">
-            <bound-workflow workflow_id="rd2.bilan-workflow"/>
-        </type>
         <type type_id="ageliaco.rd2.note">
             <bound-workflow workflow_id="rd2.note-workflow"/>
         </type>

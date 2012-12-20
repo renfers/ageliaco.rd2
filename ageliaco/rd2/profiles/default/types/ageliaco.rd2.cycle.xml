@@ -7,12 +7,11 @@
   <property name="title" i18n:translate="">cycle</property>
   <property name="description"
     i18n:translate="">cycle projet RD</property>
-  <property name="content_icon">folder_icon.gif</property>
+  <property name="content_icon">++resource++ageliaco.rd2/cycle_icon.png</property>
   <property name="global_allow">True</property>
   <property name="filter_content_types">True</property>  
   <property name="allowed_content_types" >
     <element value="ageliaco.rd2.note" />
-    <element value="ageliaco.rd2.bilan" />
     <element value="ageliaco.rd2.auteur" />
   </property>
   <property name="allow_discussion">False</property>

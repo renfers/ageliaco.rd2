@@ -8,7 +8,7 @@
   <property name="description"
     i18n:translate="">Note de suivi de rendez-vous</property>
   <property name="content_icon">document_icon.gif</property>
-  <property name="global_allow">False</property>
+  <property name="global_allow">True</property>
   <property name="filter_content_types">True</property>  
     <element value="File" />
     <element value="Image" />

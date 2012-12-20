@@ -23,7 +23,19 @@ from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.app.container.interfaces import IObjectAddedEvent
 from Products.CMFCore.utils import getToolByName
 
-        
+
+@indexer(IAuteur)
+def searchableIndexer(context):
+    return "%s %s %s %s %s %s" % (context.firstname, 
+                            context.lastname, 
+                            context.address, 
+                            context.email,
+                            context.school,
+                            context.phone)
+
+grok.global_adapter(searchableIndexer, name="SearchableText")
+
+
 @indexer(IAuteur)
 def firstnameIndexer(obj):
     if obj.firstname is None:
@@ -50,7 +62,7 @@ grok.global_adapter(addressIndexer, name="address")
         
 @indexer(IAuteur)
 def emailIndexer(obj):
-    if obj.firstname is None:
+    if obj.email is None:
         return None
     return obj.email
 grok.global_adapter(emailIndexer, name="email")

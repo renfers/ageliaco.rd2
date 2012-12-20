@@ -12,13 +12,14 @@
             tal:attributes="href string:${navroot}/++resource++ageliaco.rd/projet.css"
             />
     </metal:block>
+    <!--
     <script tal:define="navroot context/@@plone_portal_state/navigation_root_url"
             tal:attributes="src string:${navroot}/++resource++ageliaco.rd/jquery.jqDock.min.js"
             type="text/javascript" src="jquery.jqDock.min.js">jQuery(document).ready(function($){
   // Apply jqDock with no options...
   $('#menu').jqDock();
 });</script>
-
+-->
 </head>
 <body>
 

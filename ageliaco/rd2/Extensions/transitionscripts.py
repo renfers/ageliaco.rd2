@@ -25,9 +25,9 @@ def activateCycle(self, state_change):
     workflowTool = getToolByName(self, "portal_workflow")
     contentObject = state_change.object
     parent = contentObject.aq_parent
-    parentState = workflowTool.getStatusOf("plone_workflow", parent)["review_state"]
     
-    print parent.id, parentState
+    parentState = workflowTool.getStatusOf("rd2.projet-workflow", parent)["review_state"]
+    
     if parentState == 'encours':
         return #no moving required
     portal = self.portal_url.getPortalObject()
@@ -45,8 +45,11 @@ def activateCycle(self, state_change):
     projetPath = contentObject.projet
     if not projetPath: 
         #we must create a new one if grandpa is not "projets"
-        projet = createContentInContainer(projets,'ageliaco.rd2.projet', 
-            title=contentObject.Title, duration=1, presentation=u" ")
+        if 'depot-de-projet' in parent.absolute_url().split('/'):
+            projet = createContentInContainer(projets,'ageliaco.rd2.projet', 
+                title=contentObject.Title, duration=1, presentation=u" ")
+        else:
+            contentObject.projet = parent.absolute_url() #ne marche pas !!!
             
     else:
         projetId = projetPath.split('/')[-1]

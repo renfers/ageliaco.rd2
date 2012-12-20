@@ -13,7 +13,6 @@ ageliaco.rd2.egg-info/requires.txt
 ageliaco.rd2.egg-info/top_level.txt
 ageliaco/rd2/__init__.py
 ageliaco/rd2/auteur.py
-ageliaco/rd2/bilan.py
 ageliaco/rd2/cycle.py
 ageliaco/rd2/interface.py
 ageliaco/rd2/note.py

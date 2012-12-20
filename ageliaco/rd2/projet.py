@@ -2,6 +2,8 @@
 from five import grok
 from zope import schema
 
+from Products.ATContentTypes.lib import constraintypes
+
 from plone.directives import form, dexterity
 from zope.app.container.interfaces import IObjectAddedEvent
 
@@ -11,6 +13,16 @@ from zope.interface import invariant, Invalid
 
 from interface import IProjet
 
+
+import yafowil.plone
+import yafowil.loader
+from yafowil.base import factory, UNSET, ExtractionError
+from yafowil.controller import Controller
+from Products.Five.browser import BrowserView
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+
+from plone.dexterity.utils import createContentInContainer
+from zope.schema.vocabulary import SimpleVocabulary
 from plone.app.textfield.value import RichTextValue
 from DateTime import DateTime
 from plone.indexer import indexer
@@ -42,6 +54,9 @@ def setRealisation(projet, event):
     except KeyError: 
         rea = projet.invokeFactory("Folder", id=admid, title=u'Réalisation')
         #projet[admid] = rea
+        rea.setConstrainTypesMode(constraintypes.ENABLED)
+        rea.setLocallyAllowedTypes(["File","Folder","Image","Document","Link"])
+        rea.setImmediatelyAddableTypes(["File","Folder","Image","Document","Link"])
     
     #projet.setContributors(projet.contributor)
     #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
@@ -60,6 +75,148 @@ grok.global_adapter(searchableIndexer, name="SearchableText")
 class View(grok.View):
     grok.context(IProjet)
     grok.require('zope2.View')
+    next = ''
+    nextId = ''
+    def formnext(self, request):
+        print "next : ", self.next
+        #import pdb; pdb.set_trace()
+        if not self.next:
+            if self.nextId:
+                cycle =  aq_inner(self.context)[self.nextId]
+                return cycle.absolute_url() + '/edit'
+        return self.next
+    def _form_action(self, widget, data):
+        context = aq_inner(self.context)
+        
+        print '%s/%s/edit' % (context.absolute_url(),self.nextId)
+        self.next = '%s/%s/edit' % (context.absolute_url(),self.nextId)
+        #import pdb; pdb.set_trace()
+
+        return '%s/%s/edit' % (context.absolute_url(),self.nextId)
+        
+        
+    def _form_action2(self, widget, data):
+        if not hasattr(self,'projet') or not self.projet:
+            error = ExtractionError(
+                'Choisissez un projet dans la liste!')
+            return self.context.absolute_url()
+        context = aq_inner(self.context)
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides= ICycle.__identifier__,
+                   path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+                   sort_on="modified", sort_order="reverse")  
+        print "cat len = ", len(cat), cat
+        cycleId = "%s-%i" % (context.start,(len(cat)+1))
+        item = createContentInContainer(context, "ageliaco.rd2.cycle", id=cycleId, title=self.projet)
+        
+        print '%s/%s/edit' % (context.absolute_url(),cycleId)
+        self.next = '%s/%s/edit' % (context.absolute_url(),cycleId)
+        return '%s/%s/edit' % (context.absolute_url(),cycleId)
+
+    def _form_handler(self, widget, data):
+        #import pdb; pdb.set_trace()
+        self.newprojet = data['newprojet'].extracted
+        if not hasattr(self,'newprojet') or not self.newprojet:
+            error = ExtractionError(
+                'Complétez le titre du projet!')
+            return self.context.absolute_url()
+        context = aq_inner(self.context)
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides= ICycle.__identifier__,
+                   path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+                   sort_on="modified", sort_order="reverse")  
+        print "cat len = ", len(cat), cat
+        cycleId = "%s-%i" % (context.start,(len(cat)+1))
+        item = createContentInContainer(context, "ageliaco.rd2.cycle", id=cycleId, title=self.newprojet)
+        self.nextId = cycleId
+        self.next = item.absolute_url() + '/edit'
+        self.form['submit'].props['next'] = self.next
+
+        return self.newprojet
+        
+    def _form_handler2(self, widget, data):
+        self.projet = data['projet'].extracted
+
+    def form(self):
+        form = factory('form',
+            name='newproject',
+            props={
+                'action': self._form_action,
+                'structural': True,
+            })
+
+        form['newprojet'] = factory(
+            'field:label:error:text',
+            props={
+                'label': _(u'Titre du nouveau projet : '),
+                'field.class': 'field',
+                'text.class': 'text',
+                'size': '80',
+        })
+        form['submit'] = factory(
+            'field:submit',
+            props={
+                'label': _(u'Déposer un nouveau projet'),
+                'submit.class': '',
+                'handler': self._form_handler,
+                'action': 'newproject',
+        })
+
+        controller = Controller(form, self.request)
+        return controller.rendered
+    def form2(self):
+        form2 = factory('form',
+            name='depot1form2',
+            props={
+                'action': self._form_action2,
+            })
+
+        form2['projet'] = factory(
+            'field:label:error:select',
+            props={
+                'label': _(u'Reconduire le projet suivant : '),
+                'field.class': 'field',
+                'select.class': 'select',
+                'vocabulary': self.activeProjets,
+        })
+        form2['submit'] = factory(
+            'field:submit',
+            props={
+                'label': _(u'Reconduire le projet existant'),
+                'submit.class': '',
+                'handler': self._form_handler2,
+                'action': 'newCycle',
+                'next': self.formnext,
+        })
+
+        controller = Controller(form2, self.request)
+        return controller.rendered
+        
+    def formResult(self):
+        if not hasattr(self,'newprojet') or not self.newprojet:
+            return ''
+        return self.newprojet
+        
+    def form2Result(self):
+        if not hasattr(self,'projet') or not self.projet:
+            return ''
+        return self.projet
+        
+        
+    def activeProjets(self):
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(portal_type='ageliaco.rd2.projet',
+                       review_state='encours',
+                       sort_on='sortable_title')
+        #log('catalogue : %s items'%len(cat))
+    
+        terms = [('',''),]
+                    
+        for brain in cat:
+            print dir(brain)
+            print "getURL : %s => getPath : %s " % (brain.getURL(),brain.getPath())
+            terms.append((brain.getPath(),brain.Title))
+        return terms #SimpleVocabulary([SimpleVocabulary.createTerm(x.id, x.getURL(), x.Title) for x in cat])
     
     def canRequestReview(self):
         return checkPermission('cmf.RequestReview', self.context)
@@ -81,28 +238,6 @@ class View(grok.View):
             return False
         return True
         
-    def new_cycle_url(self):
-        context = aq_inner(self.context)
-        admid = 'admin_' + context.id 
-        url = context.absolute_url() + '/' + admid + '/++add++ageliaco.rd.cycle'
-        return url 
-        
-    def cycles(self):
-        """Return a catalog search result of issues to show
-        """
-        
-        context = aq_inner(self.context)
-        #catalog = getToolByName(self.context, 'portal_catalog')
-        #object = context
-        #return catalog(object_provides= ICycle.__identifier__,
-        #               path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
-        #               sort_on="modified", sort_order="reverse")        
-        admin = 'admin_' + context.id
-        if admin in context.objectIds():
-            administration = context[admin]
-            return administration.objectValues()
-        return []
-
     def canAddContent(self):
         return checkPermission('cmf.AddPortalContent', self.context)
         
@@ -164,18 +299,3 @@ class View(grok.View):
             print "no Property 'link'"
         return ''
     
-
-#     def cycles(self):
-#         #return a list with all the cycles for this projet
-#         context = aq_inner(self.context)
-#         catalog = getToolByName(self.context, 'portal_catalog')
-#         try:
-#             objet = context['admin_' + context.id]
-#             return catalog(object_provides= ICycle.__identifier__,
-#                            path={'query': object.absolute_url(), 'depth': 1},
-#                            sort_on="modified", sort_order="reverse")        
-#             
-#         except:
-#             return []
-#         #log( 'cycle : ' + object.getPath())
-#         #log( wf_state + " state chosen")

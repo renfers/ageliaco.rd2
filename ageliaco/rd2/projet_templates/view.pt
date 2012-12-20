@@ -25,7 +25,7 @@
 <body>
 
 <metal:main fill-slot="main">
-    <tal:main-macro metal:define-macro="main"
+    <div 
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
                 navroot context/@@plone_portal_state/navigation_root_url">
 
@@ -39,7 +39,8 @@
         <tal:block repeat="cycle view/cycles_obj">
 	    <li class="genericButton" ><a class='editAuteur'  
 	        tal:content="cycle/id" 
-	        tal:attributes="href python:cycle.getURL()" href="#">
+	        tal:attributes="href python:cycle.getURL();
+	                        title cycle/Title" href="#">
 	        Cycle id
             </a></li>
         
@@ -75,11 +76,36 @@
             </tal:block>
         </span>
  
+          <div tal:condition="python:  view.isRepository() and here.portal_membership.isAnonymousUser">
+              <div class="newprojet">
+                <h1>NOUVEAU PROJET</h1>
+                <span tal:content="structure python:view.form()">form</span>
+                    
+                </div>
+              <div class="reconductprojet"  >
+                <h1>RECONDUCTION D'UN PROJET EN COURS</h1>
+                <span tal:content="structure python:view.form2()">form2</span>                
+              </div>
+            <ul>
+
+                  <li tal:condition="view/formResult">
+                  <b>Nouveau projet : </b>
+                     <span tal:content="view/formResult"
+                        ></span>
+                  </li>
+                  <li tal:condition="view/form2Result">
+                  <b>Projet reconduit : </b>
+                     <span tal:content="structure python:view.projet"
+                        ></span>
+                  </li>
+       
+            </ul>
+         </div>
 
         <div tal:replace="structure provider:plone.belowcontentbody" />
+</div>
 
-    </tal:main-macro>
-</metal:main>
+    </metal:main>
 
 </body>
 </html>

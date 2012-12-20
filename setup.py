@@ -36,6 +36,7 @@ setup(name='ageliaco.rd2',
           'plone.formwidget.namedfile',
           'collective.z3cform.datagridfield',
           'collective.z3cform.wizard',
+          'yafowil.plone',
         ],
       entry_points="""
       # -*- Entry points: -*-

@@ -20,7 +20,6 @@ from plone.indexer import indexer
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.schema.fieldproperty import FieldProperty
 
-
 from ageliaco.rd2 import _
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 
@@ -188,7 +187,7 @@ class Single_view(dexterity.DisplayForm):
 #     #projet.setContributors(projet.contributor)
 #     return #projet.request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd.cycle')
 
-
+        
 class View(dexterity.DisplayForm):
     grok.context(ICycle)
     grok.require('zope2.View')
@@ -250,15 +249,10 @@ class View(dexterity.DisplayForm):
 @indexer(ICycle)
 def searchableIndexer(context):
     keywords = " ".join(context.subject)
-    return "%s %s %s %s %s %s %s %s %s %s" % (context.title, 
+    return "%s %s %s %s %s" % (context.title, 
                             context.description, 
                             context.problematique, 
-                            context.objectifsGlobaux,
-                            context.resultatsGlobaux,
-                            context.planificationGlobale,
                             context.objectifs,
-                            context.resultats,
-                            context.moyens,
                             keywords)
 
 grok.global_adapter(searchableIndexer, name="SearchableText")

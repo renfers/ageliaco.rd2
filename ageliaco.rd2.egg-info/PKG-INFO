@@ -1,6 +1,6 @@
-Metadata-Version: 1.0
+Metadata-Version: 1.1
 Name: ageliaco.rd2
-Version: 0.5
+Version: 0.6
 Summary: new implementantion of RD service
 Home-page: http://svn.plone.org/svn/collective/
 Author: Serge Renfer
