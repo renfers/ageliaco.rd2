@@ -50,15 +50,6 @@ def lastnameIndexer(obj):
         return None
     return obj.lastname
 grok.global_adapter(lastnameIndexer, name="lastname")
-
-        
-@indexer(IAuteur)
-def addressIndexer(obj):
-    if obj.address is None:
-        return None
-    return obj.address
-grok.global_adapter(addressIndexer, name="address")
-
         
 @indexer(IAuteur)
 def emailIndexer(obj):
@@ -75,3 +66,30 @@ def schoolIndexer(obj):
     return obj.school
 grok.global_adapter(schoolIndexer, name="school")
 
+@indexer(IAuteur)
+def sponsoraskedIndexer(obj):
+    if obj.sponsorasked is None:
+        return None
+    return obj.sponsorasked
+grok.global_adapter(sponsoraskedIndexer, name="sponsorasked")
+
+@indexer(IAuteur)
+def sponsorSEMIndexer(obj):
+    if obj.sponsorSEM is None:
+        return None
+    return obj.sponsorSEM
+grok.global_adapter(sponsorSEMIndexer, name="sponsorSEM")
+
+@indexer(IAuteur)
+def sponsorSchoolIndexer(obj):
+    if obj.sponsorSchool is None:
+        return None
+    return obj.sponsorSchool
+grok.global_adapter(sponsorSchoolIndexer, name="sponsorSchool")
+
+@indexer(IAuteur)
+def sponsorRDIndexer(obj):
+    if obj.sponsorRD is None:
+        return None
+    return obj.sponsorRD
+grok.global_adapter(sponsorRDIndexer, name="sponsorRD")

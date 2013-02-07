@@ -6,33 +6,35 @@
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="ageliaco.rd2">
       
-
+<head>
     <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.min.css"
+            />
         <link rel="stylesheet" type="text/css" 
             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
             />
+        <link rel="stylesheet" type="text/css"  media="print"
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/print.css"
+            />
 
-<!--
-    <script tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/jquery.jqDock.min.js"
-            type="text/javascript" src="jquery.jqDock.min.js">
-            jQuery(document).ready(function($){
-  // Apply jqDock with no options...
-  $('#menu').jqDock();
-});</script>
-
-	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
--->
     </metal:block>
     <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <script type="text/javascript"  tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+        <script type="text/javascript" 
             tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
-            src="jquery.jqDock.min.js">
-
+            src="#">
         </script>
-	<!-- include the Tools -->
+        <script type="text/javascript" 
+            tal:attributes="src string:${navroot}/++resource++yafowil.widget.richtext/widget.js"
+            src="#">
+        </script>
+	
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.min.js">
+         </script>
+
     </metal:block>
-      
+</head>         
       
 <body>
 
@@ -40,7 +42,24 @@
     <tal:main-macro metal:define-macro="main"
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime">
 
+<div  class="printonly"
+  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<img src='logo-GE.png' class="printlogo" 
+    tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/logo-GE.png"/>
+<p>REPUBLIQUE ET CANTON DE GENEVE<br />Département de l'instruction publique, de la culture et du sport
+<br />Enseignement secondaire II postobligatoire<br /><b>Direction générale<br /></b>
+Service enseignement et formation - Secteur ressources et développement</p>
+
+<h2 style="text-align : center;">Formulaire de présentation de projet</h2>
+<h3 style="text-align : center;">Année <span tal:replace="view/schoolyear"/></h3>
+
+</div>
+
         <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+<a class="noprint" id="printer" href="javascript:window.print()"><img alt="Imprimer cette page" 
+title="Imprimer cette page" tal:attributes="src  string:++resource++ageliaco.rd2/printer.png"/></a>
+
 
         <h1 class="documentFirstHeading" tal:content="context/title" />
         
@@ -51,122 +70,33 @@
 <div>
 <h3 tal:condition="python:not context.id == context.title" tal:content="context/id">titre</h3>
 
-<div tal:define="auteurs view/auteurs">
-<h2  i18n:translate="heading_auteurs">Auteurs 
-            <span class="genericButton"  tal:condition="view/canModifyContent">
+
+<div >
+<h3  i18n:translate="heading_auteurs"
+    tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()),withTotal=view.canRequestReview())">Auteurs 
+            <span class="noprint"  tal:condition="view/canModifyContent">
               <a title="Ajouter un auteur" class="addAuteur" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur">+</a>
             </span>
-</h2>
-<!-- the tabs -->
-<ul  tal:condition="python: len(auteurs)" >
-	<tal:block repeat="auteur auteurs">
-
-	
-	 <li   class="auteur" tal:condition="auteur"> 
-	    <span tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')"/>
-	    <span class="genericButton" ><a title="Editer cet auteur" class='editAuteur'  tal:condition="view/canModifyContent" 
-	        tal:attributes="href python:auteur.getURL() + '/edit'" href="#"><img tal:attributes="src string:++resource++ageliaco.rd2/edit.png">
-            </a></span>
-        <span class="genericButton"  tal:condition="view/canModifyContent">
-              <a title="Supprimer cet auteur" class="delAuteur" tal:attributes="href python: auteur.getURL() + '/delete_confirmation'" href="#"><img tal:attributes="src string:++resource++ageliaco.rd2/del.png"></a>
-            </span>
-	    <span class="genericButton" ><a class='editAuteur'  
-	        tal:condition="python:not view.canModifyContent() and not here.portal_membership.isAnonymousUser" 
-	        tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
-	        tal:attributes="href python:auteur.getURL()" href="#">
-	        Auteur id
-            </a></span>
-	    <span class="genericButton"   
-	        tal:condition="python:here.portal_membership.isAnonymousUser and not view.canModifyContent" 
-	        tal:content="python:auteur.__getattribute__('firstname') + ' ' + auteur.__getattribute__('lastname')" 
-	        >
-	        Auteur id
-            </span>
-
-            <p ><span tal:replace="python: auteur.__getattribute__('school')"/> 
-            <span tal:replace="auteur/email"  tal:condition="not: here/portal_membership/isAnonymousUser"/></p>
-    </li>
-	
-<!--	
-	<tal:li define="author auteur/getObject">
-	<li class="auteur" tal:condition="not: here/portal_membership/isAnonymousUser"> 
-	    <span class="genericButton" 
-	          tal:condition="not: here/portal_membership/isAnonymousUser" >
-    	<a class='editAuteur'
-	        tal:content="string: ${author/firstname} ${author/lastname}" 
-	        tal:attributes="href python:view.cycle_url() + '/' + author.id + '/view'" href="#">
-	        Auteur id
-        </a> <span tal:condition="author/school" tal:content="string: (${author/school})"/>
-    	<a class='editAuteur'  tal:condition="view/canModifyContent" 
-	        tal:content="string: [Editer]" 
-	        tal:attributes="href python:view.cycle_url() + '/' + author.id + '/edit'" href="#">
-	        Auteur id
-        </a> 
-        </span>
-        <span tal:define="contributeur python:view.contributeur(author.id)" tal:condition="contributeur">
-            <p tal:condition="python:not view.canModifyContent()"><span tal:replace="contributeur/firstname"/> 
-                <span tal:replace="contributeur/lastname"/>
-            </p>
-        </span>
-    </li>
-    <li     tal:define="author auteur/getObject"
-            class="auteur" tal:condition="here/portal_membership/isAnonymousUser" >
-        <span tal:define="contributeur python:view.contributeur(author.id)" tal:condition="contributeur">
-            <p tal:condition="python:not view.canModifyContent()"><span tal:replace="contributeur/firstname"/> 
-                <span tal:replace="contributeur/lastname"/>
-                <span tal:condition="author/school" tal:content="string: (${author/school})"/>
-            </p>
-        </span>
-    </li>
-    </tal:li>
-    -->
-    
-	</tal:block>    
-</ul>
+</h3>
+                    <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
 
 </div>
 
 </div>
-    <span tal:condition="context/problematique">
-    <h2  i18n:translate="heading_problematique">Problématique</h2>
-    
-        <div class="description" tal:content="structure context/problematique/output" />
-    </span>
-    <span tal:condition="context/objectifs">
-    <h2  i18n:translate="heading_objectifs">Objectifs de l'année</h2>
-        <div class="description" tal:content="structure context/objectifs/output" />
-    </span>
-    <span tal:condition="python:context.projet">
+
+        <div tal:condition="context/presentation" class="description" tal:content="structure context/presentation/output" />
+        <div tal:condition="context/problematique" class="description" tal:content="structure context/problematique/output" />
+
+    <div tal:condition="python:context.projet">
     <h2 >Projet</h2>
         <a tal:attributes="href python:context.projet">
             <div class="description" tal:content="python: context.projet" />
         </a>
-    </span>
-    <span tal:condition="python:context.supervisor">
+    </div>
+    <div tal:condition="python:context.supervisor">
     <h2 >Accompagnateur R et D </h2>
             <div class="description" tal:content="python: context.supervisor" />
-    </span>
-
-<!--
-<script>
-
-$(document).ready(function(){$("a[rel]").prepOverlay({
-        subtype: 'iframe',
-        config: {expose:{color:'#00f'};
-                onClose: function() { location.reload(); }
-            }
-        });
- });
-</script>
-
-        <script tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
-            type="text/javascript" src="jquery.jqDock.min.js">
-
-        </script>
--->
-
-
+    </div>
 
 <!-- overlayed element -->
 <div class="apple_overlay" id="overlay">
@@ -184,27 +114,3 @@ $(document).ready(function(){$("a[rel]").prepOverlay({
 </body>
 </html>
 
-<!--
- $(function() {
-
-	// if the function argument is given to overlay,
-	// it is assumed to be the onBeforeLoad event listener
-	$("a[rel]").overlay({
-
-		mask: 'darkred',
-		effect: 'apple',
-        //filter: '#content>*',
-        //formselector: 'form[id="form"]',
-
-		onBeforeLoad: function() {
-
-			// grab wrapper element inside content
-			var wrap = this.getOverlay().find(".contentWrap");
-
-			// load the page specified in the trigger
-			wrap.load(this.getTrigger().attr("href").filter("#content>*"));
-		}
-
-	});
-});
--->

@@ -9,6 +9,21 @@ def archiveCycle(self, state_change):
     print "archiveCycle called !!!"
     #pass
     
+def finaliseCycle(self, state_change):
+    """ sends an email to the school's director """
+    print "archiveCycle called !!!"
+    #pass
+    
+def attributeCycle(self, state_change):
+    """ sends an email to the school's director """
+    print "attributeCycle called !!!"
+    #pass
+    
+def publishProjet(self, state_change):
+    """ finish any active cycle """
+    print "attributeCycle called !!!"
+    #pass
+    
 def activateCycle(self, state_change):
     """ activate Cycle and moving it to known projet or new one """
     print "activateCycle called !!!"

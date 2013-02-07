@@ -12,6 +12,13 @@ from plone.dexterity.browser.view import DefaultView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 import plone.dexterity.browser
 
+import yafowil.plone
+import yafowil.loader
+from yafowil.base import factory, UNSET, ExtractionError
+from yafowil.controller import Controller
+from yafowil.plone.form import Form
+
+
 from plone.directives import form, dexterity
 from plone.app.textfield import RichText
 from plone.app.z3cform.wysiwyg import WysiwygFieldWidget
@@ -38,7 +45,7 @@ from Products.CMFCore.utils import getToolByName
 from plone.z3cform.textlines.textlines import TextLinesFieldWidget
 
 from plone.formwidget.autocomplete import AutocompleteMultiFieldWidget
-from zope.interface import invariant, Invalid
+from zope.interface import invariant, Invalid, Interface
 
 from Acquisition import aq_inner, aq_parent
 from zope.component import getUtility
@@ -48,7 +55,7 @@ from zope.security import checkPermission
 from ageliaco.rd2 import _
 
 #from projet import IProjet
-from interface import ICycle, IAuteur
+from interface import ICycle, IAuteur, InterfaceView
 
 
 
@@ -89,6 +96,142 @@ from interface import ICycle, IAuteur
 """
 
 
+
+
+class EditUsers(grok.View,Form):
+    grok.context(ICycle)
+    grok.require('zope2.View')
+    grok.name('editusers')
+
+    def prepare(self):
+        form = factory(
+            'form',
+            name='myform',
+            props={
+                'action': self.form_action,
+            })
+
+        # form widgets creation here...
+        form['newprojet'] = factory(
+            'field:label:error:text',
+            props={
+                'label': _(u'Titre du nouveau projet : '),
+                'field.class': 'field',
+                'text.class': 'text',
+                'size': '80',
+        })
+
+        form['submit'] = factory(
+            'field:submit',
+            props={
+                'label': self.set_label(),
+                'submit.class': 'btn-primary',
+                #'handler': self.form_handler,
+                'action' : True,
+                'next' : self.nextform,
+        })
+
+        self.form = form
+
+
+
+    def set_label(self):
+        if not hasattr(self.request,'newprojet'):
+            return _(u'Déposer un nouveau projet')
+        return _(u'Compléter le nouveau projet')
+        
+    def form_action(self, widget, data):
+        #import pdb; pdb.set_trace()
+        if not 'newprojet' in data.keys() or not data['newprojet'].extracted:
+            self.newprojet = ''
+            return ''
+        self.newprojet = data['newprojet'].extracted
+        context = aq_inner(self.context)
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides= ICycle.__identifier__,
+                   path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+                   sort_on="modified", sort_order="reverse")  
+        #print "cat len = ", len(cat), cat
+        cycleId = "%s-%i" % (context.start,(len(cat)+1))
+        item = createContentInContainer(context, "ageliaco.rd2.cycle", 
+                                        id=cycleId, title=self.newprojet)
+        self.nextId = cycleId
+        self.next = item.absolute_url() + '/edit'
+        
+        return self.next #self.context.absolute_url() + '/depot?newprojet=' + self.newprojet
+
+    def submit_action(self, widget, data):
+        #import pdb; pdb.set_trace()
+
+        return self.next
+
+    #     def form_handler(self, widget, data):
+    #         #import pdb; pdb.set_trace()
+    #         self.newprojet = self.result()
+    #         context = aq_inner(self.context)
+    #         if not hasattr(self,'newprojet') or not self.newprojet:
+    #             error = ExtractionError(
+    #                 'Complétez le titre du projet!')
+    #             return self.context.absolute_url()
+    #         import pdb; pdb.set_trace()
+    #         data.value = self.next
+    #         return self.next
+    
+    
+    def result(self):
+        if not hasattr(self,'newprojet') or not self.newprojet:
+            return ''
+        return self.newprojet
+    
+    def nextform(self,request):
+
+        #import pdb; pdb.set_trace()
+        if not hasattr(self.request,'myform.newprojet'):
+            return ''
+        
+        self.newprojet = self.request['myform.newprojet']
+        context = aq_inner(self.context)
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides= ICycle.__identifier__,
+                   path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+                   sort_on="modified", sort_order="reverse")  
+        #print "cat len = ", len(cat), cat
+        cycleId = "%s-%i" % (context.start,(len(cat)+1))
+        item = createContentInContainer(context, "ageliaco.rd2.cycle", 
+                                        id=cycleId, title=self.newprojet)
+        self.nextId = cycleId
+        self.next = item.absolute_url() + '/editusers'
+        form2 = factory(
+            'form',
+            name='myform2',
+            props={
+                'action': self.submit_action,
+            })
+
+        # form widgets creation here...
+        form2['newprojet'] = factory(
+            'field:label',
+            props={
+                'label': u'Titre du nouveau projet : %s' % self.newprojet,
+                'field.class': 'field',
+        })
+
+        form2['submit'] = factory(
+            'field:submit',
+            props={
+                'label': (u'Compléter le nouveau projet'),
+                'submit.class': 'btn-primary',
+                #'handler': self.form_handler,
+                'action' : True,
+        })
+
+        self.form2 = form2
+        controller = Controller(self.form2, self.request)
+        return controller.rendered
+
+
+
+
 class Single_view(dexterity.DisplayForm):
     grok.context(ICycle)
     grok.require('zope2.View')
@@ -107,16 +250,9 @@ class Single_view(dexterity.DisplayForm):
     def parent_url(self):
         context = aq_inner(self.context)
         parent = context.aq_parent
-        print parent.absolute_url()
+        #print parent.absolute_url()
         return parent.absolute_url()
     
-    def setaddress(self):
-        for c in self.w.keys():
-            print "champ : %s => %s" % (c,self.w[c])
-        
-        context = aq_inner(self.context)
-
-        print context.keys()
 
 # class View(dexterity.DisplayForm):
 #     grok.context(ICycle)
@@ -186,21 +322,12 @@ class Single_view(dexterity.DisplayForm):
 #     
 #     #projet.setContributors(projet.contributor)
 #     return #projet.request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd.cycle')
-
         
-class View(dexterity.DisplayForm):
+class View(InterfaceView):
     grok.context(ICycle)
     grok.require('zope2.View')
+    grok.name('view')
     
-    def canRequestReview(self):
-        return checkPermission('cmf.RequestReview', self.context)
-        
-    def canAddContent(self):
-        return checkPermission('cmf.AddPortalContent', self.context)
-        
-    def canModifyContent(self):
-        return checkPermission('cmf.ModifyPortalContent', self.context)
-        
         
         
     def auteurs(self):
@@ -211,8 +338,7 @@ class View(dexterity.DisplayForm):
         
         return catalog(object_provides=[IAuteur.__identifier__],
                        path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
-                       sort_on='sortable_title')
-        
+                       sort_on='sortable_title')                
 
     def delAuteur(self,auteur):
         context = aq_inner(self.context)
@@ -223,21 +349,21 @@ class View(dexterity.DisplayForm):
     def parent_url(self):
         context = aq_inner(self.context)
         parent = context.aq_parent
-        print parent.absolute_url()
+        #print parent.absolute_url()
         return parent.absolute_url()
+
+    def schoolyear(self):
+        context = aq_inner(self.context)
+        parent = context.aq_parent
+        an = int(parent.start)
+        retour = "%s-%s" % (an,an+1)
+        return retour
 
     def cycle_url(self):
         context = aq_inner(self.context)
-        print context.absolute_url()
+        #print context.absolute_url()
         return context.absolute_url()
     
-    def setaddress(self):
-        for c in self.w.keys():
-            print "champ : %s => %s" % (c,self.w[c])
-        
-        context = aq_inner(self.context)
-
-        print context.keys()
 
     def contributeur(self,auteur):
         context = aq_inner(self.context)
@@ -246,17 +372,15 @@ class View(dexterity.DisplayForm):
             return context[auteur]
         return None
     
+    
 @indexer(ICycle)
 def searchableIndexer(context):
-    keywords = " ".join(context.subject)
-    return "%s %s %s %s %s" % (context.title, 
+    return u"%s %s %s %s" % (context.title, 
                             context.description, 
                             context.problematique, 
-                            context.objectifs,
-                            keywords)
+                            context.presentation)
 
 grok.global_adapter(searchableIndexer, name="SearchableText")
-
 
 
 # @indexer(ICycle)

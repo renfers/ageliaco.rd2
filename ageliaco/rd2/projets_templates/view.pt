@@ -4,22 +4,103 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="ageliaco.rd">
-<head>
-    <metal:block fill-slot="style_slot">
+      i18n:domain="ageliaco.rd2">
+ <head>
+
+    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         <link rel="stylesheet" type="text/css" 
             tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd/projet.css"
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
             />
-    </metal:block>
-    <!--
-    <script tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd/jquery.jqDock.min.js"
-            type="text/javascript" src="jquery.jqDock.min.js">jQuery(document).ready(function($){
-  // Apply jqDock with no options...
-  $('#menu').jqDock();
-});</script>
+        <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.css"
+            />
+	    <link rel="stylesheet" href="bootstrap/js/themes/blue/style.css" type="text/css" media="print, projection, screen"
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/themes/blue/style.css"
+	        />
+          <link rel="stylesheet" href="assets/css/prettify.css"
+             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/prettify.css"
+           >
+          <link rel="stylesheet" href="assets/css/font-awesome.css"
+             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome.css"
+           >
+          <!--[if IE 7]>
+          <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"
+             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome-ie7.min.css"
+             >
+          <![endif]-->
+<!--	<link rel="stylesheet" href="bootstrap/js/themes/blue/style.css" type="text/css" media="print, projection, screen"
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/themes/blue/style.css"
+	 />
 -->
+    </metal:block>
+     
+    <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <script type="text/javascript" 
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
+            src="#">
+        </script>
+
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.js">
+         </script>
+<!--        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++plone.app.jquery.js">
+         </script>
+-->
+        <script type="text/javascript" 
+            tal:attributes="src string:${navroot}/++resource++yafowil.widget.richtext/widget.js"
+            src="#">
+        </script>
+    <script type="text/javascript"  
+                tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/jquery.tablesorter.min.js">
+    </script>
+    
+	
+    <script >
+    $(document).ready(function() { 
+        // call the tablesorter plugin, the magic happens in the markup 
+        $("table").tablesorter(); 
+    }); 
+    </script>
+</metal:block>
+<!--
+    <script>
+    $(document).ready(function() {
+        $(".nav-tabs li a").click(function() {
+                var li = $(this).parent("li");
+                var wch = this.getAttribute("href");
+                $(li).addClass("active"); //make current li active
+                $(li).siblings("li").removeClass("active"); //make others inactive
+                $(".tab-content div").removeClass("active"); //make all tabs inactive first
+                $(wch).addClass("active"); //activate our tab;
+                return false; //don't change URL
+            });
+    });
+    </script>
+
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap-tab.js">
+         </script>
+
+        -->
+
+<!--         <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.js">
+         </script>
+       <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.overlayhelpers.js">
+         </script>
+-->
+
+    
+<!--        
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/jquery-1.9.0.min.js"
+            >
+         </script>
+-->
+ 
 </head>
 <body>
 
@@ -30,158 +111,65 @@
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-  <!--      <h1 class="documentFirstHeading" tal:content="context/title" /> -->
-      <!--  <div class="discreet">
-            <tal:block condition="context/start">
-                <span i18n:translate="label_from">From:</span>
-                <span tal:content="python:context.start.strftime('%x %X')" />
-            </tal:block>
-            <tal:block condition="context/end">
-                <span i18n:translate="label_to">To:</span>
-                <span tal:content="python:context.end.strftime('%x %X')" />
-            </tal:block>
-        </div>
-        -->
-
         <div tal:replace="structure provider:plone.belowcontenttitle" />
 
      <!--     <p class="documentDescription" tal:content="context/description" /> -->
 
         <div tal:replace="structure provider:plone.abovecontentbody" />
-  <!--         <div id="presentation-core" tal:content="structure context/presentation/output"/> -->
-<!--  <ul tal:repeat="projet view/projets">
-  <li ><span class="start_projet" tal:content="python: projet.start.year()"/>-<span class="end_projet" tal:content="python: projet.end.year()"/>
-        <a tal:attributes="href projet/getURL"
-                           tal:content="projet/Title" /></li>
-</ul>-->
-<div tal:define="all_projets python:view.projets()">
 
-</div>
-<div tal:define="isAnonymous here/portal_membership/isAnonymousUser;
-                 all_projets view/projets;
-                 opened_projets python:view.projets('encours');
-                 pending_projets python:view.projets('pending');
-                 draft_projets python:view.projets('draft');
-                 completed_projets python:view.projets('published');
-                 repository_projets python:view.projets('repository');
-                 projet_images python:{
-                    'encours': navroot + '/++resource++ageliaco.rd/WorkingFolderIcon.png',
-                    'pending': navroot + '/++resource++ageliaco.rd/PrivateFolderIcon.png',
-                    'draft': navroot + '/++resource++ageliaco.rd/WorkingFolderIcon.png',
-                    'published': navroot + '/++resource++ageliaco.rd/DocumentsFolderIcon.png',
-                    'repository': navroot + '/++resource++ageliaco.rd/WorkingFolderIcon.png',
-                    'Tous': navroot + '/++resource++ageliaco.rd/MultiFolderIcon.png'
-                };">
+ <div metal:use-macro="context/@@interface/macros/projets_menu"/>
 
-<div  tal:define="workflowstates_projets python:[
-                ('encours',view.projets('encours'),u'En cours',1),
-                ('pending',pending_projets,u'A valider',0),
-                ('draft',draft_projets,u'Brouillon',0),
-                ('published',completed_projets,u'Publié',1),
-                ('repository',repository_projets,u'En dépôt',1),
-                ('Tous',all_projets,u'Tous',1)]"
-                id="local_projets">
+              <div tal:content="structure python:view.form()">form</div>
+            <ul>
+               <tal:block repeat="item python:view.results()">
+                  <li>
+                     <a tal:content="item/Title"
+                        tal:attributes="href item/getURL|item/absolute_url"></a>
+                  </li>
+               </tal:block>
+            </ul>
 
-    <ul class="css-tabs">
 
-        <tal:block repeat="workflowstate workflowstates_projets" 
-            >
-        <li   tal:condition="python:workflowstate[1] and (workflowstate[3] or not isAnonymous)"
-                tal:attributes="class python:workflowstate[0]" 
-                tal:define="wfstate python:workflowstate[0]"
-                >
-            <a  
-            tal:attributes="i18n:translate string:heading_${wfstate}"
-            href="#"><img tal:attributes="src python:projet_images[workflowstate[0]];
-                            alt python:workflowstate[0]" 
-                            style="height : 130%"/><span tal:content="python:workflowstate[2]"
-                                                            style="vertical-align : top"/></a></li>
-        </tal:block>
-    </ul>
-    <div class="css-panes">
+<div tal:define="projets python:view.projets('published');">
+    <div class="tab-content">
 
-        <tal:block repeat="workflowstate workflowstates_projets">
-        <div tal:define="review_state python:workflowstate[0]" 
-                tal:condition="python:workflowstate[1] and (workflowstate[3] or not isAnonymous)"
-                style="clear:left;display:block;"> 
-<!--
-
-<div tal:define="projets view/projets" tal:condition="projets">
-        <span tal:replace="structure python:view.render_table(projets)"></span>
-    <noscript>
-    </noscript>
-</div>
--->
-        <table class="listing_projets">
-                <tal:loop tal:repeat="projet python:workflowstate[1]">
-                   <tr  tal:attributes="class python:oddrow and 'projet_even' or 'projet_odd'"
-                        tal:define="oddrow repeat/projet/odd;"> 
-                        <td>
-                        <span style="width='100px'"> 
+            <table  class="table table-striped table-condensed tablesorter"> 
+            <thead> 
+            <tr> 
+                <th class="ProjectTitle">Titre</th> 
+                <th class="ProjectCycles">Cycles</th> 
+                <th class="ProjectAuthors">Auteurs</th> 
+        <!--        <th class="ProjectSupervisor" tal:condition="view/canRequestReview">Superviseur</th> -->
+            </tr> 
+            </thead> 
+            <tbody> 
+                <tal:loop tal:repeat="projet projets">
+                   <tr > 
+                        <td  class="ProjectTitle">
+                        <span > 
                         <a tal:attributes="href projet/getURL"
                            tal:content="projet/Title" />
                         </span>
                       </td>
-                    <!--<td class="projet_title">
-                        <span  class="start_projet" 
-                                tal:content="python: projet.start.year()"/>-<span class="end_projet" 
-                                tal:content="python: projet.end.year()"/>
-                        </td>
-                        -->
-                    <td tal:define="authors python:view.authors(projet.getPath())">
-                    <table   class="listing_auteurs">
-                    <tal:auteurs tal:repeat="author authors" >
-                    <tr>
-<!--                      <tal:block1  define="auteur python:author.getObject()">
--->
-                      <tal:block1  define="auteur author">
-                       <td><span tal:replace="auteur/firstname"/> <span tal:replace="auteur/lastname"/></td>
-                        <td><span tal:condition="not: isAnonymous"
-                            tal:content="auteur/email">email</span>
-                            </td>
-                        <td tal:content="auteur/school"/>  
-                        
-                    </tal:block1>
-                      </tr>
-                    </tal:auteurs>
-                    </table>
+                      <td   class="ProjectCycles">
+                       <span tal:repeat="cycle python:view.cycles(projet.getPath())">
+                        <a tal:attributes="href cycle/getURL"
+                           tal:content="cycle/Title" /> <br/>
+                        </span>
+                      </td>
+                    <td   class="ProjectAuthors" tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canRequestReview())">
+                    <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
                     </td>
+       <!--             <td tal:condition="view/canRequestReview" tal:define="obj python:cycle.getObject()"><span tal:replace="obj/supervisor"/>
+                    </td>
+      -->
                 </tr>
                 </tal:loop>
-            </table>
-            
-            
-        </div><!-- col -->
-<!--
-        <tal:block repeat="workflowstate workflowstates_projets">
-        <div tal:define="review_state python:workflowstate[0]" 
-                tal:condition="python:workflowstate[1]"
-                style="clear:left;display:block;"> 
-            <dl >
-                <tal:block repeat="projet python:workflowstate[1]" >  
-                    <dt>
-<span ><span class="start_projet" tal:content="python: projet.start.year()"/>-<span class="end_projet" tal:content="python: projet.end.year()"/></span> 
-                        <a tal:attributes="href projet/getURL"
-                           tal:content="projet/Title" />
-                    </dt>
-                    <dd />
-                </tal:block>
-            </dl>
-        </div>
--->
-        </tal:block>
+            </tbody>
+            </table> 
+
     </div>
 </div>
-
-</div>
-
-
-<script>
-$(function() {
-	$("ul.css-tabs").tabs("div .css-panes > div");
-});
-</script>	
-
 
         <div tal:replace="structure provider:plone.belowcontentbody" />
 

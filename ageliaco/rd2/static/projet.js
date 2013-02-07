@@ -32,64 +32,99 @@ jQuery(function($) {
         noform: function(el) {
             return noformerrorshow(el, 'reload');
         },
-        closeselector: '[name=form.buttons  .Cancel]',
+        closeselector: '[name=form.buttons.cancel]',
         width: '50%'
     }
     );
-
-    // delete dialog
+// Delete dialog
+//    $('a.delAuteur').prepOverlay({
+//        subtype: 'ajax',
+//        filter: common_content_filter,
+//        formselector: '#delete_confirmation',
+//        noform: function(el) { return noformerrorshow(el, 'redirect'); },
+//        redirect: redirectbasehref,
+//        closeselector: '[name=form.button.Cancel]',
+//        width:'50%'
+//      });
+    // Delete dialog
     $('a.delAuteur').prepOverlay(
-    {
-        subtype: 'ajax',
-        filter: common_content_filter,
-        formselector: '#content-core>#addform>form',
-        noform: function(el) {
-            return noformerrorshow(el, 'reload');
-        },
-        closeselector: '[name=form.buttons  .Cancel]',
-        width: '50%'
-    }
+        {
+            subtype: 'ajax',
+            filter: common_content_filter,
+            cssclass: 'overlay-delete',
+            formselector: '#delete_confirmation',
+            noform: function(el) {return $.plonepopups.noformerrorshow(el, 'redirect');},
+            redirect: $.plonepopups.redirectbasehref,
+            closeselector: '[name="form.button.Cancel"]',
+            width:'50%'
+        }
     );
+// delete dialog
+//     $('#siteaction-contact a').prepOverlay(
+//         {
+//             subtype: 'ajax',
+//             filter: common_content_filter,
+//             cssclass: 'overlay-contact',
+//             formselector: 'form[name="feedback_form"]',
+//             noform: function(el) {return $.plonepopups.noformerrorshow(el, 'close');}
+//         }
+//     );
+//     $('a.delAuteur').prepOverlay(
+//     {
+//         subtype: 'ajax',
+//         filter: common_content_filter,
+//         formselector: '#content-core>#addform>form',
+//         noform: function(el) {
+//             return noformerrorshow(el, 'reload');
+//         },
+//         closeselector: '[name=form.buttons  .Cancel]',
+//         width: '50%'
+//     }
+//     );
+// 
+
+//         noform: function(el) {return $.plonepopups.noformerrorshow(el, 'redirect');},
+//         redirect: $.plonepopups.redirectbasehref,
 
     // edit dialog
     $('a.editAuteur').prepOverlay(
     {
         subtype: 'ajax',
         filter: common_content_filter,
+        cssclass: 'overlay-editAuteur',
         formselector: '#content-core>form',
-        noform: function(el) {
-            return noformerrorshow(el, 'reload');
-        },
-        closeselector: '[name=form.buttons.cancel]',
+        noform: function(el) {return $.plonepopups.noformerrorshow(el, 'close');},
+        redirect: $.plonepopups.redirectbasehref,
+        closeselector: '[name="form.button.Cancel"]',
         width: '50%'
     }
     );
-
-    // Delete dialog
-    $('a.deleteSketchLink').prepOverlay(
-    {
-        subtype: 'ajax',
-        filter: common_content_filter,
-        formselector: '#content-core>form',
-        noform: function(el) {
-            return noformerrorshow(el, 'reload');
-        },
-        closeselector: '[name=form.button.Cancel]',
-        width: '50%'
-    }
-    );
-
-    // address edit dialog
-    $('a.editAddressLink').prepOverlay(
-    {
-        subtype: 'ajax',
-        filter: common_content_filter,
-        formselector: '#content-core>form',
-        noform: function(el) {
-            return noformerrorshow(el, 'reload');
-        },
-        closeselector: '[name=form.buttons  .Cancel]',
-        width: '50%'
-    }
-    );
+// 
+//     // Delete dialog
+//     $('a.deleteSketchLink').prepOverlay(
+//     {
+//         subtype: 'ajax',
+//         filter: common_content_filter,
+//         formselector: '#content-core>form',
+//         noform: function(el) {
+//             return noformerrorshow(el, 'reload');
+//         },
+//         closeselector: '[name=form.button.Cancel]',
+//         width: '50%'
+//     }
+//     );
+// 
+//     // address edit dialog
+//     $('a.editAddressLink').prepOverlay(
+//     {
+//         subtype: 'ajax',
+//         filter: common_content_filter,
+//         formselector: '#content-core>form',
+//         noform: function(el) {
+//             return noformerrorshow(el, 'reload');
+//         },
+//         closeselector: '[name=form.buttons  .Cancel]',
+//         width: '50%'
+//     }
+//     );
 });

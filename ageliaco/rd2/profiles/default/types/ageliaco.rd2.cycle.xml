@@ -13,6 +13,11 @@
   <property name="allowed_content_types" >
     <element value="ageliaco.rd2.note" />
     <element value="ageliaco.rd2.auteur" />
+    <element value="Document" />
+    <element value="File" />
+    <element value="Image" />
+    <element value="Link" />
+
   </property>
   <property name="allow_discussion">False</property>
 
@@ -56,4 +61,9 @@
     url_expr="string:${object_url}/edit" visible="True">
     <permission value="Modify portal content" />
   </action>
+ <!-- enabled behaviors -->
+ <property name="behaviors">
+     <element value="plone.app.versioningbehavior.behaviors.IVersionable" />
+ </property>
+
 </object>

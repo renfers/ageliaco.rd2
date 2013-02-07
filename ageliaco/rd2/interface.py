@@ -10,6 +10,7 @@ from plone.dexterity.browser.add import DefaultAddView, DefaultAddForm
 from plone.dexterity.browser.edit import DefaultEditForm
 from plone.dexterity.browser.view import DefaultView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from plone.app.textfield.value import RichTextValue
 import plone.dexterity.browser
 
 from plone.directives import form, dexterity
@@ -22,6 +23,7 @@ from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 import unicodedata
+from zope.interface import invariant, Invalid, Interface
 
 from ageliaco.rd2 import _
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
@@ -48,6 +50,14 @@ from Acquisition import aq_inner, aq_parent
 from zope.component import getUtility
 from Products.CMFCore.interfaces import ISiteRoot
 from zope.security import checkPermission
+
+from AccessControl.interfaces import IRoleManager
+
+import yafowil.plone
+import yafowil.loader
+from yafowil.base import factory, UNSET, ExtractionError
+from yafowil.controller import Controller
+from yafowil.plone.form import Form
 
 from AccessControl.interfaces import IRoleManager
 
@@ -79,16 +89,46 @@ schools = {u"ECGGR":[u"EC Bougeries",u"CEC"],
     u"SCAI":[u"SCAI",u"INSERTION"],
     u"COUDR":[u"CO Coudriers",u"CYCLES"]}
 
+sponsorships = {u"0":[u"0",0],
+    u"0.25":[u"0.25",0.25],
+    u"0.50":[u"0.50",0.50],
+    u"0.75":[u"0.75",0.75],
+    u"1.00":[u"1.00",1.00],
+    u"1.25":[u"1.25",1.25],
+    u"1.50":[u"1.50",1.50],
+    u"1.75":[u"1.75",1.75],
+    u"2.00":[u"2.00",2.00],
+    u"2.25":[u"2.25",2.25],
+    u"2.50":[u"2.50",2.50],
+    u"2.75":[u"2.75",2.75],
+    u"3.00":[u"3.00",3.00],
+    u"3.25":[u"3.25",3.25],
+    u"3.50":[u"3.50",3.50],
+    u"3.75":[u"3.75",3.75],
+    u"4.00":[u"4.00",4.00]}
+
 class SchoolsVocabulary(object):
     grok.implements(IVocabularyFactory)
     def __call__(self, context):
         terms = []
-        for school in schools.keys():
+        for school in sorted(schools.keys()):
             terms.append(SimpleVocabulary.createTerm(unicodedata.normalize('NFKC',school).encode('ascii','ignore'), 
                             unicodedata.normalize('NFKC',schools[school][0]).encode('ascii','ignore'), 
                             unicodedata.normalize('NFKC',schools[school][0]).encode('ascii','ignore')))
         return SimpleVocabulary(terms)
 grok.global_utility(SchoolsVocabulary, name=u"ageliaco.rd2.schools")
+
+
+class SponsorshipVocabulary(object):
+    grok.implements(IVocabularyFactory)
+    def __call__(self, context):
+        terms = []
+        for sponsorship in sorted(sponsorships.keys()):
+            terms.append(SimpleVocabulary.createTerm(unicodedata.normalize('NFKC',sponsorship).encode('ascii','ignore'), 
+                            unicodedata.normalize('NFKC',sponsorships[sponsorship][0]).encode('ascii','ignore'), 
+                            unicodedata.normalize('NFKC',sponsorships[sponsorship][0]).encode('ascii','ignore')))
+        return SimpleVocabulary(terms)
+grok.global_utility(SponsorshipVocabulary, name=u"ageliaco.rd2.sponsorship")
 
 
 class GroupMembers(object):
@@ -180,7 +220,7 @@ class IAuteur(form.Schema):
             description=_(u"Etablissement scolaire de référence"),
             vocabulary=u"ageliaco.rd2.schools",
             default='',
-            required=False,
+            required=True,
         )
 
     address = schema.Text(
@@ -200,16 +240,50 @@ class IAuteur(form.Schema):
             description=_(u"Téléphone"),
             required=False,
         )
-
+    
+    sponsorasked = schema.Choice(
+            title=_(u"Dégrèvement demandé"),
+            description=_(u"Dégrèvement total demandé pour cet auteur"),
+            vocabulary=u"ageliaco.rd2.sponsorship",
+            required=True,
+        )
+    
+    dexterity.read_permission(sponsorSEM='cmf.ReviewPortalContent')
+    dexterity.write_permission(sponsorSEM='cmf.ReviewPortalContent')
+    sponsorSEM = schema.Choice(
+            title=_(u"Dégrèvement SEM"),
+            description=_(u"Dégrèvement SEM attribué pour cet auteur"),
+            vocabulary=u"ageliaco.rd2.sponsorship",
+            required=False,
+        )
+    
+    dexterity.read_permission(sponsorRD='cmf.ReviewPortalContent')
+    dexterity.write_permission(sponsorRD='cmf.ReviewPortalContent')
+    sponsorRD = schema.Choice(
+            title=_(u"Dégrèvement R&D"),
+            description=_(u"Dégrèvement R&D attribué pour cet auteur"),
+            vocabulary=u"ageliaco.rd2.sponsorship",
+            required=False,
+        )
+    
+    dexterity.read_permission(sponsorSchool='cmf.ReviewPortalContent')
+    dexterity.write_permission(sponsorSchool='cmf.ReviewPortalContent')
+    sponsorSchool= schema.Choice(
+            title=_(u"Dégrèvement Ecole"),
+            description=_(u"Dégrèvement école attribué pour cet auteur"),
+            vocabulary=u"ageliaco.rd2.sponsorship",
+            required=False,
+        )
+    
 @grok.subscribe(IAuteur, IObjectAddedEvent)
 def setAuteur(auteur, event):
     portal_url = getToolByName(auteur, 'portal_url')
     acl_users = getToolByName(auteur, 'acl_users')
     
-    print "Nous y voici ::::>>>> ", auteur.id
+    #print "Nous y voici ::::>>>> ", auteur.id
     portal = portal_url.getPortalObject() 
     cycles = auteur.aq_parent
-    print 'auteur id : ' + auteur.id
+    #print 'auteur id : ' + auteur.id
     user = acl_users.getUserById(auteur.id)
 
 
@@ -272,11 +346,70 @@ def activeProjects(context):
     terms = []
                 
     for brain in cat:
-        print dir(brain)
-        print "getURL : %s => getPath : %s " % (brain.getURL(),brain.getPath())
+        #print dir(brain)
+        #print "getURL : %s => getPath : %s " % (brain.getURL(),brain.getPath())
         terms.append(SimpleVocabulary.createTerm(brain.getPath(), brain.id, brain.Title))
     return SimpleVocabulary(terms) #SimpleVocabulary([SimpleVocabulary.createTerm(x.id, x.getURL(), x.Title) for x in cat])
 
+cycle_default_projet_presentation = """
+<h2><span style="color: rgb(204, 0, 0); ">Discipline(s) concernée(s) par le projet :<br /></span></h2>
+<p class="callout">&nbsp; </p>
+<h2><span style="color: rgb(1, 40, 0); "><span style="color: rgb(204, 0, 0); ">Description synthétique de l'ensemble du projet :</span><br /></span></h2>
+<p><i><span class="discreet noprint">Décrire brièvement votre projet en vue de sa promotion sur le site Ressources et développement.</span></i></p>
+<p class="callout">&nbsp;</p><br />
+<h2><span style="color: rgb(204, 0, 0);">Thématique:</span></h2>
+<h3>Quel est le thème du projet ?</h3>
+<p><i><span class="discreet noprint">Expliciter en quelques lignes le(s) contenu(s) sur le(s)quel(s) les participants au projet souhaitent travailler.</span></i></p>
+<p class="callout">&nbsp;</p><br />
+<h2><span style="color: rgb(204, 0, 0); ">Contexte :</span></h2>
+<h3>a. Sur quelles expériences ou connaissances préalables repose le projet ?</h3>
+<p><i><span class="discreet noprint">Quels sont le travail et la réflexion déjà  entamés dans le domaine de la recherche proposée : bibliographie, 
+ inventaire d'expérience, etc.</span></i></p>
+<p class="callout">&nbsp;</p><br />
+<h3>b.   Quels éléments de la situation présente sont à l'origine du besoin exprimé ?</h3>
+<p><i><span class="discreet noprint">Justification et preuves du besoin : études, enquête, sondage, argumentaire précis, etc..</span></i></p>
+<p class="callout">&nbsp;</p><br />
+<h2><span style="color: rgb(204, 0, 0); ">Objectifs pédagogiques :</span></h2>
+<h3>Quels sont les objectifs généraux du projet ?</h3>
+<p><i><span class="discreet noprint">Changements et actions concrets auxquels on peut s'attendre à court et à long terme</span></i></p>
+<p class="callout">&nbsp;</p><br />
+<h2><span style="color: rgb(204, 0, 0); ">Résultats pédagogiques pour les élèves et les maîtres :</span></h2>
+<h3>a.  Quels sont le public visé et les établissements concernés ?</h3>
+<p class="callout">&nbsp; </p>
+<h3>b.  Quelle forme prend le produit fini au terme du projet ?</h3>
+<p><i><span class="discreet noprint">Brochure, site, etc..</span></i></p>
+<p class="callout">&nbsp;</p><br />
+<h2><span style="color: rgb(204, 0, 0); ">Organisation :</span></h2>
+<h3>a.  Quelle est la durée estimée du projet, en année(s) scolaire(s) ?</h3>
+<p class="callout">&nbsp; </p>
+<h3>b.  Quels sont les objectifs spécifiques du projet pour l'(es) année(s) scolaire(s) ?</h3>
+<p class="callout">&nbsp; </p>
+"""
+
+cycle_default_problematique = """
+<h2><span style="color: rgb(204, 0, 0); ">Planification et répartition des tâches pour l'année en cours :</span></h2>
+<h3>a.  Quelle planification est prévue ? (étapes) :</h3>
+<p class="callout">&nbsp; </p>
+<h3>b.  Quel rôle et quelle répartition des tâches sont prévus par participant?</h3>
+<p class="callout">&nbsp; </p>
+<p> </p>
+<h2><span style="color: rgb(204, 0, 0); ">Modalités de travail :</span></h2>
+<h3>Quelles sont les modalités de travail qui faciliteraient la réalisation de votre projet ?</h3>
+<p><i><span class="discreet noprint">Plateforme pour un travail à distance,   horaire aménagé sur 2 heures hebdomadaires, etc. (à préciser également  
+ dans les vœux horaires dans votre établissement.)</span></i></p>
+<p class="callout">&nbsp;</p><br />
+<h2><span style="color: rgb(204, 0, 0); ">Ressources supplémentaires :</span></h2>
+<p><i><span class="discreet noprint">Accompagnement par des experts du Service   Ecole Media, par des experts sous forme de demi-journées d'étude, par  
+ des séminaires de formation continue, etc.</span></i></p>
+<p class="callout">&nbsp; </p>
+<br />
+<p style="text-align: center; "><span style="color: rgb(204, 0, 0); "><strong>
+<img alt="Sourire" border="0" src="../plugins/emotions/img/smiley-smile.gif" title="Sourire" /> 
+Le secteur Ressources et développement vous remercie d'avoir complété ce formulaire auquel il portera toute son attention</strong>
+</span><i><span> 
+<img alt="Sourire" border="0" src="../plugins/emotions/img/smiley-smile.gif" title="Sourire" /><br /></span></i></p>
+<p>&nbsp;</p>
+"""
     
 class ICycle(form.Schema):
     """
@@ -285,16 +418,16 @@ class ICycle(form.Schema):
     
     # -*- Your Zope schema definitions here ... -*-
     id = schema.TextLine(
-            title=_(u"Année"),
-            description=_(u"L'année d'administration du projet"),
+            title=_(u"Identifiant"),
+            description=_(u"Ne pas changer celui donné par défaut! Merci!"),
             required=True,
         )
     title = schema.TextLine(
             title=_(u"Titre"),
-            description=_(u"Titre du projet"),
+            description=_(u"Titre bref du projet"),
             required=True,
         )
-    description = schema.TextLine(
+    description = schema.Text(
             title=_(u"Sous-titre"),
             description=_(u"Sous-titre du projet"),
             required=False,
@@ -327,17 +460,71 @@ class ICycle(form.Schema):
             required=False,
         )    
         
-    objectifs = RichText(
-            title=_(u"Objectifs"),
-            description=_(u"Objectifs, moyens nécessaires et résultats escomptés du projet pour l'année"),
-            required=False,
-        )    
+#     objectifs = RichText(
+#             title=_(u"Objectifs"),
+#             description=_(u"Objectifs, moyens nécessaires et résultats escomptés du projet pour l'année"),
+#             required=False,
+#         )    
 
+def idDefaultFromContext(context):
+    """context must be a ageliaco.rd2.projet object"""
+    newId = ''
+    indice = 1
+    start = ''
+    
+    
+    catalog = getToolByName(context, 'portal_catalog')
+    cat = catalog.unrestrictedSearchResults(object_provides= ICycle.__identifier__,
+               path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+               sort_on="modified", sort_order="reverse")  
 
+    if hasattr(context,'start'):
+        start = context.start
+    else:
+        start = str(datetime.datetime.today().year)
+
+    if len(cat): #first is last generated,if it is not a copy from an old cycle
+        for cycle in cat:
+            lastId = cycle.id
+            index = lastId.find('-')
+            if (index > -1) and (lastId[:index]==start):
+                indice = int(lastId[index+1:])
+                indice+=1
+                break
+                
+    newId =  "%s-%s" % (start,indice)
+    while newId in context.objectIds():
+        indice+=1
+        newId =  "%s-%s" % (start,indice)
+        
+    return newId
+    
 @form.default_value(field=ICycle['id'])
 def idDefaultValue(data):
+    # To get hold of the folder, do: context = data.aq_parent
+    #import pdb; pdb.set_trace()
+    context = data.context
+
+    newId = idDefaultFromContext(context)
+    
+    return newId
+
+
+
+@form.default_value(field=ICycle['presentation'])
+def presentationDefaultValue(data):
     # To get hold of the folder, do: context = data.context
-    return str(datetime.datetime.today().year)
+    return RichTextValue(
+            raw=cycle_default_projet_presentation
+            ) 
+
+@form.default_value(field=ICycle['problematique'])
+def problematiqueDefaultValue(data):
+    # To get hold of the folder, do: context = data.context
+    return RichTextValue(
+            raw=cycle_default_problematique
+            )
+
     
 @grok.subscribe(ICycle, IObjectModifiedEvent)
 def setSupervisor(cycle, event):
@@ -349,7 +536,7 @@ def setSupervisor(cycle, event):
 
 @grok.subscribe(ICycle, IObjectAddedEvent)
 def setAuteurs(cycle, event):
-    print "Projet lié à %s ==> %s ==> %s" % (cycle.id,cycle.projet,cycle.supervisor)
+    #print "Projet lié à %s ==> %s ==> %s" % (cycle.id,cycle.projet,cycle.supervisor)
     if not cycle.projet:
         return
     catalog = getToolByName(cycle, 'portal_catalog')
@@ -372,4 +559,177 @@ def setAuteurs(cycle, event):
     #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
     return #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
 
+        
+class InterfaceView(grok.View,Form):
+    grok.context(Interface)
+    grok.require('zope2.View')
+    grok.name('interface')
+    objectPath = ''
+    degrevements = {}
+    withTotal = False
     
+    def set2float(self,value):
+        if not value:
+            return 0.0
+        else:
+            return float(value)
+            
+    def canRequestReview(self):
+        return checkPermission('cmf.RequestReview', self.context)
+        
+    def canAddContent(self):
+        return checkPermission('cmf.AddPortalContent', self.context)
+        
+    def canModifyContent(self):
+        return checkPermission('cmf.ModifyPortalContent', self.context)
+                
+    def setObjectPath(self, objectPath, withTotal = False):
+        self.objectPath = objectPath
+        self.withTotal = withTotal
+        if withTotal:
+            self.degrevements[objectPath] = [0.0,
+                                             0.0,
+                                             0.0,
+                                             0.0,
+                                             0.0]            
+            
+        return self.objectPath
+        
+    def getObjectPath(self):
+        return self.objectPath
+        
+    def authors(self, projectPath=''):
+        """Return a catalog search result of authors from a project
+        problem : same author appears several times 
+        """
+        auteurs = []
+        auteurIDs = []
+        context = aq_inner(self.context)
+        #import pdb; pdb.set_trace()
+        if not projectPath:
+            projectPath = '/'.join(context.getPhysicalPath())
+        catalog = getToolByName(self.context, 'portal_catalog')
+        #log( 'authors : ' + projectPath)
+        cat = catalog(object_provides=[IAuteur.__identifier__],
+                       path={'query': projectPath, 'depth': 2},
+                       sort_on="modified", sort_order="reverse")
+        for auteur in cat:
+            #print auteur.id, auteur.firstname, auteur.lastname, auteur.email
+            
+            if auteur.id not in auteurIDs:
+                auteurs.append(auteur)
+                auteurIDs.append(auteur.id)
+        #import pdb; pdb.set_trace()
+        return auteurs
+        
+    def getSponsoring(self):
+        if self.withTotal:
+            return self.degrevements[self.objectPath]
+        else:
+            return {}
+
+    def sponsorasked(self,auteur):
+        context = aq_inner(self.context)
+        author = auteur.getObject()
+        if self.withTotal:
+            self.degrevements[self.objectPath][0] += self.set2float(author.sponsorasked)
+            self.degrevements[self.objectPath][1] += self.set2float(author.sponsorSEM)
+            self.degrevements[self.objectPath][2] += self.set2float(author.sponsorRD)
+            self.degrevements[self.objectPath][3] += self.set2float(author.sponsorSchool)
+            self.degrevements[self.objectPath][4] += self.set2float(author.sponsorSchool) + \
+                            self.set2float(author.sponsorRD) + self.set2float(author.sponsorSEM)
+        return (author.sponsorasked,author.sponsorSEM,author.sponsorRD,author.sponsorSchool)
+        
+    def multiselect(self):
+        catalog = getToolByName(self.context, 'portal_catalog')
+        keywords = catalog.uniqueValuesFor('Subject')
+        #print keywords
+        form = factory('form',
+            name='search',
+            props={
+                'action': self._form_action,
+            })
+
+        form['searchterm'] = factory('#field:multiselect', props={
+            'label': u'Selectionner un ou plusieurs mots-clé',
+            'vocabulary': keywords,
+            'format': 'block',
+            'multivalued': True})
+        form['submit'] = factory(
+            'field:submit',
+            props={
+                'label': _(u'Lancer la recherche'),
+                'submit.class': '',
+                'handler': self._form_handler,
+                'action': 'search'
+        })
+
+        controller = Controller(form, self.request)
+        return controller.rendered
+
+    def results(self):
+        if not hasattr(self,'searchterm') or not self.searchterm:
+            return []
+        context = aq_inner(self.context)
+        cat = getToolByName(self.context, 'portal_catalog')
+        query = {}
+    
+        query['Subject'] = self.searchterm
+        query['object_provides'] = IProjet.__identifier__
+        #print query
+        return cat(**query)                
+    def _form_action(self, widget, data):
+        #import pdb; pdb.set_trace()
+        #print "retour à ",  self.context.absolute_url()
+
+        return '%s/keywordview' % self.context.absolute_url()
+
+    def _form_handler(self, widget, data):
+        #import pdb; pdb.set_trace()
+        self.searchterm = data['searchterm'].extracted
+
+    def projets(self, wf_state='all'):
+        """Return a catalog search result of projects to show
+        """
+        
+        context = aq_inner(self.context)
+        catalog = getToolByName(context, 'portal_catalog')
+        #log( "context's physical path : " + '/'.join(context.getPhysicalPath()))
+        if wf_state == 'all':
+            #log( "all projets")
+            #log('/'.join(context.getPhysicalPath()))
+            return catalog(portal_type='ageliaco.rd2.projet',
+                           path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+                           sort_on="start", sort_order="reverse")        
+        #log('/'.join(context.getPhysicalPath()))
+        cat = catalog(portal_type='ageliaco.rd2.projet',
+                       review_state=wf_state,
+                       path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+                       sort_on='sortable_title')
+        #log('catalogue : %s items'%len(cat))
+        return cat
+
+    def cycles(self, projectPath, wf_state='all'):
+        """Return a catalog search result of cycles from a project
+        """
+        #import pdb; pdb.set_trace()
+        context = aq_inner(self.context)
+        catalog = getToolByName(self.context, 'portal_catalog')
+        #log( 'cycle : ' + projectPath)
+        #log( wf_state + " state chosen")
+        if wf_state == 'all':
+            #log( "all cycles")
+            cat = catalog(object_provides= ICycle.__identifier__,
+                           path={'query': projectPath, 'depth': 1},
+                           sort_on="modified", sort_order="reverse")  
+            #print len(cat)
+            return cat      
+        return catalog(object_provides=[ICycle.__identifier__],
+                       review_state=wf_state,
+                       path={'query': projectPath, 'depth': 2},
+                       sort_on='sortable_title')
+
+    def getPortal(self):
+        return getSite()
+        
+        

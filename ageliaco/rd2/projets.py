@@ -12,7 +12,7 @@ from ageliaco.rd2 import _
 # for debug purpose => log(...)
 from Products.CMFPlone.utils import log
 
-from interface import IProjet, ICycle, IAuteur
+from interface import IProjet, ICycle, IAuteur, InterfaceView
 
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary
@@ -42,6 +42,17 @@ from zope.component import getMultiAdapter
 from zope.app.component.hooks import setHooks, setSite, getSite
 
 
+import yafowil.plone
+import yafowil.loader
+from yafowil.base import factory, UNSET, ExtractionError
+from yafowil.controller import Controller
+from yafowil.plone.form import Form
+from Products.Five.browser import BrowserView
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+
+from interface import ICycle, IAuteur, InterfaceView
+
+
 # def getView(context, request, name):
 #     # Remove acquisition wrapper which may cause false context assumptions
 #     context = aq_inner(context)
@@ -62,75 +73,62 @@ class IProjets(form.Schema):
         )    
 
 
+
+    
         
-class View(grok.View):
+class View(InterfaceView):
     grok.context(IProjets)
     grok.require('zope2.View')
+    grok.name('view')
     
-    def projets(self, wf_state='all'):
-        """Return a catalog search result of projects to show
-        """
-        
-        context = aq_inner(self.context)
-        catalog = getToolByName(context, 'portal_catalog')
-        log( "context's physical path : " + '/'.join(context.getPhysicalPath()))
-        if wf_state == 'all':
-            log( "all projets")
-            log('/'.join(context.getPhysicalPath()))
-            return catalog(portal_type='ageliaco.rd2.projet',
-                           path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
-                           sort_on="start", sort_order="reverse")        
-        log('/'.join(context.getPhysicalPath()))
-        cat = catalog(portal_type='ageliaco.rd2.projet',
-                       review_state=wf_state,
-                       path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
-                       sort_on='sortable_title')
-        log('catalogue : %s items'%len(cat))
-        return cat
+    def _form_action(self, widget, data):
+        #import pdb; pdb.set_trace()
+        return '%s' % self.context.absolute_url()
 
-    def cycles(self, projectPath, wf_state='all'):
-        """Return a catalog search result of cycles from a project
-        """
-        
-        context = aq_inner(self.context)
-        catalog = getToolByName(self.context, 'portal_catalog')
-        log( 'cycle : ' + projectPath)
-        log( wf_state + " state chosen")
-        if wf_state == 'all':
-            log( "all cycles")
-            return catalog(object_provides= ICycle.__identifier__,
-                           path={'query': projectPath, 'depth': 1},
-                           sort_on="modified", sort_order="reverse")        
-        return catalog(object_provides=[ICycle.__identifier__],
-                       review_state=wf_state,
-                       path={'query': projectPath, 'depth': 2},
-                       sort_on='sortable_title')
+    def _form_handler(self, widget, data):
+        #import pdb; pdb.set_trace()
+        self.searchterm = data['searchterm'].extracted
+    def form(self):
+        form = factory('form',
+            name='search',
+            props={
+                'action': self._form_action,
+            })
 
-    def authors(self, projectPath):
-        """Return a catalog search result of authors from a project
-        problem : same author appears several times 
-        """
-        auteurs = []
-        auteurIDs = []
-        context = aq_inner(self.context)
-        catalog = getToolByName(self.context, 'portal_catalog')
-        log( 'authors : ' + projectPath)
-        cat = catalog(object_provides=[IAuteur.__identifier__],
-                       path={'query': projectPath, 'depth': 2},
-                       sort_on='sortable_title')
-        for auteur in cat:
-            print auteur.id, auteur.firstname, auteur.lastname, auteur.email
-            
-            if auteur.id not in auteurIDs:
-                auteurs.append(auteur)
-                auteurIDs.append(auteur.id)
-        
-        return auteurs
+        form['searchterm'] = factory(
+            'field:label:error:text',
+            props={
+                'label': _(u'Rechercher dans les projets:'),
+                'field.class': 'myFieldClass',
+                'text.class': 'myInputClass',
+                'size': '20',
+        })
+        form['submit'] = factory(
+            'field:submit',
+            props={
+                'label': _(u'Lancer la recherche'),
+                'submit.class': '',
+                'handler': self._form_handler,
+                'action': 'search'
+        })
 
-    def getPortal(self):
-        return getSite()
+        controller = Controller(form, self.request)
+        return controller.rendered
         
-        
+    def results(self):
+        if not hasattr(self,'searchterm') or not self.searchterm:
+            return []
+        context = aq_inner(self.context)
+        cat = getToolByName(self.context, 'portal_catalog')
+        query = {}
+    
+        qterm = self.searchterm
+        if qterm:
+            qterm = '%s' % (qterm)
+            query['SearchableText'] = qterm.decode('utf-8')
+            query['path']={'query': '/'.join(context.getPhysicalPath())}
+        #print query
+        return cat(**query)                
 
 # 
 #     def render_table(self, projets):
@@ -144,4 +142,16 @@ class View(grok.View):
 #         options['projets'] = projets
 #         return projectlisting.render_table(options=options)
 
+class KeywordView(InterfaceView):
+    grok.context(IProjets)
+    grok.require('zope2.View')
+    grok.name('keywordview')
+    
+    pass
         
+class StateView(View):
+    grok.context(IProjets)
+    grok.require('zope2.View')
+    grok.name('stateview')
+    
+    pass

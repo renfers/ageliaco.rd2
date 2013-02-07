@@ -40,6 +40,10 @@ def add_catalog_indexes(context, logger=None):
               ('num', 'FieldIndex'),
               ('authors', 'KeywordIndex'),
               ('cycles', 'KeywordIndex'),
+              ('sponsorasked', 'FieldIndex'),
+              ('sponsorSEM', 'FieldIndex'),
+              ('sponsorRD', 'FieldIndex'),
+              ('sponsorSchool', 'FieldIndex'),
               ('SearchableText', 'ZCTextIndex'),
               )
     indexables = []

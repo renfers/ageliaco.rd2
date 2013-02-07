@@ -5,32 +5,45 @@
       lang="en"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="ageliaco.rd2">
+      
 <head>
-    <metal:block fill-slot="style_slot">
+    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <!--    <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.min.css"
+            />
+     -->
         <link rel="stylesheet" type="text/css" 
-            tal:define="navroot context/@@plone_portal_state/navigation_root_url"
             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
             />
     </metal:block>
-<!--     <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <script type="text/javascript"  tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+    <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <script type="text/javascript" 
             tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
-            src="jquery.jqDock.min.js">
-
+            src="#">
+        </script>
+        <script type="text/javascript" 
+            tal:attributes="src string:${navroot}/++resource++yafowil.widget.richtext/widget.js"
+            src="#">
         </script>
 	
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.min.js">
+         </script>
+
     </metal:block>
- -->
-</head>
+</head>     
+      
 <body>
 
 <metal:main fill-slot="main">
+      <tal:main-macro metal:define-macro="main">
+
     <div 
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
                 navroot context/@@plone_portal_state/navigation_root_url">
 
 <div id="realisation" tal:condition="python: view.hasLink() or view.hasRealisation()">
-<h3 tal:condition="python: view.hasLink()"><a tal:attributes="href view/hasLink">lien vers réalisation</a></h3>
+<h3 tal:condition="python: view.hasLink()"><a tal:attributes="href view/hasLink">Lien vers réalisation</a></h3>
 <h3 tal:condition="python: view.hasRealisation()"><a tal:attributes="href view/hasRealisation">Réalisation</a></h3>
 </div>
 <div  tal:condition="python:len(view.cycles_obj())" id="cycleList">
@@ -52,7 +65,7 @@
 
         <h1 class="documentFirstHeading" tal:content="context/title" />
 
-
+<div tal:condition="python: not view.inBTwin()">
 <!-- overlay triggers. overlay is referenced in the 'rel' attribute -->
         <div tal:define="picture nocall:context/picture"
              tal:condition="nocall:picture">
@@ -75,35 +88,32 @@
                 an(s)
             </tal:block>
         </span>
- 
-          <div tal:condition="python:  view.isRepository() and here.portal_membership.isAnonymousUser">
-              <div class="newprojet">
+</div> 
+          <div tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()"
+                tal:define="newprojet view/newprojet ;
+                            reconductprojet view/reconductprojet">
+          
+    <!--         <div tal:content="structure python:view.form()">form</div>
+    -->
+              <div class="newprojet" tal:condition="newprojet">
                 <h1>NOUVEAU PROJET</h1>
-                <span tal:content="structure python:view.form()">form</span>
-                    
-                </div>
-              <div class="reconductprojet"  >
-                <h1>RECONDUCTION D'UN PROJET EN COURS</h1>
-                <span tal:content="structure python:view.form2()">form2</span>                
+                <span tal:content="newprojet">vide</span>
+                
               </div>
-            <ul>
 
-                  <li tal:condition="view/formResult">
-                  <b>Nouveau projet : </b>
-                     <span tal:content="view/formResult"
-                        ></span>
-                  </li>
-                  <li tal:condition="view/form2Result">
-                  <b>Projet reconduit : </b>
-                     <span tal:content="structure python:view.projet"
-                        ></span>
-                  </li>
-       
-            </ul>
+             <div class="reconductprojet"  tal:condition="reconductprojet" >
+                <h1>RECONDUCTION D'UN PROJET EN COURS</h1>
+                <span tal:content="reconductprojet">vide</span>              
+
+             </div>
+        
+              <tal:form replace="structure view/render_form" />
+           
          </div>
 
         <div tal:replace="structure provider:plone.belowcontentbody" />
 </div>
+      </tal:main-macro>
 
     </metal:main>
 

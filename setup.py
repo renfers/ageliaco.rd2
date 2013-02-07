@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.6'
+version = '0.7'
 
 setup(name='ageliaco.rd2',
       version=version,
@@ -17,7 +17,7 @@ setup(name='ageliaco.rd2',
       keywords='ageliaco rd project management',
       author='Serge Renfer',
       author_email='serge.renfer@gmail.com',
-      url='http://svn.plone.org/svn/collective/',
+      url='https://github.com/renfers/ageliaco.rd2',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['ageliaco'],
@@ -34,9 +34,13 @@ setup(name='ageliaco.rd2',
           'collective.wtf',
           'plone.namedfile[blobs]',
           'plone.formwidget.namedfile',
+          'plone.app.versioningbehavior',
           'collective.z3cform.datagridfield',
           'collective.z3cform.wizard',
-          'yafowil.plone',
+          'yafowil >= 2.0.2',
+          'yafowil.plone >= 2.0.1',
+          'yafowil.widget.richtext >= 1.3.1dev',
+          'yafowil.widget.multiselect',
         ],
       entry_points="""
       # -*- Entry points: -*-

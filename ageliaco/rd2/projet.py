@@ -11,13 +11,15 @@ from plone.z3cform.textlines import TextLinesFieldWidget
 
 from zope.interface import invariant, Invalid
 
-from interface import IProjet
-
+from interface import IProjet, IAuteur, ICycle, idDefaultFromContext
+from interface import cycle_default_problematique, cycle_default_projet_presentation
+from note import INote
 
 import yafowil.plone
 import yafowil.loader
 from yafowil.base import factory, UNSET, ExtractionError
 from yafowil.controller import Controller
+from yafowil.plone.form import Form
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
@@ -38,14 +40,12 @@ from zope.app.content import queryContentType
 from zope.schema import getFieldsInOrder
 from plone.dexterity.interfaces import IDexterityFTI 
 from zope.component import queryUtility
- 
-from cycle import ICycle
-from auteur import IAuteur
 
+ 
 from ageliaco.rd2 import _
 
-import pdb
-    
+
+
 @grok.subscribe(IProjet, IObjectAddedEvent)
 def setRealisation(projet, event):
     admid = 'realisation'
@@ -71,80 +71,358 @@ grok.global_adapter(searchableIndexer, name="SearchableText")
 
     
 
+def richtext():
+    part = factory(u'fieldset', name='yafowilwidgetrichtext')
+    part['richtext'] = factory('#field:richtext', props={
+        'label': 'Richtext field',
+        'required': 'Text is required'})
+    return {'widget': part,
+            'doc': "Doc",
+            'title': 'Richtext'}
 
-class View(grok.View):
+
+# class DepotView(grok.View,Form):
+#     grok.context(IProjet)
+#     grok.require('zope2.View')
+#     grok.name('depot')
+# 
+#     newprojet = ''
+#     newprojet_url = ''
+#     next = ''
+#     projet = ''
+#     def form(self):
+#         form = factory(
+#             'form',
+#             name='myform',
+#             props={
+#                 'action': self.form_action,
+#             })
+# 
+#         # form widgets creation here...
+#         form['newprojet'] = factory(
+#             'field:label:error:text',
+#             props={
+#                 'label': _(u'Titre du nouveau projet : '),
+#                 'field.class': 'field',
+#                 'default' : self.request.get('view.cycleId'),
+#                 'text.class': 'text',
+#                 'size': '80',
+#         })
+# 
+#         form['projet'] = factory(
+#             'field:label:error:select',
+#             props={
+#                 'label': _(u'Reconduire le projet suivant : '),
+#                 'field.class': 'field',
+#                 'select.class': 'select',
+#                 'vocabulary': self.activeProjets,
+#         })
+# 
+#         form['submit'] = factory(
+#             'field:submit',
+#             props={
+#                 'label': self.set_label(),
+#                 'submit.class': 'btn-primary',
+#                 #'handler': self.form_handler,
+#                 'action' : True,
+#                 'next' : self.nextform,
+#         })
+# 
+#         form['presentation'] = factory(
+#             '#field:richtext',
+#             props={
+#                 'label': u'Présentation résumée du projet',
+#                 #'placeholder': u'Présentation succincte du projet',
+#                 'required': 'Text is required',
+#         })
+#         controller = Controller(form, self.request)
+#         return controller.rendered
+# 
+# 
+# 
+#     def re_form_handler(self, widget, data):
+#         self.projet = data['projet'].extracted
+# 
+# 
+#     def re_form_action(self, widget, data):
+#         import pdb; pdb.set_trace()
+#         if not hasattr(self,'projet') or not self.projet:
+#             error = ExtractionError(
+#                 'Choisissez un projet dans la liste!')
+#             return self.context.absolute_url()
+#         context = aq_inner(self.context)
+#         catalog = getToolByName(self.context, 'portal_catalog')
+#         cat = catalog(object_provides= ICycle.__identifier__,
+#                    path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+#                    sort_on="modified", sort_order="reverse")  
+#         print "cat len = ", len(cat), cat
+#         cycleId = "%s-%i" % (context.start,(len(cat)+1))
+#         item = createContentInContainer(context, "ageliaco.rd2.cycle", 
+#                                         id=cycleId, title=self.projet)
+#         
+#         print '%s/%s/edit' % (context.absolute_url(),cycleId)
+#         self.next = '%s/%s/edit' % (context.absolute_url(),cycleId)
+#         return '%s/%s/edit' % (context.absolute_url(),cycleId)
+# 
+#     def set_label(self):
+#         if not hasattr(self.request,'newprojet'):
+#             return _(u'Déposer un nouveau projet')
+#         return _(u'Compléter le nouveau projet')
+#         
+#     def form_action(self, widget, data):
+#         import pdb; pdb.set_trace()
+#         if not 'newprojet' in data.keys() or not data['newprojet'].extracted:
+#             self.newprojet = ''
+#             return ''
+#         self.newprojet = data['newprojet'].extracted
+#         context = aq_inner(self.context)
+#         catalog = getToolByName(self.context, 'portal_catalog')
+#         cat = cat(object_provides= ICycle.__identifier__,
+#                    path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+#                    sort_on="modified", sort_order="reverse")  
+#         print "cat len = ", len(cat), cat
+#         cycleId = "%s-%i" % (context.start,(len(cat)+1))
+#         item = createContentInContainer(context, "ageliaco.rd2.cycle", 
+#                                         id=cycleId, title=self.newprojet)
+#         self.nextId = cycleId
+#         self.next = item.absolute_url() + '/edit'
+#         
+#         return self.next #self.context.absolute_url() + '/depot?newprojet=' + self.newprojet
+# 
+#     def submit_action(self, widget, data):
+#         #import pdb; pdb.set_trace()
+# 
+#         return self.next
+
+#     def form_handler(self, widget, data):
+#         #import pdb; pdb.set_trace()
+#         self.newprojet = self.result()
+#         context = aq_inner(self.context)
+#         if not hasattr(self,'newprojet') or not self.newprojet:
+#             error = ExtractionError(
+#                 'Complétez le titre du projet!')
+#             return self.context.absolute_url()
+#         import pdb; pdb.set_trace()
+#         data.value = self.next
+#         return self.next
+
+#     
+#     def result(self):
+#         if not hasattr(self,'newprojet') or not self.newprojet:
+#             return ''
+#         return self.newprojet
+#     
+#     def nextform(self,request):
+# 
+#         import pdb; pdb.set_trace()
+#         if not hasattr(self.request,'myform.newprojet') \
+#             or not hasattr(self.request,'myform.projet'):
+#             return ''
+# 
+#         context = aq_inner(self.context)
+#         
+#         title = ''
+#         description = ''
+#         presentation = ''
+#         
+#         # in case of new project
+#         if hasattr(self.request,'myform.newprojet') \
+#             and self.request['myform.newprojet']:
+#             
+#             self.newprojet = self.request['myform.newprojet']
+#             title = self.newprojet
+#             description = ''
+#             presentation = ''
+#         
+#         # in case of reconduction of an active project
+#         if hasattr(self.request,'myform.projet') \
+#             and self.request['myform.projet']:
+#             
+#             self.projet = self.request['myform.projet']
+#             proj = context.unrestrictedTraverse(self.projet)
+#             title = proj.title
+#             description = proj.description
+#             presentation = proj.presentation.raw
+#         
+#             
+#         catalog = getToolByName(self.context, 'portal_catalog')
+#         cat = catalog(object_provides= ICycle.__identifier__,
+#                    path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+#                    sort_on="modified", sort_order="reverse")  
+#         print "cat len = ", len(cat), cat
+#         cycleId = "%s-%i" % (context.start,(len(cat)+1))
+#         item = createContentInContainer(context, "ageliaco.rd2.cycle", 
+#                                         id=cycleId, title=title,
+#                                         description=description, 
+#                                         presentation=presentation)
+#         self.nextId = cycleId
+#         self.next = item.absolute_url() + '/editusers'
+#         form2 = factory(
+#             'form',
+#             name='myform2',
+#             props={
+#                 'action': self.submit_action,
+#             })
+# 
+#         # form widgets creation here...
+#         form2['title'] = factory(
+#             'field:label:error:text',
+#             props={
+#                 'label': u'Titre du projet',
+#                 'default': title,
+#                 'field.class': 'field',
+#         })
+# 
+#         form2['subtitle'] = factory(
+#             'field:label:error:textarea',
+#             props={
+#                 'label': u'sous-titre du projet',
+#                 #'placeholder': description,
+#                 'default' : description,
+#                 'field.class': 'field',
+#                 'rows' : 2,
+#         })
+# 
+#         form2['presentation'] = factory(
+#             '#field:richtext',
+#             props={
+#                 'label': u'Présentation résumée du projet',
+#                 #'placeholder': presentation,
+#                 'default' : presentation,
+#                 'field.class': 'field',
+#                 'required': 'Text is required',
+#         })
+# 
+#         form2['submit'] = factory(
+#             'field:submit',
+#             props={
+#                 'label': (u'Compléter le projet'),
+#                 'submit.class': 'btn-primary',
+#                 #'handler': self.form_handler,
+#                 'action' : True,
+#         })
+# 
+#         form2['fieldset'] = factory(u'fieldset', name='yafowilwidgetrichtext')
+#         form2['richtext'] = factory('#field:wysihtml5', props={
+#             'label': 'WYSIHTML5 Field',
+#             'default' : presentation,
+#             'required': 'Text is required'})
+# 
+#         self.form2 = form2
+#         controller = Controller(self.form2, self.request)
+#         return controller.rendered
+# 
+#     def activeProjets(self):
+#         catalog = getToolByName(self.context, 'portal_catalog')
+#         cat = catalog(portal_type='ageliaco.rd2.projet',
+#                        review_state='encours',
+#                        sort_on='sortable_title')
+#         #log('catalogue : %s items'%len(cat))
+#     
+#         terms = [('',''),]
+#                     
+#         for brain in cat:
+#             print dir(brain)
+#             print "getURL : %s => getPath : %s " % (brain.getURL(),brain.getPath())
+#             terms.append((brain.getPath(),brain.Title))
+#         return terms #SimpleVocabulary([SimpleVocabulary.createTerm(x.id, x.getURL(), x.Title) for x in cat])
+    
+
+class View(grok.View,Form):
     grok.context(IProjet)
     grok.require('zope2.View')
-    next = ''
-    nextId = ''
-    def formnext(self, request):
-        print "next : ", self.next
-        #import pdb; pdb.set_trace()
-        if not self.next:
-            if self.nextId:
-                cycle =  aq_inner(self.context)[self.nextId]
-                return cycle.absolute_url() + '/edit'
-        return self.next
-    def _form_action(self, widget, data):
-        context = aq_inner(self.context)
-        
-        print '%s/%s/edit' % (context.absolute_url(),self.nextId)
-        self.next = '%s/%s/edit' % (context.absolute_url(),self.nextId)
-        #import pdb; pdb.set_trace()
-
-        return '%s/%s/edit' % (context.absolute_url(),self.nextId)
-        
-        
-    def _form_action2(self, widget, data):
-        if not hasattr(self,'projet') or not self.projet:
-            error = ExtractionError(
-                'Choisissez un projet dans la liste!')
-            return self.context.absolute_url()
-        context = aq_inner(self.context)
-        catalog = getToolByName(self.context, 'portal_catalog')
-        cat = catalog(object_provides= ICycle.__identifier__,
-                   path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
-                   sort_on="modified", sort_order="reverse")  
-        print "cat len = ", len(cat), cat
-        cycleId = "%s-%i" % (context.start,(len(cat)+1))
-        item = createContentInContainer(context, "ageliaco.rd2.cycle", id=cycleId, title=self.projet)
-        
-        print '%s/%s/edit' % (context.absolute_url(),cycleId)
-        self.next = '%s/%s/edit' % (context.absolute_url(),cycleId)
-        return '%s/%s/edit' % (context.absolute_url(),cycleId)
 
     def _form_handler(self, widget, data):
-        #import pdb; pdb.set_trace()
-        self.newprojet = data['newprojet'].extracted
-        if not hasattr(self,'newprojet') or not self.newprojet:
-            error = ExtractionError(
-                'Complétez le titre du projet!')
-            return self.context.absolute_url()
+        if not hasattr(self.request,'form1.newprojet') \
+            and not self.request['form1.newprojet']:
+            return ''
+        self.request['form1.action'] = self.context.absolute_url() + '/edit'
+        self.request['form1.submit.next'] = self.nextform
+        title = self.request['form1.newprojet']
         context = aq_inner(self.context)
-        catalog = getToolByName(self.context, 'portal_catalog')
-        cat = catalog(object_provides= ICycle.__identifier__,
-                   path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
-                   sort_on="modified", sort_order="reverse")  
-        print "cat len = ", len(cat), cat
-        cycleId = "%s-%i" % (context.start,(len(cat)+1))
-        item = createContentInContainer(context, "ageliaco.rd2.cycle", id=cycleId, title=self.newprojet)
-        self.nextId = cycleId
-        self.next = item.absolute_url() + '/edit'
-        self.form['submit'].props['next'] = self.next
+        #         catalog = getToolByName(self.context, 'portal_catalog')
+        #         cat = catalog(object_provides= ICycle.__identifier__,
+        #                    path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+        #                    sort_on="modified", sort_order="reverse")  
+        #         print "cat len = ", len(cat), cat
+        #         cycleId = "%s-%i" % (context.start,(len(cat)+1))
+        new_id = idDefaultFromContext(context) #"%s-%s" %(context.start,len(context.objectIds()))
+        item = createContentInContainer(context, "ageliaco.rd2.cycle", id=new_id, 
+                    title=title,
+                    presentation=RichTextValue(
+                        raw=cycle_default_projet_presentation
+                    ),
+                    problematique=RichTextValue(
+                        raw=cycle_default_problematique
+                    ))
+        self.request['form1.cycleId'] = item.id
 
-        return self.newprojet
+
+    def _form_action(self, widget, data):
+        if  hasattr(self.request,'form1.newprojet') \
+            and self.request['form1.newprojet']:
+            #self.form_handler(widget,data)
+            pass
+
+        if not hasattr(self.request,'form1.cycleId') \
+            or not self.request['form1.cycleId']:
+            #self.request['form1.submit.next'] = self.nextform
+            return self.context.absolute_url() 
+        return self.context.absolute_url() + '/edit'
+        #return self.form_handler
         
-    def _form_handler2(self, widget, data):
-        self.projet = data['projet'].extracted
 
-    def form(self):
-        form = factory('form',
-            name='newproject',
+    def nextform(self,request):
+        #import pdb; pdb.set_trace()
+        #return self.context.absolute_url() + '/depot'
+        if not hasattr(self.request,'form1.cycleId') \
+            or not self.request['form1.cycleId']:
+            return ''
+
+        form = factory(
+            'form',
+            name='form1',
             props={
-                'action': self._form_action,
-                'structural': True,
+                'action': self.submit_action,
             })
 
+
+        form['submit'] = factory(
+            'field:submit',
+            props={
+                'label': (u'Compléter le projet'),
+                'submit.class': 'btn-primary',
+                #'handler': self.form_handler,
+                'action' : 'complation',
+        })
+
+        form['cycleId'] = factory(
+            'field:label',
+            props={
+                'label' : self.request['form1.cycleId'],
+        })
+
+
+        self.form = form
+        #return self.form
+        controller = Controller(self.form, self.request)
+        return controller.rendered
+        
+    def prepare(self):
+        form = factory(
+            'form',
+            name='form1',
+            props={
+                'action': self._form_action,
+            })
+
+        form['cycleId'] = factory(
+            'field:hidden',
+            props={
+                'label' : '',
+        })
+
+        # form widgets creation here...
         form['newprojet'] = factory(
             'field:label:error:text',
             props={
@@ -156,53 +434,148 @@ class View(grok.View):
         form['submit'] = factory(
             'field:submit',
             props={
-                'label': _(u'Déposer un nouveau projet'),
-                'submit.class': '',
+                'label': _(u'Créer un nouveau projet'),
+                'submit.class': 'btn-primary',
                 'handler': self._form_handler,
-                'action': 'newproject',
+                'action': 'save',
+                'next' : self.nextform,
+                #'skip' : hasattr(self.request,'form1.cycleId'),
         })
 
-        controller = Controller(form, self.request)
-        return controller.rendered
-    def form2(self):
-        form2 = factory('form',
-            name='depot1form2',
-            props={
-                'action': self._form_action2,
-            })
 
-        form2['projet'] = factory(
+        reconductionform = form['reconduction'] = factory(
+            'fieldset',
+            props={
+                'legend': _(u'Reconduction d\'un projet existant'),
+                'class': 'reconduction',
+        })
+        reconductionform['projet'] = factory(
             'field:label:error:select',
             props={
-                'label': _(u'Reconduire le projet suivant : '),
+                'label': _(u'Reconduire le projet choisi dans la liste'),
                 'field.class': 'field',
                 'select.class': 'select',
                 'vocabulary': self.activeProjets,
         })
-        form2['submit'] = factory(
+        reconductionform['submit'] = factory(
             'field:submit',
             props={
-                'label': _(u'Reconduire le projet existant'),
-                'submit.class': '',
-                'handler': self._form_handler2,
-                'action': 'newCycle',
-                'next': self.formnext,
+                'label': _(u'Reconduire le projet'),
+                'submit.class': 'btn-primary',
+                'handler': self.form_handler2,
+                'action': 'save',
+                'next' : self.nextform,
+                #'skip' : hasattr(self.request,'form1.cycleId') and self.request['form1.cycleId'],
         })
 
-        controller = Controller(form2, self.request)
-        return controller.rendered
+        self.form = form
+        #controller = Controller(form, self.request)
+        #return controller.rendered
+
+    def submit_action(self, widget, data):
+        #import pdb; pdb.set_trace()
         
-    def formResult(self):
-        if not hasattr(self,'newprojet') or not self.newprojet:
+        if not hasattr(self.request,'form1.cycleId') \
+            or not self.request['form1.cycleId']:
             return ''
-        return self.newprojet
-        
-    def form2Result(self):
-        if not hasattr(self,'projet') or not self.projet:
+        cycleId = self.request['form1.cycleId']
+        return self.context.absolute_url() + '/%s/edit' % cycleId
+
+    def inBTwin(self):
+        if (hasattr(self.request,'form1.newprojet') \
+            and self.request['form1.newprojet']) \
+            or (hasattr(self.request,'form1.projet') \
+            and self.request['form1.projet']):
+            return True
+        return False
+
+    def newprojet(self):
+        #import pdb; pdb.set_trace()
+        if hasattr(self.request,'form1.newprojet') \
+            and self.request['form1.newprojet']:
+            return self.request['form1.newprojet']
+        return ''
+    
+    def reconductprojet(self):
+        #import pdb; pdb.set_trace()
+        if hasattr(self.request,'form1.reconduction.projet') \
+            and self.request['form1.reconduction.projet']:
+            return self.request['form1.reconduction.projet']
+        return ''
+    
+    def form_handler2(self, widget, data):
+        if not hasattr(self.request,'form1.reconduction.projet') \
+            and not self.request['form1.reconduction.projet']:
             return ''
-        return self.projet
+        projetpath = self.request['form1.reconduction.projet']
         
+        # look for last cycle in projetpath
+        context = aq_inner(self.context)
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides= ICycle.__identifier__,
+                   path={'query': projetpath, 'depth': 1},
+                   sort_on="modified", sort_order="reverse")  
         
+        portal_url = getToolByName(context, "portal_url")
+        portal = portal_url.getPortalObject()
+        # clone the cycle in a new cycle here and remove anything other than auteurs in the new cycle
+        # Bypass security
+        projet = portal.unrestrictedTraverse(projetpath)
+        
+        item = None
+        #getting a copy of last cycle
+        #import pdb; pdb.set_trace()
+        if len(cat):
+            try:
+                ids = context.manage_pasteObjects(projet.manage_copyObjects(cat[0].id)) 
+                #context.manage_renameObject(newcycle.id, id + "-old")
+                cycleId = ids[0]['new_id']
+                item = context[cycleId]
+                new_id = idDefaultFromContext(context) #"%s-%s" %(context.start,len(context.objectIds()))
+                item.aq_parent.manage_renameObject(cycleId, str(new_id))
+                cycleId = new_id
+                if not item.presentation:
+                    item.presentation = RichTextValue(
+                            raw=cycle_default_projet_presentation
+                        ) 
+                item.problematique = RichTextValue(
+                        raw=cycle_default_problematique
+                    ) 
+                #removing notes in new cycle
+                cat = catalog(object_provides= INote.__identifier__,
+                           path={'query': '/'.join(item.getPhysicalPath()), 'depth': 1},
+                           sort_on="modified", sort_order="reverse")  
+                for note in cat:
+                    del item[note.id]
+            except: #creating a new cycle
+                new_id = idDefaultFromContext(context)
+                item = createContentInContainer(context, "ageliaco.rd2.cycle", id=new_id, title="")
+                item.projet = projetpath
+                item.presentation = RichTextValue(
+                        raw=cycle_default_projet_presentation
+                    ) 
+                item.problematique = RichTextValue(
+                        raw=cycle_default_problematique
+                    ) 
+                
+                
+        else: #creating a new cycle
+            title = self.request['form1.newprojet']
+            context = aq_inner(self.context)
+        #             catalog = getToolByName(self.context, 'portal_catalog')
+        #             cat = catalog(object_provides= ICycle.__identifier__,
+        #                        path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+        #                        sort_on="modified", sort_order="reverse")  
+        #             print "cat len = ", len(cat), cat
+        #             cycleId = "%s-%i" % (context.start,(len(cat)+1))
+            item = createContentInContainer(context, "ageliaco.rd2.cycle", title=title)
+             
+        self.request['form1.cycleId'] = item.id
+        self.request['form1.action'] = item.absolute_url() + '/edit'
+        self.request['form1.submit.next'] = self.nextform
+        title = self.request['form1.newprojet']
+       
+
     def activeProjets(self):
         catalog = getToolByName(self.context, 'portal_catalog')
         cat = catalog(portal_type='ageliaco.rd2.projet',
@@ -213,8 +586,8 @@ class View(grok.View):
         terms = [('',''),]
                     
         for brain in cat:
-            print dir(brain)
-            print "getURL : %s => getPath : %s " % (brain.getURL(),brain.getPath())
+            #print dir(brain)
+            #print "getURL : %s => getPath : %s " % (brain.getURL(),brain.getPath())
             terms.append((brain.getPath(),brain.Title))
         return terms #SimpleVocabulary([SimpleVocabulary.createTerm(x.id, x.getURL(), x.Title) for x in cat])
     
@@ -238,9 +611,11 @@ class View(grok.View):
             return False
         return True
         
-    def canAddContent(self):
-        return checkPermission('cmf.AddPortalContent', self.context)
-        
+    def canAddContent(self, context=None):
+        if not context:
+            context = self.context            
+        return checkPermission('cmf.AddPortalContent', context)
+            
     def canModifyContent(self):
         return checkPermission('cmf.ModifyPortalContent', self.context)
         
@@ -283,7 +658,7 @@ class View(grok.View):
         context = aq_inner(self.context)
         if not context.has_key('realisation'):
             return ""
-        if len(context['realisation'].keys()):
+        if len(context['realisation'].keys()) or self.canAddContent(context['realisation']):
             return context['realisation'].absolute_url()
         return ""
     
@@ -293,9 +668,10 @@ class View(grok.View):
         #pdb.set_trace()
         
         if getattr(context,'lien',0):
-            print context.getAttribute('lien')
+            #print context.getAttribute('lien')
             return context.lien
-        else:
-            print "no Property 'link'"
+        #         else:
+        #             print "no Property 'link'"
         return ''
     
+            

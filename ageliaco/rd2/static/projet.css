@@ -1,3 +1,29 @@
+<<<<<<< HEAD
+th.ProjectAuthors,th.ProjectTitle{
+    width : 45%;
+}
+
+th.ProjectCycles{
+    width : 10%;
+}
+
+#content ul.nav.nav-tabs {
+    list-style-type : none;
+    margin-left : 0;
+}
+#visual-portal-wrapper.row {
+  margin-left: 20px;
+}
+
+.printlogo {
+    float: left;
+    margin-right: 10px;
+    margin-top: 5px;
+    width: 55px;
+}
+
+=======
+>>>>>>> f2e63215943cd86fda2a82080ea038461bc89e45
 .newprojet {
 	background: #CC1 url(blue.png) no-repeat -652px 0;
     padding:10px 10px 10px 10px;
@@ -22,7 +48,54 @@
 	border-right:0.1em solid #aaa;	
 }
 
+<<<<<<< HEAD
+.printonly {
+    display : none;
+}
 
+@media print { 
+    .printonly { 
+        display: block; 
+     }   
+    .callout, h2, h3, p, pre {
+        line-height : 1.1em;
+    }        
+    h2 { font-size:1.25em; color:rgb(204,0,0);}
+    h3 { font-size:1.15em; color:rgb(100,0,0);}
+    p, #content { font-size:0.9em;  color:rgb(20,0,0);}
+    .callout { 
+        background: none repeat scroll 0 0 #EEEEEE !important ;
+        border-left: 1em solid #CCCCCC;
+        clear: both;
+        padding: 0.7em;
+    }
+
+    #visual-portal-wrapper {
+        background: #FFF;
+        border-radius: none;
+        box-shadow: none;
+        margin: 0;
+        opacity: 1;
+        padding: 0px;
+        position: static;
+        width: auto;
+    }
+    
+    .noprint {
+        display:none;
+    }
+    #eepmenu {
+        display:none;
+    }
+
+} 
+
+#printer {
+    float : right;
+}
+=======
+
+>>>>>>> f2e63215943cd86fda2a82080ea038461bc89e45
  #cycleList {
 	background: #CCC url(blue.png) no-repeat -652px 0;
     float : right;
@@ -66,7 +139,6 @@
 
 /* single tab */
 .tabs li { 
-	float:left;	 
 	text-indent:0;
 	padding:0;
 	margin:0;
@@ -165,7 +237,6 @@
 
 
 #content-core {
-  background : #EEC;
   color   : brown;
   padding : 3px;
 }
@@ -363,17 +434,16 @@ dt.completed
 }
 
 #local_projets dd{
-    float: left;
     margin-left: 1px;
     padding: 1px;
 }
+/*
 #local_projets ul{
-    float: left;
     margin-left: 1px;
     padding: 1px;
 	border-bottom:0px;	
 }
-
+*/
 #uncomplete_folder {
     background : yellow;
     vertical-align : center;
@@ -539,4 +609,23 @@ thead th, tfoot th {
 padding:5px;
 	background-color:#ddd;
     width : 100%
+}
+
+.btn-projets-menu {
+  border-color: #360606 #360606 hsl(0, 79%, 3.5%);
+  color: #fff !important;
+  list-style-type: none;
+}
+
+.the-icons li {
+cursor: pointer;
+line-height: 32px;
+height: 32px;
+padding-left: 12px;
+-webkit-border-radius: 6px;
+-moz-border-radius: 6px;
+border-radius: 6px;
+}
+ul.the-icons li{
+list-style-type: none;
 }

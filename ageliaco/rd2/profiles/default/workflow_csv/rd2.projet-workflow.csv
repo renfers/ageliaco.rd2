@@ -10,8 +10,8 @@ Title:,Brouillon,,,,,,,,,
 Description:,The proposal is being drafted.,,,,,,,,,
 Transitions,"activate, repose",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,X,,X,X,X,X,X,X
-Access contents information,N,,X,,X,X,X,X,X,X
+View,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X
 Modify portal content,N,,,,X,X,X,,X,
 ,,,,,,,,,,
 ,,,,,,,,,,
@@ -83,6 +83,7 @@ Title:,Publier,,,,,,,,,
 Description:,Publication du projet,,,,,,,,,
 Target state:,published,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
+Script after:,ageliaco.rd2.Extensions.transitionscripts.publishProjet,,,,,,,,,
 ,,,,,,,,,,
 [Transition],,,,,,,,,,
 Id:,activate,,,,,,,,,
