@@ -6,100 +6,12 @@
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="ageliaco.rd2">
  <head>
-
-    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <link rel="stylesheet" type="text/css" 
-            tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
-            />
-        <link rel="stylesheet" type="text/css" 
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.css"
-            />
-	    <link rel="stylesheet" href="bootstrap/js/themes/blue/style.css" type="text/css" media="print, projection, screen"
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/themes/blue/style.css"
-	        />
-          <link rel="stylesheet" href="assets/css/prettify.css"
-             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/prettify.css"
-           >
-          <link rel="stylesheet" href="assets/css/font-awesome.css"
-             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome.css"
-           >
-          <!--[if IE 7]>
-          <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"
-             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome-ie7.min.css"
-             >
-          <![endif]-->
-<!--	<link rel="stylesheet" href="bootstrap/js/themes/blue/style.css" type="text/css" media="print, projection, screen"
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/themes/blue/style.css"
-	 />
--->
-    </metal:block>
-     
-    <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <script type="text/javascript" 
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
-            src="#">
-        </script>
-
-        <script type="text/javascript"  
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.js">
-         </script>
-<!--        <script type="text/javascript"  
-            tal:attributes="src string:${navroot}/++resource++plone.app.jquery.js">
-         </script>
--->
-        <script type="text/javascript" 
-            tal:attributes="src string:${navroot}/++resource++yafowil.widget.richtext/widget.js"
-            src="#">
-        </script>
-    <script type="text/javascript"  
-                tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/jquery.tablesorter.min.js">
-    </script>
-    
-	
-    <script >
-    $(document).ready(function() { 
-        // call the tablesorter plugin, the magic happens in the markup 
-        $("table").tablesorter(); 
-    }); 
-    </script>
-</metal:block>
-<!--
-    <script>
-    $(document).ready(function() {
-        $(".nav-tabs li a").click(function() {
-                var li = $(this).parent("li");
-                var wch = this.getAttribute("href");
-                $(li).addClass("active"); //make current li active
-                $(li).siblings("li").removeClass("active"); //make others inactive
-                $(".tab-content div").removeClass("active"); //make all tabs inactive first
-                $(wch).addClass("active"); //activate our tab;
-                return false; //don't change URL
-            });
-    });
-    </script>
-
-        <script type="text/javascript"  
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap-tab.js">
-         </script>
-
-        -->
-
-<!--         <script type="text/javascript"  
-            tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.js">
-         </script>
-       <script type="text/javascript"  
-            tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.overlayhelpers.js">
-         </script>
--->
-
-    
-<!--        
-        <script type="text/javascript"  
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/jquery-1.9.0.min.js"
-            >
-         </script>
--->
+    <metal:block1 fill-slot="style_slot">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+    </metal:block1>
+    <metal:block2 fill-slot="javascript_head_slot" >
+        <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
+    </metal:block2>
  
 </head>
 <body>
@@ -117,20 +29,10 @@
 
         <div tal:replace="structure provider:plone.abovecontentbody" />
 
- <div metal:use-macro="context/@@interface/macros/projets_menu"/>
 
-              <div tal:content="structure python:view.form()">form</div>
-            <ul>
-               <tal:block repeat="item python:view.results()">
-                  <li>
-                     <a tal:content="item/Title"
-                        tal:attributes="href item/getURL|item/absolute_url"></a>
-                  </li>
-               </tal:block>
-            </ul>
+    <div metal:use-macro="context/@@interface/macros/projets_menu"/>
 
-
-<div tal:define="projets python:view.projets('published');">
+    <div tal:define="projets python:view.projets('published');">
     <div class="tab-content">
 
             <table  class="table table-striped table-condensed tablesorter"> 

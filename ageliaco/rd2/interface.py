@@ -567,6 +567,9 @@ class InterfaceView(grok.View,Form):
     objectPath = ''
     degrevements = {}
     withTotal = False
+    multikey = '@@keywordview'
+    indx = 'Subject'
+    searchType = IProjet.__identifier__
     
     def set2float(self,value):
         if not value:
@@ -640,9 +643,22 @@ class InterfaceView(grok.View,Form):
                             self.set2float(author.sponsorRD) + self.set2float(author.sponsorSEM)
         return (author.sponsorasked,author.sponsorSEM,author.sponsorRD,author.sponsorSchool)
         
-    def multiselect(self):
+    def multiselect(self,indx='Subject'):
+        self.indx = indx
         catalog = getToolByName(self.context, 'portal_catalog')
-        keywords = catalog.uniqueValuesFor('Subject')
+        wtool = getToolByName(self.context, 'portal_workflow', None)
+        if indx == 'Subject':
+            keywords = catalog.uniqueValuesFor('Subject')
+            self.multikey = '@@keywordview'
+            label = u'Selectionner un ou plusieurs mots-clé'
+            self.searchType = IProjet.__identifier__
+
+        else:
+            keywords = catalog.uniqueValuesFor('review_state')
+            self.multikey = '@@cyclesview'
+            label = u'Selectionner un ou plusieurs états'
+            self.searchType = ICycle.__identifier__
+            
         #print keywords
         form = factory('form',
             name='search',
@@ -651,7 +667,7 @@ class InterfaceView(grok.View,Form):
             })
 
         form['searchterm'] = factory('#field:multiselect', props={
-            'label': u'Selectionner un ou plusieurs mots-clé',
+            'label': label,
             'vocabulary': keywords,
             'format': 'block',
             'multivalued': True})
@@ -674,15 +690,15 @@ class InterfaceView(grok.View,Form):
         cat = getToolByName(self.context, 'portal_catalog')
         query = {}
     
-        query['Subject'] = self.searchterm
-        query['object_provides'] = IProjet.__identifier__
+        query[self.indx] = self.searchterm
+        query['object_provides'] = self.searchType
         #print query
         return cat(**query)                
     def _form_action(self, widget, data):
         #import pdb; pdb.set_trace()
         #print "retour à ",  self.context.absolute_url()
 
-        return '%s/keywordview' % self.context.absolute_url()
+        return '%s/%s' % (self.context.absolute_url(),self.multikey)
 
     def _form_handler(self, widget, data):
         #import pdb; pdb.set_trace()

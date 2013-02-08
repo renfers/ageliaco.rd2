@@ -83,7 +83,7 @@ class View(InterfaceView):
     
     def _form_action(self, widget, data):
         #import pdb; pdb.set_trace()
-        return '%s' % self.context.absolute_url()
+        return '%s/@@localsearch' % self.context.absolute_url()
 
     def _form_handler(self, widget, data):
         #import pdb; pdb.set_trace()
@@ -155,3 +155,19 @@ class StateView(View):
     grok.name('stateview')
     
     pass
+
+class LocalSearch(View):
+    grok.context(IProjets)
+    grok.require('zope2.View')
+    grok.name('localsearch')
+    
+    pass
+
+class CyclesView(InterfaceView):
+    grok.context(IProjets)
+    grok.require('zope2.View')
+    grok.name('cyclesview')
+    pass
+#     def _form_action(self, widget, data):
+#         #import pdb; pdb.set_trace()
+#         return '%s/@@cyclesview' % self.context.absolute_url()

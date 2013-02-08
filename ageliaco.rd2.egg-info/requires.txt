@@ -7,6 +7,10 @@ plone.app.users >= 1.0b7
 collective.wtf
 plone.namedfile[blobs]
 plone.formwidget.namedfile
+plone.app.versioningbehavior
 collective.z3cform.datagridfield
 collective.z3cform.wizard
-yafowil.plone
+yafowil >= 2.0.2
+yafowil.plone >= 2.0.1
+yafowil.widget.richtext >= 1.3.1dev
+yafowil.widget.multiselect

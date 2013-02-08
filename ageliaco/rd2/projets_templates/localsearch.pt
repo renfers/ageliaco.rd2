@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="ageliaco.rd2">
+ <head>
+    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+    </metal:block>
+<metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
+</metal:block>
+ 
+</head>
+<body>
+
+<metal:main fill-slot="main"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <tal:main-macro metal:define-macro="main"
+        tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
+                    DateTime python:modules['DateTime'].DateTime">
+
+        <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
+
+     <!--     <p class="documentDescription" tal:content="context/description" /> -->
+
+        <div tal:replace="structure provider:plone.abovecontentbody" />
+        
+     <div metal:use-macro="context/@@interface/macros/projets_menu"/>        
+        <div>
+              <div tal:content="structure python:view.form()"   id="local_search">form</div>
+            <ul>
+               <tal:block repeat="item python:view.results()">
+                  <li>
+                     <a tal:content="item/Title"
+                        tal:attributes="href item/getURL|item/absolute_url"></a>
+                  </li>
+               </tal:block>
+            </ul>
+
+        </div>
+        <div tal:replace="structure provider:plone.belowcontentbody" />
+
+    </tal:main-macro>
+</metal:main>
+
+</body>
+</html>

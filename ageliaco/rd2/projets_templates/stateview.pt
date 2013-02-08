@@ -1,0 +1,189 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="ageliaco.rd2">
+ <head>
+    <metal:block fill-slot="style_slot">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+    </metal:block>
+    <metal:block fill-slot="javascript_head_slot" >
+        <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
+    </metal:block>
+  
+</head>
+<body>
+
+<metal:main fill-slot="main"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <tal:main-macro metal:define-macro="main"
+        tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
+                    DateTime python:modules['DateTime'].DateTime">
+
+        <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
+
+     <!--     <p class="documentDescription" tal:content="context/description" /> -->
+
+        <div tal:replace="structure provider:plone.abovecontentbody" />
+
+        <div metal:use-macro="context/@@interface/macros/projets_menu"/>
+
+        <div tal:content="structure python:view.form()">form</div>
+            <ul>
+               <tal:block repeat="item python:view.results()">
+                  <li>
+                     <a tal:content="item/Title"
+                        tal:attributes="href item/getURL|item/absolute_url"></a>
+                  </li>
+               </tal:block>
+            </ul>
+
+
+
+<div tal:define="all_projets view/projets;
+                 opened_projets python:view.projets('encours');
+                 pending_projets python:view.projets('pending');
+                 draft_projets python:view.projets('draft');
+                 completed_projets python:view.projets('published');
+                 repository_projets python:view.projets('repository');
+                 projet_images python:{
+                    'encours': navroot + '/++resource++ageliaco.rd2/WorkingFolderIcon.png',
+                    'pending': navroot + '/++resource++ageliaco.rd2/PrivateFolderIcon.png',
+                    'draft': navroot + '/++resource++ageliaco.rd2/WorkingFolderIcon.png',
+                    'published': navroot + '/++resource++ageliaco.rd2/DocumentsPublishedIcon.png',
+                    'repository': navroot + '/++resource++ageliaco.rd2/WorkingFolderIcon.png',
+                    'Tous': navroot + '/++resource++ageliaco.rd2/MultiFolderIcon.png'
+                };">
+
+<div  tal:define="workflowstates_all_projets python:[
+                ('encours',view.projets('encours'),u'En cours',1),
+                ('pending',pending_projets,u'A valider',0),
+                ('draft',draft_projets,u'Non publié',0),
+                ('published',completed_projets,u'Terminé',1),
+                ('repository',repository_projets,u'En dépôt',1),
+                ('Tous',all_projets,u'Tous',1)] "
+                 >
+                 
+<div tal:define="workflowstates_projets python:[x for x in workflowstates_all_projets if x[1]]" class="tabbable">
+    <ul class="nav nav-tabs" id="workflow-states">
+        <tal:block repeat="workflowstate workflowstates_projets" 
+            >
+        <tal:start condition="repeat/workflowstate/start">
+        <li 
+                tal:define="wfstate python:workflowstate[0]" class="active"
+                >
+            <a  
+            tal:attributes="i18n:translate string:heading_${wfstate};
+            href string:#tab${repeat/workflowstate/number}" data-toggle="tab"
+            href="#"><img tal:attributes="src python:projet_images[workflowstate[0]];
+                            alt python:workflowstate[0]" 
+                            style="width : 30px"/><span tal:replace="python:workflowstate[2]"
+                                                            /></a></li>
+        </tal:start>
+        <tal:nostart condition="not:repeat/workflowstate/start">
+        <li
+                tal:define="wfstate python:workflowstate[0]"
+                >
+            <a  
+            tal:attributes="i18n:translate string:heading_${wfstate};
+            href string:#tab${repeat/workflowstate/number}"  data-toggle="tab"
+            href="#"><img tal:attributes="src python:projet_images[workflowstate[0]];
+                            alt python:workflowstate[0]" 
+                            style="width : 30px"/><span tal:replace="python:workflowstate[2]"
+                                                            /></a></li>
+        </tal:nostart>
+        </tal:block>
+
+    </ul>
+    <div class="tab-content">
+
+        <tal:block repeat="workflowstate workflowstates_projets">
+        <div tal:condition="repeat/workflowstate/start" tal:define="review_state python:workflowstate[0]" 
+                tal:attributes="id string:tab${repeat/workflowstate/number}" class="tab-pane active"> 
+            <table  class="table table-striped table-condensed tablesorter"
+                    tal:attributes="id string:tableProjets-${review_state}"> 
+            <thead> 
+            <tr> 
+                <th class="ProjectTitle">Titre</th> 
+                <th class="ProjectCycles">Cycles</th> 
+                <th class="ProjectAuthors">Auteurs</th> 
+            </tr> 
+            </thead> 
+            <tbody> 
+                <tal:loop tal:repeat="projet python:workflowstate[1]">
+                   <tr  tal:attributes="class python:oddrow and 'projet_even' or 'projet_odd'"
+                        tal:define="oddrow repeat/projet/odd;"> 
+                        <td  class="ProjectTitle">
+                        <span > 
+                        <a tal:attributes="href projet/getURL"
+                           tal:content="projet/Title" />
+                        </span>
+                      </td>
+                      <td   class="ProjectCycles">
+                       <span tal:repeat="cycle python:view.cycles(projet.getPath())">
+                        <a tal:attributes="href cycle/getURL"
+                           tal:content="cycle/Title" /> <br/>
+                        </span>
+                      </td>
+                    <td   class="ProjectAuthors" tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canRequestReview())">
+                    <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
+                    </td>
+                </tr>
+                </tal:loop>
+            </tbody>
+            </table> 
+
+        </div><!-- col -->
+        <div condition="not:repeat/workflowstate/start" tal:define="review_state python:workflowstate[0]" 
+                tal:attributes="id string:tab${repeat/workflowstate/number}"  class="tab-pane"> 
+            <table  class="table table-striped table-condensed tablesorter"
+                    tal:attributes="id string:tableProjets-${review_state}"> 
+            <thead> 
+            <tr> 
+                <th  class="ProjectTitle">Titre</th> 
+                <th  class="ProjectCycles">Cycles</th> 
+                <th  class="ProjectAuthors">Auteurs</th> 
+            </tr> 
+            </thead> 
+            <tbody> 
+                <tal:loop tal:repeat="projet python:workflowstate[1]">
+                   <tr  tal:attributes="class python:oddrow and 'projet_even' or 'projet_odd'"
+                        tal:define="oddrow repeat/projet/odd;"> 
+                        <td  class="ProjectTitle">
+                        <span > 
+                        <a tal:attributes="href projet/getURL"
+                           tal:content="projet/Title" />
+                        </span>
+                      </td>
+                      <td  class="ProjectCycles">
+                       <span tal:repeat="cycle python:view.cycles(projet.getPath())">
+                        <a tal:attributes="href cycle/getURL"
+                           tal:content="cycle/Title" /> <br/>
+                        </span>
+                      </td>
+                        
+                    <td   class="ProjectAuthors"  
+                        tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canRequestReview())">
+                    <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
+                    </td>
+                </tr>
+                </tal:loop>
+            </table>
+              
+        </div><!-- col -->
+        </tal:block>
+    </div>
+</div>
+</div>
+</div>
+
+        <div tal:replace="structure provider:plone.belowcontentbody" />
+
+    </tal:main-macro>
+</metal:main>
+
+</body>
+</html>

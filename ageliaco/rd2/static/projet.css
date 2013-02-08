@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 th.ProjectAuthors,th.ProjectTitle{
     width : 45%;
 }
@@ -22,8 +21,6 @@ th.ProjectCycles{
     width: 55px;
 }
 
-=======
->>>>>>> f2e63215943cd86fda2a82080ea038461bc89e45
 .newprojet {
 	background: #CC1 url(blue.png) no-repeat -652px 0;
     padding:10px 10px 10px 10px;
@@ -48,7 +45,6 @@ th.ProjectCycles{
 	border-right:0.1em solid #aaa;	
 }
 
-<<<<<<< HEAD
 .printonly {
     display : none;
 }
@@ -93,9 +89,6 @@ th.ProjectCycles{
 #printer {
     float : right;
 }
-=======
-
->>>>>>> f2e63215943cd86fda2a82080ea038461bc89e45
  #cycleList {
 	background: #CCC url(blue.png) no-repeat -652px 0;
     float : right;
@@ -148,7 +141,6 @@ th.ProjectCycles{
 
 /* link inside the tab. uses a background image */
 .tabs a { 
-	background: #EEC url(blue.png) no-repeat -652px 0;
 	font-size:11px;
 	display:block;
 	height: 30px;  
@@ -244,7 +236,8 @@ th.ProjectCycles{
 #projets  {
   color   : black;
 }
-
+.list_projets {
+}
 /*
 .projet_odd, tr.projet_odd {
     background : #C1C1C1;
@@ -385,7 +378,10 @@ th.ProjectCycles{
 	float:left;	 
 }
 
+#local_search {
+    display: block; 
 
+}
 
 dt.opened
 {
@@ -588,7 +584,7 @@ caption {
   text-transform: uppercase;
 }
 thead, tfoot {
-background:url(bg1.png) repeat-x;
+background:url(bg.png) repeat-x;
 text-align:left;
 height:30px;
 }

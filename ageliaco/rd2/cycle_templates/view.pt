@@ -6,35 +6,15 @@
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="ageliaco.rd2">
       
-<head>
-    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <link rel="stylesheet" type="text/css" 
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.min.css"
-            />
-        <link rel="stylesheet" type="text/css" 
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
-            />
-        <link rel="stylesheet" type="text/css"  media="print"
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/print.css"
-            />
-
+ <head>
+    <metal:block fill-slot="style_slot">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
     </metal:block>
-    <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <script type="text/javascript" 
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
-            src="#">
-        </script>
-        <script type="text/javascript" 
-            tal:attributes="src string:${navroot}/++resource++yafowil.widget.richtext/widget.js"
-            src="#">
-        </script>
-	
-        <script type="text/javascript"  
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.min.js">
-         </script>
-
+    <metal:block fill-slot="javascript_head_slot" >
+        <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
     </metal:block>
-</head>         
+ 
+</head>
       
 <body>
 
@@ -57,8 +37,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-<a class="noprint" id="printer" href="javascript:window.print()"><img alt="Imprimer cette page" 
-title="Imprimer cette page" tal:attributes="src  string:++resource++ageliaco.rd2/printer.png"/></a>
+<a class="noprint" id="printer" href="javascript:window.print()" title="Imprimer cette page" ><h3 class="icon-print"></h3></a>
 
 
         <h1 class="documentFirstHeading" tal:content="context/title" />
@@ -75,7 +54,7 @@ title="Imprimer cette page" tal:attributes="src  string:++resource++ageliaco.rd2
 <h3  i18n:translate="heading_auteurs"
     tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()),withTotal=view.canRequestReview())">Auteurs 
             <span class="noprint"  tal:condition="view/canModifyContent">
-              <a title="Ajouter un auteur" class="addAuteur" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur">+</a>
+              <a title="Ajouter un auteur" class="addAuteur" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur"><i class="icon-plus-sign-alt"></i></a>
             </span>
 </h3>
                     <span metal:use-macro="context/@@interface/macros/list_auteurs"/>

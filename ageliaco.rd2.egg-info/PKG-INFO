@@ -1,8 +1,8 @@
 Metadata-Version: 1.1
 Name: ageliaco.rd2
-Version: 0.6
+Version: 0.7
 Summary: new implementantion of RD service
-Home-page: http://svn.plone.org/svn/collective/
+Home-page: https://github.com/renfers/ageliaco.rd2
 Author: Serge Renfer
 Author-email: serge.renfer@gmail.com
 License: GPL
@@ -11,7 +11,11 @@ Description: Introduction
         
         
         
-        This product may contain traces of nuts.
+        This product helps managing a service in the post-obligatory schools of Geneva.
+        "Ressource & Developpement" is a service that manages resources (hours of teaching used
+        to produce a pedagogic project) to help teachers bring new teaching resources.
+        
+        This is an experimental project, to see how far I can push this dexterity/Plone matter ;-)
         
         Changelog
         =========

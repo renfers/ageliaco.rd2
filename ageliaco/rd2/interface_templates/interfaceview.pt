@@ -1,0 +1,292 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en">
+<head>
+
+</head>
+<body>
+    <metal:css_head define-macro="css_head_slot">
+     <tal:css  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
+            />
+        <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.css"
+            />
+        <link rel="stylesheet" href="bootstrap/js/themes/blue/style.css" type="text/css" media="print, projection, screen"
+                tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/themes/blue/style.css"
+         />
+
+        <link rel="stylesheet" href="assets/css/prettify.css"
+         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/prettify.css"
+         >
+      <link rel="stylesheet" href="assets/css/font-awesome.css"
+         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome.css"
+         >
+      <!--[if IE 7]>
+      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"
+         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome-ie7.min.css"
+         >
+      <![endif]-->
+     </tal:css>
+    </metal:css_head>
+     
+
+
+    <metal:js define-macro="js_head_slot">
+     <tal:js  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <script type="text/javascript" 
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
+            src="#">
+        </script>
+        
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.js">
+         </script>
+         
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.form.js">
+         </script>
+
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.overlayhelpers.js">
+         </script>
+        <script type="text/javascript"  
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.js">
+         </script>
+        <script type="text/javascript" 
+            tal:attributes="src string:${navroot}/++resource++yafowil.widget.richtext/widget.js"
+            src="#">
+        </script>
+        <script type="text/javascript"  
+                tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/prettify.min.js">
+        </script>
+        <script type="text/javascript"  
+                tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/jquery.tablesorter.min.js">
+        </script>
+
+        <script >
+        $(document).ready(function() { 
+            // call the tablesorter plugin, the magic happens in the markup 
+            $("table").tablesorter(); 
+        }); 
+        </script>
+     </tal:js>
+    </metal:js>
+
+<!-- ex: tal:define="authors python:view.authors(projet.getPath())" => authors must be defined
+    as a search result of authors -->
+    <metal:my define-macro="list_auteurs"
+        >
+    <tal:block define="authors python:view.authors(view.objectPath);
+                        member context/portal_membership/getAuthenticatedMember; 
+                        roles python:member.getRolesInContext(context);">
+    <table  class="table table-striped table-condensed list_projets">
+    <tal:auteurs tal:repeat="author authors" >
+      <tal:auteur>
+           <tr>
+           <td><span tal:replace="author/firstname"/> <span tal:replace="author/lastname"/>
+  
+           </td>
+            <td><span tal:condition="not:  here/portal_membership/isAnonymousUser"
+                tal:content="author/email">email</span>
+                </td>
+            <td tal:content="author/school"/>  
+            </tr>
+            <tr tal:condition="python:view.canRequestReview() or view.canModifyContent()"><td colspan="2" >
+            <table style="width:100%; margin-bottom:0px"><tr>
+            <th style="text-align:right">Dégrèvement:</th><th style="text-align:right">demandé</th>
+            <th style="text-align:right">SEM</th><th style="text-align:right">RD</th>
+            <th style="text-align:right">Ecole</th></tr>
+            <tr><th>&nbsp;</th>
+                <tal:heure repeat="heure python:view.sponsorasked(author)">
+                    <td  style="text-align:right"
+                        tal:content="heure"/>
+                    </tal:heure>
+            </tr>
+            </table></td>
+            <td class="noprint"  tal:condition="view/canModifyContent"><div >
+                <ul class="the-icons">
+                    <li><a title="Editer cet auteur" class='editAuteur'  
+	        tal:attributes="href python:author.getURL() + '/edit'" href="#"><i class="icon-pencil"></i>
+            </a></li>
+                    <li><a title="Supprimer cet auteur" class='delAuteur'  
+	        tal:attributes="href python:author.getURL() + '/delete_confirmation'" href="#"><i class="icon-remove"></i>
+            </a></li></ul></div>
+            </td>
+        </tr>
+      </tal:auteur>
+    </tal:auteurs>
+        <tr tal:condition="python:view.canRequestReview() or view.canModifyContent()"><td colspan="3" >
+        <table style="width:100%; margin-bottom:0px"><tr>
+
+            <tr>
+                <th>Totaux</th>
+                <tal:heure repeat="heure python: view.getSponsoring()">
+                    <td  style="text-align:right"
+                        tal:content="heure"/>
+                    </tal:heure>
+            </tr>
+        </table></td>
+        </tr>            
+    </table>
+    </tal:block>
+    </metal:my>
+    
+    <metal:keywords define-macro="keyword_search"
+        >
+            <div tal:content="structure python:view.multiselect()">form</div>  
+            <tal:table define="projects python:view.results()">
+            <table  class="table table-striped table-condensed tablesorter" id="keywordSearchTable"
+             tal:define="isAnonymous here/portal_membership/isAnonymousUser"
+             tal:condition="python:len(projects)"> 
+            <thead> 
+            <tr> 
+                <th>Titre</th> 
+                <th >Cycles</th> 
+                <th>Auteurs</th> 
+            </tr> 
+            </thead> 
+            <tbody> 
+                <tal:loop tal:repeat="projet projects">
+                   <tr  tal:attributes="class python:oddrow and 'projet_even' or 'projet_odd'"
+                        tal:define="oddrow repeat/projet/odd;"> 
+                        <td>
+                        <span > 
+                        <a tal:attributes="href projet/getURL"
+                           tal:content="projet/Title" />
+                        </span>
+                      </td>
+                      <td >
+                       <span tal:repeat="cycle python:view.cycles(projet.getPath())">
+                        <a tal:attributes="href cycle/getURL"
+                           tal:content="cycle/Title" /> <br/>
+                        </span>
+                      </td>
+                    <td   class="ProjectAuthors"  
+                        tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canRequestReview())">
+                    <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
+                    </td>
+<!--                        
+                    <td tal:define="authors python:view.authors(projet.getPath())">
+                    <table  class="table table-striped table-condensed">
+                    <tal:auteurs tal:repeat="author authors" >
+                    <tr>
+                      <tal:block1  define="auteur author">
+                       <td><span tal:replace="auteur/firstname"/> <span tal:replace="auteur/lastname"/></td>
+                        <td><span tal:condition="not: isAnonymous"
+                            tal:content="auteur/email">email</span>
+                            </td>
+                        <td tal:content="auteur/school"/>  
+                        
+                    </tal:block1>
+                      </tr>
+                    </tal:auteurs>
+                    </table>
+                    </td>
+-->
+                </tr>
+                </tal:loop>
+            </tbody>
+            </table> 
+
+        </tal:table>
+    </metal:keywords>
+
+    <metal:keywords define-macro="cycles_by_states"
+        >
+            <div tal:content="structure python:view.multiselect('review_state')">form</div>  
+            <tal:table define="cycles python:view.results()">
+            <table  class="table table-striped table-condensed tablesorter" id="cyclesByStatesTable"
+             tal:define="isAnonymous here/portal_membership/isAnonymousUser"
+             tal:condition="python:len(cycles)"> 
+            <thead> 
+            <tr> 
+                <th style="width:50px">Id</th> 
+                <th>Titre</th> 
+                <th >Etat</th> 
+                <th >Superviseur</th> 
+                <th>Auteurs</th> 
+            </tr> 
+            </thead> 
+            <tbody> 
+                <tal:loop tal:repeat="cycle cycles">
+                 <tal:block define="objet cycle/getObject">
+                   <tr > 
+                        <td>
+                        <span > 
+                        <a tal:attributes="href cycle/getURL"
+                           tal:content="cycle/id" />
+                        </span>
+                      </td>
+                        <td>
+                        <span > 
+                        <a tal:attributes="href cycle/getURL"
+                           tal:content="cycle/Title" />
+                        </span>
+                      </td>
+                        <td>
+                        <span > 
+                        <a tal:attributes="href cycle/getURL"
+                           tal:content="cycle/review_state" />
+                        </span>
+                      </td>
+                      <td tal:content="python:objet.supervisor">supervisor
+                      </td>
+                    <td   class="ProjectAuthors"  
+                        tal:define="objectPath python:view.setObjectPath(cycle.getPath(),withTotal=view.canRequestReview())">
+                    <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
+                    </td>
+<!--                        
+                    <td tal:define="authors python:view.authors(projet.getPath())">
+                    <table  class="table table-striped table-condensed">
+                    <tal:auteurs tal:repeat="author authors" >
+                    <tr>
+                      <tal:block1  define="auteur author">
+                       <td><span tal:replace="auteur/firstname"/> <span tal:replace="auteur/lastname"/></td>
+                        <td><span tal:condition="not: isAnonymous"
+                            tal:content="auteur/email">email</span>
+                            </td>
+                        <td tal:content="auteur/school"/>  
+                        
+                    </tal:block1>
+                      </tr>
+                    </tal:auteurs>
+                    </table>
+                    </td>
+-->
+                </tr>
+                </tal:block>
+                </tal:loop>
+            </tbody>
+            </table> 
+
+        </tal:table>
+    </metal:keywords>
+    
+    <metal:projets_menu define-macro="projets_menu"
+        >
+        <div class="btn-group"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            Autres vues
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu"  role="menu" aria-labelledby="dLabel">
+            <!-- dropdown menu links -->
+                  <li class="btn-projets-menu active">
+                        <a href="#"  tal:attributes="href string:${here/absolute_url}">Projets terminés</a></li>
+                  <li class="btn-projets-menu"><a href="@@stateview" tal:attributes="href string:${here/absolute_url}/@@stateview">Projets par états</a></li>
+                  <li class="btn-projets-menu"><a href="@@keywordview"  tal:attributes="href string:${here/absolute_url}/@@keywordview">Recherche par mots-clé</a></li>
+                  <li class="btn-projets-menu"><a href="@@localsearch"  tal:attributes="href string:${here/absolute_url}/@@localsearch">Recherche dans les projets</a></li>
+                  <li class="btn-projets-menu" tal:condition="view/canRequestReview">
+                    <a href="@@cyclesview"  tal:attributes="href string:${here/absolute_url}/@@cyclesview">Cycles par états</a></li>
+          </ul>
+        
+        </div>                
+
+    </metal:projets_menu>
+
+</body>
+</html>

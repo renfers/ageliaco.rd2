@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="ageliaco.rd2">
+ <head>
+    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+     
+
+      <link tal:attributes="href  string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/css/multi-select.css"
+            href="#"
+            rel="stylesheet"
+            type="text/css"
+            media="all" />
+    
+    
+      <link tal:attributes="href  string:${navroot}/++resource++yafowil.widget.multiselect/widget.css"
+            href="#"
+            rel="stylesheet"
+            type="text/css"
+            media="all" />
+
+     
+    </metal:block>
+<metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
+    <script tal:attributes="src string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/js/jquery.multi-select.js"></script>
+    <script tal:attributes="src string:${navroot}/++resource++yafowil.widget.multiselect/widget.js"></script>
+</metal:block>
+ 
+</head>
+<body>
+
+<metal:main fill-slot="main"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <tal:main-macro metal:define-macro="main"
+        tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
+                    DateTime python:modules['DateTime'].DateTime">
+
+        <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
+
+     <!--     <p class="documentDescription" tal:content="context/description" /> -->
+
+        <div tal:replace="structure provider:plone.abovecontentbody" />
+        
+     <div metal:use-macro="context/@@interface/macros/projets_menu"/>        
+ 
+       
+<h3>Recherche de projets par mots-clé</h3>
+    <span metal:use-macro="context/@@interface/macros/keyword_search"/>
+        <div tal:replace="structure provider:plone.belowcontentbody" />
+
+    </tal:main-macro>
+</metal:main>
+
+</body>
+</html>
