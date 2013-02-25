@@ -7,7 +7,7 @@ from z3c.form import field, button
 
 #from cycle import Projet
 
-from ageliaco.rd2 import _
+from ageliaco.rd2 import MessageFactory
 
 # for debug purpose => log(...)
 from Products.CMFPlone.utils import log
@@ -68,7 +68,7 @@ class IProjets(form.Schema):
     Projets de Projet RD
     """
     presentation = RichText(
-            title=_(u"Projets R&D"),
+            title=MessageFactory(u"Projets R&D"),
             required=True,
         )    
 

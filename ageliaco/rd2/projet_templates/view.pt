@@ -7,30 +7,12 @@
       i18n:domain="ageliaco.rd2">
       
 <head>
-    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-    <!--    <link rel="stylesheet" type="text/css" 
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.min.css"
-            />
-     -->
-        <link rel="stylesheet" type="text/css" 
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
-            />
-    </metal:block>
-    <metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <script type="text/javascript" 
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
-            src="#">
-        </script>
-        <script type="text/javascript" 
-            tal:attributes="src string:${navroot}/++resource++yafowil.widget.richtext/widget.js"
-            src="#">
-        </script>
-	
-        <script type="text/javascript"  
-            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.min.js">
-         </script>
-
-    </metal:block>
+    <metal:block1 fill-slot="style_slot">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+    </metal:block1>
+    <metal:block2 fill-slot="javascript_head_slot" >
+        <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
+    </metal:block2>
 </head>     
       
 <body>
@@ -41,6 +23,7 @@
     <div 
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
                 navroot context/@@plone_portal_state/navigation_root_url">
+    <div metal:use-macro="context/@@interface/macros/projet_menu"/>
 
 <div id="realisation" tal:condition="python: view.hasLink() or view.hasRealisation()">
 <h3 tal:condition="python: view.hasLink()"><a tal:attributes="href view/hasLink">Lien vers réalisation</a></h3>

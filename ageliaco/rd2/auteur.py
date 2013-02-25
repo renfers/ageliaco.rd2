@@ -7,7 +7,7 @@ from plone.formwidget.contenttree import ObjPathSourceBinder
 
 from plone.directives import form, dexterity
 
-from ageliaco.rd2 import _
+from ageliaco.rd2 import MessageFactory
 
 from interface import IAuteur
 

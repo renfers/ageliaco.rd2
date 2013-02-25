@@ -1,15 +1,19 @@
+import doctest
 import unittest
 
-#from zope.testing import doctestunit
-#from zope.component import testing
 from Testing import ZopeTestCase as ztc
 
-from Products.Five import fiveconfigure
+from Products.Five import zcml
 from Products.PloneTestCase import PloneTestCase as ptc
 from Products.PloneTestCase.layer import PloneSite
-ptc.setupPloneSite()
+from Products.PloneTestCase.layer import onsetup
 
 import ageliaco.rd2
+
+OPTION_FLAGS = doctest.NORMALIZE_WHITESPACE | \
+               doctest.ELLIPSIS
+
+ptc.setupPloneSite(products=['ageliaco.rd2'])
 
 
 class TestCase(ptc.PloneTestCase):
@@ -18,9 +22,8 @@ class TestCase(ptc.PloneTestCase):
 
         @classmethod
         def setUp(cls):
-            fiveconfigure.debug_mode = True
-            ztc.installPackage(ageliaco.rd2)
-            fiveconfigure.debug_mode = False
+            zcml.load_config('configure.zcml',
+              ageliaco.rd2)
 
         @classmethod
         def tearDown(cls):
@@ -41,12 +44,16 @@ def test_suite():
 
 
         # Integration tests that use PloneTestCase
-        #ztc.ZopeDocFileSuite(
-        #    'README.txt', package='ageliaco.rd2',
-        #    test_class=TestCase),
+        ztc.ZopeDocFileSuite(
+            'INTEGRATION.txt', 
+            package='ageliaco.rd2',
+            optionflags = OPTION_FLAGS,
+            test_class=TestCase),
 
         #ztc.FunctionalDocFileSuite(
-        #    'browser.txt', package='ageliaco.rd2',
+        #    'BROWSER.TXT',
+        #    package='ageliaco.rd2',
+        #    optionflags = OPTION_FLAGS,
         #    test_class=TestCase),
 
         ])

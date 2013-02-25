@@ -7,7 +7,7 @@ from plone.formwidget.contenttree import ObjPathSourceBinder
 
 from plone.directives import form, dexterity
 
-from ageliaco.rd2 import _
+from ageliaco.rd2 import MessageFactory
 
 
 import datetime
@@ -77,13 +77,13 @@ class INote(form.Schema):
     # -*- Your Zope schema definitions here ... -*-
     
     title = schema.TextLine(
-            title=_(u"Titre"),
+            title=MessageFactory(u"Titre"),
             required=False,
         )    
 
     #form.widget(presence=AutocompleteMultiFieldWidget)
     presence = schema.Text(
-            title=_(u"Personnes présentes"),
+            title=MessageFactory(u"Personnes présentes"),
             #default=[],
             #value_type=schema.Choice(source=possibleAttendees,),            
             required=False,
@@ -91,33 +91,33 @@ class INote(form.Schema):
 
     #form.widget(absence=AutocompleteMultiFieldWidget)
     absence = schema.Text(
-            title=_(u"Personnes absentes"),
+            title=MessageFactory(u"Personnes absentes"),
             #default=[],
             #value_type=schema.Choice(source=possibleAttendees,),            
             required=False,
         )
 
     presentation = RichText(
-            title=_(u"Notes de séance"),
-            description=_(u"Compte-rendu de l'avancement du projet"),
+            title=MessageFactory(u"Notes de séance"),
+            description=MessageFactory(u"Compte-rendu de l'avancement du projet"),
             required=False,
         )    
 
     dexterity.read_permission(reviewNotes='cmf.ReviewPortalContent')
     dexterity.write_permission(reviewNotes='cmf.ReviewPortalContent')
     reviewNotes = RichText(
-            title=_(u"Notes internes"),
-            description=_(u"Notes visibles que par R&D"),
+            title=MessageFactory(u"Notes internes"),
+            description=MessageFactory(u"Notes visibles que par R&D"),
             required=False,
         )    
     
     nextmeeting = schema.Datetime(
-            title=_(u"Date du prochain rendez-vous"),
+            title=MessageFactory(u"Date du prochain rendez-vous"),
             required=False,
         )
 
     meetingplace = schema.TextLine(
-            title=_(u"Lieu du prochain rendez-vous"),
+            title=MessageFactory(u"Lieu du prochain rendez-vous"),
             required=False,
         )    
 

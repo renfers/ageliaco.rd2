@@ -11,7 +11,7 @@ from plone.z3cform.textlines import TextLinesFieldWidget
 
 from zope.interface import invariant, Invalid
 
-from interface import IProjet, IAuteur, ICycle, idDefaultFromContext
+from interface import IProjet, IAuteur, ICycle, idDefaultFromContext, InterfaceView
 from interface import cycle_default_problematique, cycle_default_projet_presentation
 from note import INote
 
@@ -42,7 +42,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 from zope.component import queryUtility
 
  
-from ageliaco.rd2 import _
+from ageliaco.rd2 import MessageFactory
 
 
 
@@ -674,4 +674,8 @@ class View(grok.View,Form):
         #             print "no Property 'link'"
         return ''
     
-            
+class CyclesView(InterfaceView):
+    grok.context(IProjet)
+    grok.require('zope2.View')
+    grok.name('cyclesview')
+    pass         

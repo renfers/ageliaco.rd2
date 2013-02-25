@@ -27,7 +27,6 @@ from plone.indexer import indexer
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.schema.fieldproperty import FieldProperty
 
-from ageliaco.rd2 import _
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 
 import datetime
@@ -52,7 +51,7 @@ from zope.component import getUtility
 from Products.CMFCore.interfaces import ISiteRoot
 from zope.security import checkPermission
 
-from ageliaco.rd2 import _
+from ageliaco.rd2 import MessageFactory
 
 #from projet import IProjet
 from interface import ICycle, IAuteur, InterfaceView
@@ -239,11 +238,14 @@ class View(InterfaceView):
     
 @indexer(ICycle)
 def searchableIndexer(context):
-    return u"%s %s %s %s" % (context.title, 
+    try:
+        return u"%s %s %s %s" % (context.title, 
                             context.description, 
                             context.problematique, 
                             context.presentation)
-
+    except:
+        log( 'tOO BAD an INDEX (bad cycle) : ' + context.absolute_url())
+        return u""        
 grok.global_adapter(searchableIndexer, name="SearchableText")
 
 

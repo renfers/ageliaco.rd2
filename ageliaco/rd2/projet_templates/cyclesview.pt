@@ -47,7 +47,7 @@
 
         <div tal:replace="structure provider:plone.abovecontentbody" />
         
-     <div metal:use-macro="context/@@interface/macros/projets_menu"/>        
+     <div metal:use-macro="context/@@interface/macros/projet_menu"/>        
  
        
 <h3>Cycles par états</h3>

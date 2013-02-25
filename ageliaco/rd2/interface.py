@@ -25,7 +25,7 @@ from zope.schema.vocabulary import SimpleVocabulary
 import unicodedata
 from zope.interface import invariant, Invalid, Interface
 
-from ageliaco.rd2 import _
+from ageliaco.rd2 import MessageFactory
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 
 import datetime
@@ -190,60 +190,60 @@ class IAuteur(form.Schema):
     #
     #     form.widget(id=AutocompleteFieldWidget)
     #     id = schema.Choice(
-    #             title=_(u"Pseudo"),
-    #             description=_(u"Login p10"),
+    #             title=MessageFactory(u"Pseudo"),
+    #             description=MessageFactory(u"Login p10"),
     #             vocabulary=u"plone.principalsource.Users",
     #             required=True,
     #         )
     id = schema.TextLine(
-            title=_(u"id"),
-            description=_(u"Identifiant (login)"),
+            title=MessageFactory(u"id"),
+            description=MessageFactory(u"Identifiant (login)"),
             required=True,
         )
 
 
 
     lastname = schema.TextLine(
-            title=_(u"Nom"),
-            description=_(u"Nom de famille"),
+            title=MessageFactory(u"Nom"),
+            description=MessageFactory(u"Nom de famille"),
             required=True,
         )
 
     firstname = schema.TextLine(
-            title=_(u"Prénom"),
-            description=_(u"Prénom"),
+            title=MessageFactory(u"Prénom"),
+            description=MessageFactory(u"Prénom"),
             required=True,
         )
 
     school = schema.Choice(
-            title=_(u"Ecole"),
-            description=_(u"Etablissement scolaire de référence"),
+            title=MessageFactory(u"Ecole"),
+            description=MessageFactory(u"Etablissement scolaire de référence"),
             vocabulary=u"ageliaco.rd2.schools",
             default='',
             required=True,
         )
 
     address = schema.Text(
-            title=_(u"Adresse"),
-            description=_(u"Adresse postale"),
+            title=MessageFactory(u"Adresse"),
+            description=MessageFactory(u"Adresse postale"),
             required=False,
         )
         
     email = schema.TextLine(
-            title=_(u"Email"),
-            description=_(u"Adresse courrielle"),
+            title=MessageFactory(u"Email"),
+            description=MessageFactory(u"Adresse courrielle"),
             required=True,
         )
 
     phone = schema.TextLine(
-            title=_(u"Téléphone"),
-            description=_(u"Téléphone"),
+            title=MessageFactory(u"Téléphone"),
+            description=MessageFactory(u"Téléphone"),
             required=False,
         )
     
     sponsorasked = schema.Choice(
-            title=_(u"Dégrèvement demandé"),
-            description=_(u"Dégrèvement total demandé pour cet auteur"),
+            title=MessageFactory(u"Dégrèvement demandé"),
+            description=MessageFactory(u"Dégrèvement total demandé pour cet auteur"),
             vocabulary=u"ageliaco.rd2.sponsorship",
             required=True,
         )
@@ -251,8 +251,8 @@ class IAuteur(form.Schema):
     dexterity.read_permission(sponsorSEM='cmf.ReviewPortalContent')
     dexterity.write_permission(sponsorSEM='cmf.ReviewPortalContent')
     sponsorSEM = schema.Choice(
-            title=_(u"Dégrèvement SEM"),
-            description=_(u"Dégrèvement SEM attribué pour cet auteur"),
+            title=MessageFactory(u"Dégrèvement SEM"),
+            description=MessageFactory(u"Dégrèvement SEM attribué pour cet auteur"),
             vocabulary=u"ageliaco.rd2.sponsorship",
             required=False,
         )
@@ -260,8 +260,8 @@ class IAuteur(form.Schema):
     dexterity.read_permission(sponsorRD='cmf.ReviewPortalContent')
     dexterity.write_permission(sponsorRD='cmf.ReviewPortalContent')
     sponsorRD = schema.Choice(
-            title=_(u"Dégrèvement R&D"),
-            description=_(u"Dégrèvement R&D attribué pour cet auteur"),
+            title=MessageFactory(u"Dégrèvement R&D"),
+            description=MessageFactory(u"Dégrèvement R&D attribué pour cet auteur"),
             vocabulary=u"ageliaco.rd2.sponsorship",
             required=False,
         )
@@ -269,8 +269,8 @@ class IAuteur(form.Schema):
     dexterity.read_permission(sponsorSchool='cmf.ReviewPortalContent')
     dexterity.write_permission(sponsorSchool='cmf.ReviewPortalContent')
     sponsorSchool= schema.Choice(
-            title=_(u"Dégrèvement Ecole"),
-            description=_(u"Dégrèvement école attribué pour cet auteur"),
+            title=MessageFactory(u"Dégrèvement Ecole"),
+            description=MessageFactory(u"Dégrèvement école attribué pour cet auteur"),
             vocabulary=u"ageliaco.rd2.sponsorship",
             required=False,
         )
@@ -293,31 +293,31 @@ class IProjet(form.Schema):
     Projet RD
     """
     start = schema.TextLine(
-            title=_(u"Année"),
-            description=_(u"L'année à laquelle le projet a commencé ou devrait commencer"),
+            title=MessageFactory(u"Année"),
+            description=MessageFactory(u"L'année à laquelle le projet a commencé ou devrait commencer"),
             required=True,
         )
 
     duration = schema.Int(
-            title=_(u"Durée"),
-            description=_(u"Durée (en années) du projet, prévue ou effective"),
+            title=MessageFactory(u"Durée"),
+            description=MessageFactory(u"Durée (en années) du projet, prévue ou effective"),
             required=True,
         )
     
     presentation = RichText(
-            title=_(u"Présentation"),
-            description=_(u"Présentation synthétique du projet (présentation publiée)"),
+            title=MessageFactory(u"Présentation"),
+            description=MessageFactory(u"Présentation synthétique du projet (présentation publiée)"),
             required=True,
         )    
 
     picture = NamedImage(
-            title=_(u"Chargez une image pour le projet"),
+            title=MessageFactory(u"Chargez une image pour le projet"),
             required=False,
         )
 
     lien = schema.TextLine(
-            title=_(u"Lien vers la réalisation"),
-            description=_(u"Lien extérieur vers la réalisation"),
+            title=MessageFactory(u"Lien vers la réalisation"),
+            description=MessageFactory(u"Lien extérieur vers la réalisation"),
             required=False,
         )
 
@@ -418,51 +418,51 @@ class ICycle(form.Schema):
     
     # -*- Your Zope schema definitions here ... -*-
     id = schema.TextLine(
-            title=_(u"Identifiant"),
-            description=_(u"Ne pas changer celui donné par défaut! Merci!"),
+            title=MessageFactory(u"Identifiant"),
+            description=MessageFactory(u"Ne pas changer celui donné par défaut! Merci!"),
             required=True,
         )
     title = schema.TextLine(
-            title=_(u"Titre"),
-            description=_(u"Titre bref du projet"),
+            title=MessageFactory(u"Titre"),
+            description=MessageFactory(u"Titre bref du projet"),
             required=True,
         )
     description = schema.Text(
-            title=_(u"Sous-titre"),
-            description=_(u"Sous-titre du projet"),
+            title=MessageFactory(u"Sous-titre"),
+            description=MessageFactory(u"Sous-titre du projet"),
             required=False,
         )
     presentation = RichText(
-            title=_(u"Présentation succincte du projet"),
-            description=_(u"Présentation succincte du projet (synopsis)"),
+            title=MessageFactory(u"Présentation succincte du projet"),
+            description=MessageFactory(u"Présentation succincte du projet (synopsis)"),
             required=True,
         )    
 
     #form.widget(projet=AutocompleteFieldWidget)
     projet = schema.Choice(
-            title=_(u"Projet existant"),
-            description=_(u"Lien vers un projet existant"),
+            title=MessageFactory(u"Projet existant"),
+            description=MessageFactory(u"Lien vers un projet existant"),
             source=activeProjects,
             required=False,
         )
             
     dexterity.write_permission(supervisor='cmf.ReviewPortalContent')
     supervisor = schema.Choice(
-            title=_(u"Superviseur"),
-            description=_(u"Personne de R&D qui supervise ce projet"),
+            title=MessageFactory(u"Superviseur"),
+            description=MessageFactory(u"Personne de R&D qui supervise ce projet"),
             source=GroupMembers('superviseur'),
             required=False,
         )
         
     problematique = RichText(
-            title=_(u"Problématique"),
-            description=_(u"Problématique et contexte du projet"),
+            title=MessageFactory(u"Problématique"),
+            description=MessageFactory(u"Problématique et contexte du projet"),
             required=False,
         )    
         
 #     objectifs = RichText(
-#             title=_(u"Objectifs"),
-#             description=_(u"Objectifs, moyens nécessaires et résultats escomptés du projet pour l'année"),
+#             title=MessageFactory(u"Objectifs"),
+#             description=MessageFactory(u"Objectifs, moyens nécessaires et résultats escomptés du projet pour l'année"),
 #             required=False,
 #         )    
 
@@ -570,6 +570,7 @@ class InterfaceView(grok.View,Form):
     multikey = '@@keywordview'
     indx = 'Subject'
     searchType = IProjet.__identifier__
+    pathDepth = 0
     
     def set2float(self,value):
         if not value:
@@ -643,8 +644,9 @@ class InterfaceView(grok.View,Form):
                             self.set2float(author.sponsorRD) + self.set2float(author.sponsorSEM)
         return (author.sponsorasked,author.sponsorSEM,author.sponsorRD,author.sponsorSchool)
         
-    def multiselect(self,indx='Subject'):
+    def multiselect(self,indx='Subject',pathDepth=0):
         self.indx = indx
+        self.pathDepth = pathDepth # 0 means everywhere
         catalog = getToolByName(self.context, 'portal_catalog')
         wtool = getToolByName(self.context, 'portal_workflow', None)
         if indx == 'Subject':
@@ -674,7 +676,7 @@ class InterfaceView(grok.View,Form):
         form['submit'] = factory(
             'field:submit',
             props={
-                'label': _(u'Lancer la recherche'),
+                'label': MessageFactory(u'Lancer la recherche'),
                 'submit.class': '',
                 'handler': self._form_handler,
                 'action': 'search'
@@ -692,6 +694,9 @@ class InterfaceView(grok.View,Form):
     
         query[self.indx] = self.searchterm
         query['object_provides'] = self.searchType
+        if self.pathDepth:
+            localpath = {'query': '/'.join(context.getPhysicalPath()), 'depth': self.pathDepth}
+            query['path'] = localpath
         #print query
         return cat(**query)                
     def _form_action(self, widget, data):
