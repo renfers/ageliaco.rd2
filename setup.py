@@ -1,18 +1,19 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.7'
+version = '0.8'
 
 setup(name='ageliaco.rd2',
       version=version,
-      description="new implementantion of RD service",
+      description="Product to manage project with annual cycles",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from
-      # http://pypi.python.org/pypi?:action=list_classifiers
+      # http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
         "Programming Language :: Python",
+        "Topic :: Software Development :: Libraries :: Python Modules",
         ],
       keywords='ageliaco rd project management',
       author='Serge Renfer',
@@ -25,8 +26,8 @@ setup(name='ageliaco.rd2',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'plone.app.dexterity',
-          'collective.autopermission',
+          'plone.app.dexterity [grok,relations]',
+          'plone.namedfile [blobs]',
           # -*- Extra requirements: -*-
           'Plone',
           'plone.principalsource',
@@ -36,7 +37,6 @@ setup(name='ageliaco.rd2',
           'plone.formwidget.namedfile',
           'plone.app.versioningbehavior',
           'collective.z3cform.datagridfield',
-          'collective.z3cform.wizard',
           'yafowil >= 2.0.2',
           'yafowil.plone >= 2.0.1',
           'yafowil.widget.richtext >= 1.3.1dev',
@@ -44,10 +44,13 @@ setup(name='ageliaco.rd2',
         ],
       entry_points="""
       # -*- Entry points: -*-
-
       [z3c.autoinclude.plugin]
       target = plone
       """,
+      # The next two lines may be deleted after you no longer need
+      # addcontent support from paster and before you distribute
+      # your package.
       setup_requires=["PasteScript"],
-      paster_plugins=["ZopeSkel"],
+      paster_plugins = ["ZopeSkel"],
+
       )
