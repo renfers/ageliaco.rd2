@@ -25,53 +25,13 @@
 
         <div tal:replace="structure provider:plone.belowcontenttitle" />
 
-     <!--     <p class="documentDescription" tal:content="context/description" /> -->
-
         <div tal:replace="structure provider:plone.abovecontentbody" />
 
 
     <div metal:use-macro="context/@@interface/macros/projets_menu"/>
 
-    <div tal:define="projets python:view.projets('published');">
-    <div class="tab-content">
+        <div metal:use-macro="context/@@interface/macros/published_projets"/>
 
-            <table  class="table table-striped table-condensed tablesorter"> 
-            <thead> 
-            <tr> 
-                <th class="ProjectTitle">Titre</th> 
-                <th class="ProjectCycles">Cycles</th> 
-                <th class="ProjectAuthors">Auteurs</th> 
-        <!--        <th class="ProjectSupervisor" tal:condition="view/canRequestReview">Superviseur</th> -->
-            </tr> 
-            </thead> 
-            <tbody> 
-                <tal:loop tal:repeat="projet projets">
-                   <tr > 
-                        <td  class="ProjectTitle">
-                        <span > 
-                        <a tal:attributes="href projet/getURL"
-                           tal:content="projet/Title" />
-                        </span>
-                      </td>
-                      <td   class="ProjectCycles">
-                       <span tal:repeat="cycle python:view.cycles(projet.getPath())">
-                        <a tal:attributes="href cycle/getURL"
-                           tal:content="cycle/Title" /> <br/>
-                        </span>
-                      </td>
-                    <td   class="ProjectAuthors" tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canRequestReview())">
-                    <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
-                    </td>
-       <!--             <td tal:condition="view/canRequestReview" tal:define="obj python:cycle.getObject()"><span tal:replace="obj/supervisor"/>
-                    </td>
-      -->
-                </tr>
-                </tal:loop>
-            </tbody>
-            </table> 
-
-    </div>
-</div>
 
         <div tal:replace="structure provider:plone.belowcontentbody" />
 

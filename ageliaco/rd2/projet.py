@@ -426,7 +426,7 @@ class View(grok.View,Form):
         form['newprojet'] = factory(
             'field:label:error:text',
             props={
-                'label': _(u'Titre du nouveau projet : '),
+                'label': MessageFactory(u'Titre du nouveau projet : '),
                 'field.class': 'field',
                 'text.class': 'text',
                 'size': '80',
@@ -434,7 +434,7 @@ class View(grok.View,Form):
         form['submit'] = factory(
             'field:submit',
             props={
-                'label': _(u'Créer un nouveau projet'),
+                'label': MessageFactory(u'Créer un nouveau projet'),
                 'submit.class': 'btn-primary',
                 'handler': self._form_handler,
                 'action': 'save',
@@ -446,13 +446,13 @@ class View(grok.View,Form):
         reconductionform = form['reconduction'] = factory(
             'fieldset',
             props={
-                'legend': _(u'Reconduction d\'un projet existant'),
+                'legend': MessageFactory(u'Reconduction d\'un projet existant'),
                 'class': 'reconduction',
         })
         reconductionform['projet'] = factory(
             'field:label:error:select',
             props={
-                'label': _(u'Reconduire le projet choisi dans la liste'),
+                'label': MessageFactory(u'Reconduire le projet choisi dans la liste'),
                 'field.class': 'field',
                 'select.class': 'select',
                 'vocabulary': self.activeProjets,
@@ -460,7 +460,7 @@ class View(grok.View,Form):
         reconductionform['submit'] = factory(
             'field:submit',
             props={
-                'label': _(u'Reconduire le projet'),
+                'label': MessageFactory(u'Reconduire le projet'),
                 'submit.class': 'btn-primary',
                 'handler': self.form_handler2,
                 'action': 'save',

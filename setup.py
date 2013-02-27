@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.8'
+version = '0.8.1'
 
 setup(name='ageliaco.rd2',
       version=version,
@@ -27,7 +27,7 @@ setup(name='ageliaco.rd2',
       install_requires=[
           'setuptools',
           'plone.app.dexterity [grok,relations]',
-          'plone.namedfile [blobs]',
+          'collective.autopermission',
           # -*- Extra requirements: -*-
           'Plone',
           'plone.principalsource',
@@ -44,6 +44,7 @@ setup(name='ageliaco.rd2',
         ],
       entry_points="""
       # -*- Entry points: -*-
+
       [z3c.autoinclude.plugin]
       target = plone
       """,
@@ -51,6 +52,5 @@ setup(name='ageliaco.rd2',
       # addcontent support from paster and before you distribute
       # your package.
       setup_requires=["PasteScript"],
-      paster_plugins = ["ZopeSkel"],
-
+      paster_plugins=["ZopeSkel"],
       )

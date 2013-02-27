@@ -81,6 +81,8 @@ class View(InterfaceView):
     grok.require('zope2.View')
     grok.name('view')
     
+    def results(self):
+        return self.cat
     def _form_action(self, widget, data):
         #import pdb; pdb.set_trace()
         return '%s/@@localsearch' % self.context.absolute_url()
@@ -98,7 +100,7 @@ class View(InterfaceView):
         form['searchterm'] = factory(
             'field:label:error:text',
             props={
-                'label': _(u'Rechercher dans les projets:'),
+                'label': MessageFactory(u'Rechercher dans les projets:'),
                 'field.class': 'myFieldClass',
                 'text.class': 'myInputClass',
                 'size': '20',
@@ -106,7 +108,7 @@ class View(InterfaceView):
         form['submit'] = factory(
             'field:submit',
             props={
-                'label': _(u'Lancer la recherche'),
+                'label':  MessageFactory(u'Lancer la recherche'),
                 'submit.class': '',
                 'handler': self._form_handler,
                 'action': 'search'

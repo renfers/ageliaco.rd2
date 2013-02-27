@@ -137,16 +137,16 @@
     </table>
     </tal:block>
     </metal:my>
-    
-    <metal:keywords define-macro="keyword_search"
+
+    <metal:projets define-macro="projets_list"
         >
-            <div tal:content="structure python:view.multiselect()">form</div>  
-            <tal:table define="projects python:view.results()">
+            <tal:table>
             <table  class="table table-striped table-condensed tablesorter" id="keywordSearchTable"
              tal:define="isAnonymous here/portal_membership/isAnonymousUser"
              tal:condition="python:len(projects)"> 
             <thead> 
             <tr> 
+                <th style="width:50px" tal:condition="view/canRequestReview">Id</th> 
                 <th>Titre</th> 
                 <th >Cycles</th> 
                 <th>Auteurs</th> 
@@ -156,6 +156,12 @@
                 <tal:loop tal:repeat="projet projects">
                    <tr  tal:attributes="class python:oddrow and 'projet_even' or 'projet_odd'"
                         tal:define="oddrow repeat/projet/odd;"> 
+                        <td tal:condition="view/canRequestReview">
+                        <span > 
+                        <a tal:attributes="href projet/getURL"
+                           tal:content="projet/id" />
+                        </span>
+                      </td>
                         <td>
                         <span > 
                         <a tal:attributes="href projet/getURL"
@@ -165,40 +171,41 @@
                       <td >
                        <span tal:repeat="cycle python:view.cycles(projet.getPath())">
                         <a tal:attributes="href cycle/getURL"
-                           tal:content="cycle/Title" /> <br/>
+                           tal:content="cycle/id" /> <br/>
                         </span>
                       </td>
                     <td   class="ProjectAuthors"  
                         tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canRequestReview())">
                     <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
                     </td>
-<!--                        
-                    <td tal:define="authors python:view.authors(projet.getPath())">
-                    <table  class="table table-striped table-condensed">
-                    <tal:auteurs tal:repeat="author authors" >
-                    <tr>
-                      <tal:block1  define="auteur author">
-                       <td><span tal:replace="auteur/firstname"/> <span tal:replace="auteur/lastname"/></td>
-                        <td><span tal:condition="not: isAnonymous"
-                            tal:content="auteur/email">email</span>
-                            </td>
-                        <td tal:content="auteur/school"/>  
-                        
-                    </tal:block1>
-                      </tr>
-                    </tal:auteurs>
-                    </table>
-                    </td>
--->
                 </tr>
                 </tal:loop>
             </tbody>
             </table> 
 
         </tal:table>
+
+    </metal:projets>
+    
+    <metal:keywords define-macro="keyword_search"
+        >
+            <div tal:content="structure python:view.multiselect()">form</div>  
+            <div  tal:define="projects python:view.results()">
+                <div metal:use-macro="context/@@interface/macros/projets_list"/>   
+            </div>     
+
     </metal:keywords>
 
-    <metal:keywords define-macro="cycles_by_states"
+
+    <metal:plist define-macro="published_projets"
+        >
+        <div tal:define="projects python:view.projets('published');">
+            <div metal:use-macro="context/@@interface/macros/projets_list"/>
+        </div>
+    </metal:plist>
+
+
+    <metal:states define-macro="cycles_by_states"
         >
             <div tal:content="structure python:view.multiselect('review_state',pathDepth=2)">form</div>  
             <tal:table define="cycles python:view.results()">
@@ -242,24 +249,6 @@
                         tal:define="objectPath python:view.setObjectPath(cycle.getPath(),withTotal=view.canRequestReview())">
                     <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
                     </td>
-<!--                        
-                    <td tal:define="authors python:view.authors(projet.getPath())">
-                    <table  class="table table-striped table-condensed">
-                    <tal:auteurs tal:repeat="author authors" >
-                    <tr>
-                      <tal:block1  define="auteur author">
-                       <td><span tal:replace="auteur/firstname"/> <span tal:replace="auteur/lastname"/></td>
-                        <td><span tal:condition="not: isAnonymous"
-                            tal:content="auteur/email">email</span>
-                            </td>
-                        <td tal:content="auteur/school"/>  
-                        
-                    </tal:block1>
-                      </tr>
-                    </tal:auteurs>
-                    </table>
-                    </td>
--->
                 </tr>
                 </tal:block>
                 </tal:loop>
@@ -267,7 +256,7 @@
             </table> 
 
         </tal:table>
-    </metal:keywords>
+    </metal:states>
     
     <metal:projets_menu define-macro="projets_menu"
         >
