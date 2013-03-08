@@ -12,18 +12,10 @@
         <indexed_attr value="email"/>
     </index>
     <column value="email"/>
-    <index name="address" meta_type="FieldIndex">
-        <indexed_attr value="address"/>
-    </index>
-    <column value="address"/>
     <index name="school" meta_type="FieldIndex">
         <indexed_attr value="school"/>
     </index>
     <column value="school"/>
-    <index name="num" meta_type="FieldIndex">
-        <indexed_attr value="num"/>
-    </index>
-    <column value="num"/>
     <index name="authors" meta_type="KeywordIndex">
         <indexed_attr value="authors"/>
     </index>
@@ -32,4 +24,8 @@
         <indexed_attr value="cycles"/>
     </index>
     <column value="cycles"/>
+    <index name="supervisor" meta_type="KeywordIndex">
+        <indexed_attr value="supervisor"/>
+    </index>
+    <column value="supervisor"/>
 </object>

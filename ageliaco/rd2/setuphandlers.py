@@ -37,7 +37,7 @@ def add_catalog_indexes(context, logger=None):
               ('email', 'FieldIndex'),
               ('address', 'FieldIndex'),
               ('school', 'FieldIndex'),
-              ('num', 'FieldIndex'),
+              ('supervisor', 'KeywordIndex'),
               ('authors', 'KeywordIndex'),
               ('cycles', 'KeywordIndex'),
               ('sponsorasked', 'FieldIndex'),

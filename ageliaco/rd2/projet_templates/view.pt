@@ -24,7 +24,6 @@
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
                 navroot context/@@plone_portal_state/navigation_root_url">
     <div metal:use-macro="context/@@interface/macros/projet_menu"/>
-
 <div id="realisation" tal:condition="python: view.hasLink() or view.hasRealisation()">
 <h3 tal:condition="python: view.hasLink()"><a tal:attributes="href view/hasLink">Lien vers réalisation</a></h3>
 <h3 tal:condition="python: view.hasRealisation()"><a tal:attributes="href view/hasRealisation">Réalisation</a></h3>
@@ -43,12 +42,11 @@
         </tal:block>
 </ul>
 </div>
-        
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
         <h1 class="documentFirstHeading" tal:content="context/title" />
 
-<div tal:condition="python: not view.inBTwin()">
+<div>
 <!-- overlay triggers. overlay is referenced in the 'rel' attribute -->
         <div tal:define="picture nocall:context/picture"
              tal:condition="nocall:picture">
@@ -72,27 +70,49 @@
             </tal:block>
         </span>
 </div> 
-          <div tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()"
-                tal:define="newprojet view/newprojet ;
-                            reconductprojet view/reconductprojet">
-          
-    <!--         <div tal:content="structure python:view.form()">form</div>
-    -->
-              <div class="newprojet" tal:condition="newprojet">
-                <h1>NOUVEAU PROJET</h1>
-                <span tal:content="newprojet">vide</span>
-                
-              </div>
+<div id="create_newcycle" tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()">
+  <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">Déposer un nouveau projet</a>
+</div>
+<div id="create_newcycle" tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()">
+    <form id="reconduction_form" action="#">
+      <fieldset>
+        <h2>Reconduire un projet en cours</h2>
+        <span class="help-block">Sélectionner un projet et cliquer sur le bouton en dessous!</span>
+        <div class="control-group radio_buttons required">
+        <tal:block repeat="projet view/activeProjets">
+            <label class="radio">
+              <input  class="radio_buttons required" type="radio" name="optionsRadios" tal:attributes="value projet">
+              <span tal:content="python:projet[1]"> Check me out</span>
+            </label>
+        </tal:block>
+        </div>
+        <button type="submit" name="form.action.reconduct" class="btn btn-large btn-info">Reconduire le projet</button>
+      </fieldset>
+    </form>
+<script>
+$(document).ready(function() {   
+$('.radio_buttons').on("click", function(){
+    var value = $(this).text();
+    $(this).value = $(this).text();
+});})</script>
 
-             <div class="reconductprojet"  tal:condition="reconductprojet" >
-                <h1>RECONDUCTION D'UN PROJET EN COURS</h1>
-                <span tal:content="reconductprojet">vide</span>              
-
-             </div>
+    <!--
+        <div class="btn-group"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            Reconduire un projet en cours
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu"  role="menu" aria-labelledby="dLabel">
+            <tal:block repeat="projet view/activeProjets" define="reconduct nocall:view/reconductionProjet">
+                  <li ><a href="@@stateview" class="btn-projets-reconduction"
+                    tal:attributes="href string: @@reconduction?projetInfo=${projet}"
+                    tal:content="python:projet[1]">Projet</a></li>
+            </tal:block>
+          </ul>
         
-              <tal:form replace="structure view/render_form" />
-           
-         </div>
+        </div>  
+     -->         
+</div>
 
         <div tal:replace="structure provider:plone.belowcontentbody" />
 </div>

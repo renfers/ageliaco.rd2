@@ -727,7 +727,7 @@ class InterfaceView(grok.View,Form):
                        review_state=wf_state,
                        path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
                        sort_on='sortable_title')
-        #log('catalogue : %s items'%len(cat))
+        log('catalogue : %s items'%len(cat))
         return cat
 
     def cycles(self, projectPath, wf_state='all'):

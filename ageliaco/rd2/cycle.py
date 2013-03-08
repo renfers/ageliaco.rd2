@@ -249,10 +249,15 @@ def searchableIndexer(context):
 grok.global_adapter(searchableIndexer, name="SearchableText")
 
 
-# @indexer(ICycle)
-# def authorsIndexer(obj):
-#     return obj.contributor
-# grok.global_adapter(authorsIndexer, name="authors")
+@indexer(ICycle)
+def authorsIndexer(obj):
+    return obj.contributor
+grok.global_adapter(authorsIndexer, name="authors")
+
+@indexer(ICycle)
+def supervisorIndexer(obj):
+    return obj.supervisor
+grok.global_adapter(supervisorIndexer, name="supervisor")
 
 
 # class Add(dexterity.AddForm):
