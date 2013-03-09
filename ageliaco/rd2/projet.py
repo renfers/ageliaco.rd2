@@ -339,10 +339,11 @@ class View(grok.View,Form):
         return checkPermission('cmf.RequestReview', self.context)
         
     def __call__(self):
+        #import pdb; pdb.set_trace()
         if 'optionsRadios' in self.request.form: 
-            #import pdb; pdb.set_trace()
+            title = u''
             projetpath,title = ast.literal_eval(self.request['optionsRadios'])
-        
+            #title = unicode(ast.literal_eval('u"""' + title + '"""'))
             # look for last cycle in projetpath
             context = aq_inner(self.context)
             catalog = getToolByName(self.context, 'portal_catalog')
@@ -368,6 +369,7 @@ class View(grok.View,Form):
                     new_id = idDefaultFromContext(context) #"%s-%s" %(context.start,len(context.objectIds()))
                     item.aq_parent.manage_renameObject(cycleId, str(new_id))
                     cycleId = new_id
+                    item.setTitle(title)
                     if not item.presentation:
                         item.presentation = RichTextValue(
                                 raw=cycle_default_projet_presentation
@@ -419,7 +421,7 @@ class View(grok.View,Form):
                        sort_on='sortable_title')
         #log('catalogue : %s items'%len(cat))
     
-        terms = []
+        terms = [('',''),]
                     
         for brain in cat:
             #print dir(brain)
@@ -513,14 +515,3 @@ class CyclesView(InterfaceView):
     grok.name('cyclesview')
     pass         
 
-class Reconduction(View):
-    grok.context(IProjet)
-    grok.require('zope2.View')
-    grok.name('reconduction')
-    def __init__(self, context, request):  
-        self.context = context
-        self.request = request
-        try:
-            self.reconductionProjet() 
-        except:
-            print "tried but didn't succeed!"   

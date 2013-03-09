@@ -78,23 +78,28 @@
       <fieldset>
         <h2>Reconduire un projet en cours</h2>
         <span class="help-block">Sélectionner un projet et cliquer sur le bouton en dessous!</span>
-        <div class="control-group radio_buttons required">
+        <select  id='monselect'>
         <tal:block repeat="projet view/activeProjets">
-            <label class="radio">
-              <input  class="radio_buttons required" type="radio" name="optionsRadios" tal:attributes="value projet">
-              <span tal:content="python:projet[1]"> Check me out</span>
-            </label>
+            <option  tal:attributes="value projet"
+             tal:content="python:projet[1]"> Check me out
+            </option>
         </tal:block>
-        </div>
+        </select><br/>
+        <input type="hidden" id="selectedProjet" name="optionsRadios" value=''/>
         <button type="submit" name="form.action.reconduct" class="btn btn-large btn-info">Reconduire le projet</button>
       </fieldset>
     </form>
 <script>
-$(document).ready(function() {   
-$('.radio_buttons').on("click", function(){
-    var value = $(this).text();
-    $(this).value = $(this).text();
-});})</script>
+  	$(document).ready(function(){
+  		$('#monselect').change(function () {
+          var str = "";
+          str = $("#monselect option:selected").val();
+          $("#selectedProjet").val(str);
+        })
+        .trigger('change');
+  	});
+
+</script>
 
     <!--
         <div class="btn-group"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
