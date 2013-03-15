@@ -10,10 +10,11 @@ Title:,Brouillon,,,,,,,,,
 Description:,Le cycle est en cours d elaboration,,,,,,,,,
 Transitions,finaliser,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,,,X,X
-Access contents information,N,,,,X,X,,,X,X
-Modify portal content,N,,,,X,X,,,X,X
-ageliaco.rd2 : Add Note,N,,,,X,,,,,
+View,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,,X,X
+Modify portal content,N,,,,X,X,X,,X,
+"Add Documents, Images, and Files",N,,,,X,X,,,X,
+ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -22,10 +23,11 @@ Title:,En finalisation,,,,,,,,,
 Description:,"Le cycle est en finalisation (transfert de la direction ecole, attente feu vert direction)",,,,,,,,,
 Transitions:,attribuer,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,,,X,X
-Access contents information,N,,,,X,X,,,X,X
-Modify portal content,N,,,,X,X,,,X,X
-ageliaco.rd2 : Add Note,N,,,,X,,,,,
+View,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,,X,X
+Modify portal content,N,,,,X,X,X,,X,
+"Add Documents, Images, and Files",N,,,,X,X,,,X,
+ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -36,7 +38,8 @@ Transitions:,"activate, reject, reviser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,,X,X
 Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,X,X,,X,X
+Modify portal content,N,,,,X,X,X,,X,
+"Add Documents, Images, and Files",,,,,X,X,,,X,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
@@ -47,8 +50,9 @@ Description:,Le cycle est actif,,,,,,,,,
 Transitions:,finish,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,X,,X,X,X,X,X,X
-Access contents information,N,,,,X,,,,,X
-Modify portal content,N,,,,X,,,,,X
+Access contents information,N,,,,X,X,,,,X
+Modify portal content,N,,,,X,,,,,
+"Add Documents, Images, and Files",N,,,,X,,,,,X
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
@@ -59,7 +63,7 @@ Description:,Le cycle est fini,,,,,,,,,
 Transitions:,,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,X,X,,X,X,X,X,X,X
-Access contents information,N,,,,X,,X,X,X,X
+Access contents information,N,,,,X,X,X,,X,X
 Modify portal content,N,,,,X,,,,,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,
 ,,,,,,,,,,
@@ -73,6 +77,7 @@ Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,C
 View,N,,X,,X,X,X,X,X,X
 Access contents information,N,,,,X,,X,X,X,X
 Modify portal content,N,,,,X,,,,,
+"Add Documents, Images, and Files",N,,,,X,,,,,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,
 ,,,,,,,,,,
 ,,,,,,,,,,

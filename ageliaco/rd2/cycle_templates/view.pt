@@ -52,7 +52,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
 
 <div >
 <h3  i18n:translate="heading_auteurs"
-    tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()),withTotal=view.canRequestReview())">Auteurs 
+    tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()),withTotal=view.canReviewContent())">Auteurs 
             <span class="noprint"  tal:condition="view/canModifyContent">
               <a title="Ajouter un auteur" class="addAuteur" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur"><i class="icon-plus-sign-alt"></i></a>
             </span>
@@ -64,7 +64,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
 </div>
 
         <div tal:condition="context/presentation" class="description" tal:content="structure context/presentation/output" />
-        <div tal:condition="context/problematique" class="description" tal:content="structure context/problematique/output" />
+        <div tal:condition="python: hasattr(context.problematique,'output')" class="description" tal:content="structure python: context.problematique.output" />
 
     <div tal:condition="python:context.projet">
     <h2 >Projet</h2>

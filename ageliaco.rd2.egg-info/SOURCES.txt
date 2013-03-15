@@ -20,6 +20,5 @@ ageliaco/rd2/projet.py
 ageliaco/rd2/projets.py
 ageliaco/rd2/setuphandlers.py
 ageliaco/rd2/tests.py
-ageliaco/rd2/wizard.py
 ageliaco/rd2/Extensions/__init__.py
 ageliaco/rd2/Extensions/transitionscripts.py

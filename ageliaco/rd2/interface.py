@@ -417,6 +417,7 @@ class ICycle(form.Schema):
     """
     
     # -*- Your Zope schema definitions here ... -*-
+    form.mode(id='hidden')
     id = schema.TextLine(
             title=MessageFactory(u"Identifiant"),
             description=MessageFactory(u"Ne pas changer celui donné par défaut! Merci!"),
@@ -571,15 +572,19 @@ class InterfaceView(grok.View,Form):
     indx = 'Subject'
     searchType = IProjet.__identifier__
     pathDepth = 0
+    allauthors = "cycle,author.id,author.lastname,author.firstname,author.school,ordre,author.sponsorasked,author.sponsorSEM,author.sponsorRD,author.sponsorSchool"
     
+         
     def set2float(self,value):
         if not value:
             return 0.0
         else:
             return float(value)
             
-    def canRequestReview(self):
-        return checkPermission('cmf.RequestReview', self.context)
+    # canReviewContent        
+    def canReviewContent(self):
+        return checkPermission('cmf.ReviewPortalContent', self.context)
+    
         
     def canAddContent(self):
         return checkPermission('cmf.AddPortalContent', self.context)
@@ -601,6 +606,7 @@ class InterfaceView(grok.View,Form):
         
     def getObjectPath(self):
         return self.objectPath
+        
         
     def authors(self, projectPath=''):
         """Return a catalog search result of authors from a project
@@ -635,6 +641,14 @@ class InterfaceView(grok.View,Form):
     def sponsorasked(self,auteur):
         context = aq_inner(self.context)
         author = auteur.getObject()
+        ordre = ''
+        if author.school in schools.keys():
+            ordre = schools[author.school][1]
+        oneauthor = "\n%s,%s,%s,%s,%s,%s,%s,%d,%d,%d"%(auteur.getPath().split('/')[-2],author.id,author.lastname,
+                                    author.firstname,author.school,ordre,
+                                    self.set2float(author.sponsorasked),self.set2float(author.sponsorSEM),
+                                    self.set2float(author.sponsorRD),self.set2float(author.sponsorSchool))
+        self.allauthors += oneauthor
         if self.withTotal:
             self.degrevements[self.objectPath][0] += self.set2float(author.sponsorasked)
             self.degrevements[self.objectPath][1] += self.set2float(author.sponsorSEM)
@@ -753,4 +767,4 @@ class InterfaceView(grok.View,Form):
     def getPortal(self):
         return getSite()
         
-        
+

@@ -1,5 +1,5 @@
 setuptools
-plone.app.dexterity
+plone.app.dexterity [grok,relations]
 collective.autopermission
 Plone
 plone.principalsource
@@ -9,7 +9,6 @@ plone.namedfile[blobs]
 plone.formwidget.namedfile
 plone.app.versioningbehavior
 collective.z3cform.datagridfield
-collective.z3cform.wizard
 yafowil >= 2.0.2
 yafowil.plone >= 2.0.1
 yafowil.widget.richtext >= 1.3.1dev

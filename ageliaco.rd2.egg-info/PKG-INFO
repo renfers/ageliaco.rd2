@@ -1,7 +1,7 @@
 Metadata-Version: 1.1
 Name: ageliaco.rd2
-Version: 0.7
-Summary: new implementantion of RD service
+Version: 0.8.1
+Summary: Product to manage project with annual cycles
 Home-page: https://github.com/renfers/ageliaco.rd2
 Author: Serge Renfer
 Author-email: serge.renfer@gmail.com
@@ -29,3 +29,4 @@ Keywords: ageliaco rd project management
 Platform: UNKNOWN
 Classifier: Framework :: Plone
 Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

@@ -100,8 +100,8 @@ class Single_view(dexterity.DisplayForm):
     grok.require('zope2.View')
     grok.name('single_view')
     
-    def canRequestReview(self):
-        return checkPermission('cmf.RequestReview', self.context)
+    def canReviewContent(self):
+        return checkPermission('cmf.ReviewPortalContent', self.context)
         
     def canAddContent(self):
         return checkPermission('cmf.AddPortalContent', self.context)
@@ -121,7 +121,7 @@ class Single_view(dexterity.DisplayForm):
 #     grok.context(ICycle)
 #     grok.require('zope2.View')
 #     
-#     def canRequestReview(self):
+#     def canReviewContent(self):
 #         return checkPermission('cmf.RequestReview', self.context)
 #         
 #     def canAddContent(self):

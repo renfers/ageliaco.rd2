@@ -66,11 +66,7 @@
                 ('repository',repository_projets,u'En dépôt',1),
                 ('Tous',all_projets,u'Tous',1)] "
                  >
-<ul>
-<li tal:repeat="state workflowstates_all_projets"> <b tal:content="python: state[0]"/>
-        <i tal:content="python: len(state[1])"/> <b tal:content="python: state[2]"/></li>
-</ul>
-                
+                 
 <div tal:define="workflowstates_projets python:[x for x in workflowstates_all_projets if x[1]]" class="tabbable">
     <ul class="nav nav-tabs" id="workflow-states">
         <tal:block repeat="workflowstate workflowstates_projets" 
@@ -105,16 +101,9 @@
     <div class="tab-content">
 
         <tal:block repeat="workflowstate workflowstates_projets">
-        <b tal:content="workflowstate"/>
-        <div tal:condition="repeat/workflowstate/start" 
-                tal:define="review_state python:workflowstate[0];
-                            projects python:workflowstate[1]" 
-                tal:attributes="id string:tab${repeat/workflowstate/number}" class="tab-pane active"
-                > 
-                
-                            <div metal:use-macro="context/@@interface/macros/projets_list"/>
-
-<!--             <table  class="table table-striped table-condensed tablesorter"
+        <div tal:condition="repeat/workflowstate/start" tal:define="review_state python:workflowstate[0]" 
+                tal:attributes="id string:tab${repeat/workflowstate/number}" class="tab-pane active"> 
+            <table  class="table table-striped table-condensed tablesorter"
                     tal:attributes="id string:tableProjets-${review_state}"> 
             <thead> 
             <tr> 
@@ -139,7 +128,7 @@
                            tal:content="cycle/Title" /> <br/>
                         </span>
                       </td>
-                    <td   class="ProjectAuthors" tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canRequestReview())">
+                    <td   class="ProjectAuthors" tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canReviewContent())">
                     <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
                     </td>
                 </tr>
@@ -147,7 +136,7 @@
             </tbody>
             </table> 
 
-        </div>
+        </div><!-- col -->
         <div condition="not:repeat/workflowstate/start" tal:define="review_state python:workflowstate[0]" 
                 tal:attributes="id string:tab${repeat/workflowstate/number}"  class="tab-pane"> 
             <table  class="table table-striped table-condensed tablesorter"
@@ -177,13 +166,13 @@
                       </td>
                         
                     <td   class="ProjectAuthors"  
-                        tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canRequestReview())">
+                        tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canReviewContent())">
                     <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
                     </td>
                 </tr>
                 </tal:loop>
             </table>
- -->              
+              
         </div><!-- col -->
         </tal:block>
     </div>
