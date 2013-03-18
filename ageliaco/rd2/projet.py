@@ -335,8 +335,8 @@ class View(grok.View,Form):
     grok.require('zope2.View')
     #template = ViewPageTemplateFile('projet_templates/view.pt')
             
-    def canRequestReview(self):
-        return checkPermission('cmf.RequestReview', self.context)
+    def canReviewContent(self):
+        return checkPermission('cmf.ReviewPortalContent', self.context)
         
     def __call__(self):
         #import pdb; pdb.set_trace()
@@ -513,5 +513,88 @@ class CyclesView(InterfaceView):
     grok.context(IProjet)
     grok.require('zope2.View')
     grok.name('cyclesview')
-    pass         
 
+    def __call__(self):
+        if 'search.csvexport' in self.request.keys() and self.request['search.csvexport'] == 'csv':
+            self.multiselect('review_state',pathDepth=2) 
+            cat = self.results()
+            for cycle in cat:
+                for auteur in self.authors(cycle.getPath()):
+                    self.sponsorasked(auteur)
+            # Add header
+            CSV = self.allauthors
+            dataLen = len(CSV)
+            R = self.request.RESPONSE
+            R.setHeader('Content-Length', dataLen)
+            R.setHeader('Content-Type', 'text/csv')
+            R.setHeader('Content-Disposition', 'attachment; filename=%s.csv' % self.context.getId())
+        
+            #return thefields
+            return CSV
+        return super(CyclesView, self).__call__()   
+        
+    def multiselect(self,indx='Subject',pathDepth=0):
+        self.indx = indx
+        self.pathDepth = pathDepth # 0 means everywhere
+        catalog = getToolByName(self.context, 'portal_catalog')
+        wtool = getToolByName(self.context, 'portal_workflow', None)
+        #import pdb; pdb.set_trace()
+        if indx == 'Subject':
+            keywords = catalog.uniqueValuesFor('Subject')
+            self.multikey = '@@keywordview'
+            label = u'Selectionner un ou plusieurs mots-clé'
+            self.searchType = IProjet.__identifier__
+
+        else:
+            keywords = catalog.uniqueValuesFor('review_state')
+            self.multikey = '@@cyclesview'
+            label = u'Selectionner un ou plusieurs états'
+            self.searchType = ICycle.__identifier__
+            
+        #print keywords
+        form = factory('form',
+            name='search',
+            props={
+                'action': self._form_action,
+            })
+
+        form['searchterm'] = factory('#field:multiselect', props={
+            'label': label,
+            'vocabulary': keywords,
+            'format': 'block',
+            'multivalued': True})
+        form['csvexport'] = factory('#field:select', props={
+            'label': 'Export CSV',
+            'vocabulary': ['csv','pas de csv'],
+            'default':'pas de csv',
+            'format': 'radio'})
+        form['submit'] = factory(
+            'field:submit',
+            props={
+                'label': MessageFactory(u'Lancer la recherche'),
+                'submit.class': '',
+                'handler': self._form_handler,
+                'action': 'search'
+        })
+
+        controller = Controller(form, self.request)
+        return controller.rendered
+
+    def results(self):
+        if not hasattr(self.request,'search.searchterm') or not self.request['search.searchterm']:
+            return []
+        #import pdb; pdb.set_trace()
+        if 'search.csvexport' in self.request.keys() and self.request['search.csvexport']:
+            self.searchType = 'ageliaco.rd2.interface.ICycle'
+            self.pathDepth = 1
+        context = aq_inner(self.context)
+        cat = getToolByName(self.context, 'portal_catalog')
+        query = {}
+    
+        query[self.indx] = self.request['search.searchterm']
+        query['object_provides'] = self.searchType
+        if self.pathDepth:
+            localpath = {'query': '/'.join(context.getPhysicalPath()), 'depth': self.pathDepth}
+            query['path'] = localpath
+        #print query
+        return cat(**query)                
