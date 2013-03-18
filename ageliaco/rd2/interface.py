@@ -663,6 +663,7 @@ class InterfaceView(grok.View,Form):
         self.pathDepth = pathDepth # 0 means everywhere
         catalog = getToolByName(self.context, 'portal_catalog')
         wtool = getToolByName(self.context, 'portal_workflow', None)
+        #import pdb; pdb.set_trace()
         if indx == 'Subject':
             keywords = catalog.uniqueValuesFor('Subject')
             self.multikey = '@@keywordview'
@@ -713,6 +714,7 @@ class InterfaceView(grok.View,Form):
             query['path'] = localpath
         #print query
         return cat(**query)                
+
     def _form_action(self, widget, data):
         #import pdb; pdb.set_trace()
         #print "retour à ",  self.context.absolute_url()

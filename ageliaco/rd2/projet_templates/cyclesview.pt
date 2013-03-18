@@ -49,36 +49,10 @@
         
      <div metal:use-macro="context/@@interface/macros/projet_menu"/>        
  
- <div class="tabbable">     
-    <ul class="nav nav-tabs" id="workflow-states">
-    <li  class="active"><a  data-toggle="tab"
-            href="#cycleList"><h4>Cycles par états</h4></a></li>
-    <li  tal:condition="view/canReviewContent"><a  data-toggle="tab"
-            href="#csvexport"><h4>CSV</h4></a></li>
-    </ul>
-    <div class="tab-content">
+    <h3>Cycles par états</h3>
+        <span metal:use-macro="context/@@interface/macros/cycles_by_states"/>
 
-        <div class="tab-pane active" id="cycleList"> 
-    
-            <span metal:use-macro="context/@@interface/macros/cycles_by_states"/>
-        </div>
-        <div class="tab-pane" id="csvexport"> 
-            <pre tal:content="view/allauthors"/>
-        </div>
-    </div>
-    
- </div>
         <div tal:replace="structure provider:plone.belowcontentbody" />
-<script>
-  	$(document).ready(function(){
-  		$('#exportCSV').click(function () {
-          var str = "";
-          str = $("#exportCSV").val();
-          alert(str);
-        })
-  	});
-
-</script>
 
     </tal:main-macro>
 </metal:main>
