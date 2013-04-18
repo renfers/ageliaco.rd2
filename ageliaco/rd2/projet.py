@@ -565,7 +565,7 @@ class CyclesView(InterfaceView):
             'multivalued': True})
         form['csvexport'] = factory('#field:select', props={
             'label': 'Export CSV',
-            'vocabulary': ['csv'," pas d'export csv"],
+            'vocabulary': [' export csv'," pas d'export csv"],
             'default':" pas d'export csv",
             'format': 'radio'})
         form['submit'] = factory(
