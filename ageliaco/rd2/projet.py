@@ -515,7 +515,7 @@ class CyclesView(InterfaceView):
     grok.name('cyclesview')
 
     def __call__(self):
-        if 'search.csvexport' in self.request.keys() and self.request['search.csvexport'] == 'csv':
+        if 'search.csvexport' in self.request.keys() and self.request['search.csvexport'] == ' export csv':
             self.multiselect('review_state',pathDepth=2) 
             cat = self.results()
             for cycle in cat:
@@ -565,8 +565,8 @@ class CyclesView(InterfaceView):
             'multivalued': True})
         form['csvexport'] = factory('#field:select', props={
             'label': 'Export CSV',
-            'vocabulary': ['csv','pas de csv'],
-            'default':'pas de csv',
+            'vocabulary': ['csv'," pas d'export csv"],
+            'default':" pas d'export csv",
             'format': 'radio'})
         form['submit'] = factory(
             'field:submit',

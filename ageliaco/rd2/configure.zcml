@@ -33,4 +33,7 @@
                 />
 
   <!-- -*- extra stuff goes here -*- -->
+    <browser:resourceDirectory
+      name="ageliaco.rd2"
+      directory="static" />
 </configure>

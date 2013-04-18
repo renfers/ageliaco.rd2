@@ -71,7 +71,6 @@
   <editor_width value="100%"/>
   <contextmenu value="True"/>
   <resizing value="True"/>
-  <directionality value="ltr"/>
   <autoresize value="False"/>
  </layout>
  <toolbar>

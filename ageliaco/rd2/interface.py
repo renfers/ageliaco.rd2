@@ -769,4 +769,10 @@ class InterfaceView(grok.View,Form):
     def getPortal(self):
         return getSite()
         
+    def school(self,pseudo):
+        try:
+            return schools[pseudo][0]
+        except:
+            return pseudo
+        
 

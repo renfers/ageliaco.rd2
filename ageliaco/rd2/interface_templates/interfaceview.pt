@@ -10,13 +10,13 @@
     <metal:css_head define-macro="css_head_slot">
      <tal:css  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         <link rel="stylesheet" type="text/css" 
-            tal:attributes="href string:${view/static}/projet.css"
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
             />
         <link rel="stylesheet" type="text/css" 
-            tal:attributes="href string:${view/static}/bootstrap/css/bootstrap.css"
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.css"
             />
         <link rel="stylesheet" href="bootstrap/js/themes/blue/style.css" type="text/css" media="print, projection, screen"
-                tal:attributes="href string:${view/static}/themes/blue/style.css"
+                tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/themes/blue/style.css"
          />
 
 
@@ -27,14 +27,14 @@
          tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/widget.css"
          >
         <link rel="stylesheet" href="assets/css/prettify.css"
-         tal:attributes="href string:${view/static}/awesome/css/prettify.css"
+         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/prettify.css"
          >
       <link rel="stylesheet" href="assets/css/font-awesome.css"
-         tal:attributes="href string:${view/static}/awesome/css/font-awesome.css"
+         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome.css"
          >
       <!--[if IE 7]>
       <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"
-         tal:attributes="href string:${view/static}/awesome/css/font-awesome-ie7.min.css"
+         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome-ie7.min.css"
          >
       <![endif]-->
      </tal:css>
@@ -45,7 +45,7 @@
     <metal:js define-macro="js_head_slot">
      <tal:js  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         <script type="text/javascript" 
-            tal:attributes="src string:${view/static}/projet.js"
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
             src="#">
         </script>
         
@@ -61,16 +61,16 @@
             tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.overlayhelpers.js">
          </script>
         <script type="text/javascript"  
-            tal:attributes="src string:${view/static}/bootstrap/js/bootstrap.js">
+            tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.js">
          </script>
         <script type="text/javascript"  
-                tal:attributes="src string:${view/static}/prettify.min.js">
+                tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/prettify.min.js">
         </script>
         <script type="text/javascript"  
                 tal:attributes="src string:${navroot}/++resource++yafowil.widget.richtext/widget.js">
         </script>        
         <script type="text/javascript"  
-                tal:attributes="src string:${view/static}/jquery.tablesorter.min.js">
+                tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/jquery.tablesorter.min.js">
         </script>
 
         <script >
@@ -99,7 +99,7 @@
             <td><span tal:condition="not:  here/portal_membership/isAnonymousUser"
                 tal:content="author/email">email</span>
                 </td>
-            <td tal:content="author/school"/>  
+            <td tal:content="python: view.school(author.school)"/>  
             </tr>
             <tr tal:condition="view/canReviewContent"><td colspan="2" >
             <table style="width:100%; margin-bottom:0px"><tr>
