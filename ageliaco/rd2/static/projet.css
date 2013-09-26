@@ -165,6 +165,12 @@ th.ProjectCycles{
 
 }
 
+#button-hide-hours {
+    float : right;
+    padding:10px 10px 10px 10px;
+    font-size:14px;
+    
+}
 /* when mouse enters the tab move the background image */
 .tabs a:hover {
 	background-position: -652px -31px;	

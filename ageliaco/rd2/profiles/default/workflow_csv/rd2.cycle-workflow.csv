@@ -7,8 +7,8 @@ Initial state:,draft,,,,,,,,,
 [State],,,,,,,,,,
 Id:,draft,,,,,,,,,
 Title:,Brouillon,,,,,,,,,
-Description:,Le cycle est en cours d elaboration,,,,,,,,,
-Transitions,finaliser,,,,,,,,,
+Description:,Le depot de projet est en elaboration,,,,,,,,,
+Transitions,soumettre,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,X,,X,X
@@ -19,9 +19,9 @@ ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,finalising,,,,,,,,,
-Title:,En finalisation,,,,,,,,,
-Description:,"Le cycle est en finalisation (transfert de la direction ecole, attente feu vert direction)",,,,,,,,,
-Transitions:,attribuer,,,,,,,,,
+Title:,En soumission,,,,,,,,,
+Description:,"Le depot de projet est en finalisation (transfert de la direction ecole, attente du feu vert de la direction)",,,,,,,,,
+Transitions:,"attribuer, reject",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,X,,X,X
@@ -33,25 +33,28 @@ ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 [State],,,,,,,,,,
 Id:,attributing,,,,,,,,,
 Title:,En attribution,,,,,,,,,
-Description:,"Le cycle est en phase d'attribution (feu vert direction ecole, evaluation RD)",,,,,,,,,
+Description:,"Le depot de projet est en attribution (feu vert direction ecole, evaluation RD)",,,,,,,,,
 Transitions:,"activate, reject, reviser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,,X,X
 Access contents information,N,,,,X,X,X,,X,X
 Modify portal content,N,,,,X,X,X,,X,
-"Add Documents, Images, and Files",,,,,X,X,,,X,
+"Add Documents, Images, and Files",N,,,,X,X,,,X,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,active,,,,,,,,,
-Title:,En cours,,,,,,,,,
+Title:,Actif,,,,,,,,,
 Description:,Le cycle est actif,,,,,,,,,
 Transitions:,finish,,,,,,,,,
+Worklist:,Cycles en cours,,,,,,,,,
+Worklist label:,Cycles en cours,,,,,,,,,
+Worklist guard permission:,Review portal content,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,X,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,,,,X
-Modify portal content,N,,,,X,,,,,
+Modify portal content,N,,,,X,,,,,X
 "Add Documents, Images, and Files",N,,,,X,,,,,X
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
@@ -62,20 +65,20 @@ Title:,Fini,,,,,,,,,
 Description:,Le cycle est fini,,,,,,,,,
 Transitions:,,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,X,X,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,X,,X,X
+View,N,,X,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,,,X
 Modify portal content,N,,,,X,,,,,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,archived,,,,,,,,,
-Title:,Archive,,,,,,,,,
+Title:,Refuse,,,,,,,,,
 Description:,Le cycle est une archive,,,,,,,,,
 Transitions:,reproposer,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,X,,X,X,X,X,X,X
-Access contents information,N,,,,X,,X,X,X,X
+View,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X
 Modify portal content,N,,,,X,,,,,
 "Add Documents, Images, and Files",N,,,,X,,,,,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,
@@ -83,15 +86,15 @@ ageliaco.rd2 : Add Note,N,,,,X,,,,,
 ,,,,,,,,,,
 [Transition],,,,,,,,,,
 Id:,reject,,,,,,,,,
-Title:,Archiver,,,,,,,,,
-Description:,Rejet du cycle du projet,,,,,,,,,
+Title:,Refuser,,,,,,,,,
+Description:,Rejet de la proposition de projet,,,,,,,,,
 Target state:,archived,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
 Script after:,ageliaco.rd2.Extensions.transitionscripts.archiveCycle,,,,,,,,,
 ,,,,,,,,,,
 [Transition],,,,,,,,,,
-Id:,finaliser,,,,,,,,,
-Title:,Finaliser la proposition de projet,,,,,,,,,
+Id:,soumettre,,,,,,,,,
+Title:,Soumettre la proposition de projet,,,,,,,,,
 Description:,Poposition remise a RD,,,,,,,,,
 Target state:,finalising,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
@@ -107,7 +110,7 @@ Script after:,ageliaco.rd2.Extensions.transitionscripts.attributeCycle,,,,,,,,,
 ,,,,,,,,,,
 [Transition],,,,,,,,,,
 Id:,reviser,,,,,,,,,
-Title:,RD demande une revision pour ce projet,,,,,,,,,
+Title:,RD demande une revision pour ce depot de projet,,,,,,,,,
 Description:,"Phase d'attribution, demande de modification de la part de RD",,,,,,,,,
 Target state:,attributing,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
@@ -129,9 +132,18 @@ Target state:,over,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
 ,,,,,,,,,,
 [Transition],,,,,,,,,,
-Id:,archiver,,,,,,,,,
-Title:,Archiver le cycle,,,,,,,,,
-Description:,Archiver le cycle,,,,,,,,,
+Id:,refuser,,,,,,,,,
+Title:,Refuser le cycle,,,,,,,,,
+Description:,Refuser le cycle,,,,,,,,,
 Target state:,archived,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
 Script after:,ageliaco.rd2.Extensions.transitionscripts.archiveCycle,,,,,,,,,
+,,,,,,,,,,
+[Transition],,,,,,,,,,
+Id:,reproposer,,,,,,,,,
+Title:,Reproposer le cycle,,,,,,,,,
+Description:,Reproposer le cycle,,,,,,,,,
+Target state:,draft,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,
+permission role:,Owner,,,,,,,,,
+Script after:,ageliaco.rd2.Extensions.transitionscripts.reproposeCycle,,,,,,,,,

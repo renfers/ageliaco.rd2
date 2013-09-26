@@ -23,9 +23,9 @@
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-        <div tal:replace="structure provider:plone.belowcontenttitle" />
+    <!--       <div tal:replace="structure provider:plone.belowcontenttitle" />
 
-     <!--     <p class="documentDescription" tal:content="context/description" /> -->
+       <p class="documentDescription" tal:content="context/description" /> -->
 
         <div tal:replace="structure provider:plone.abovecontentbody" />
 
@@ -125,7 +125,7 @@
                       <td   class="ProjectCycles">
                        <span tal:repeat="cycle python:view.cycles(projet.getPath())">
                         <a tal:attributes="href cycle/getURL"
-                           tal:content="cycle/Title" /> <br/>
+                           tal:content="cycle/id" /> <br/>
                         </span>
                       </td>
                     <td   class="ProjectAuthors" tal:define="objectPath python:view.setObjectPath(projet.getPath(),withTotal=view.canReviewContent())">
@@ -161,7 +161,7 @@
                       <td  class="ProjectCycles">
                        <span tal:repeat="cycle python:view.cycles(projet.getPath())">
                         <a tal:attributes="href cycle/getURL"
-                           tal:content="cycle/Title" /> <br/>
+                           tal:content="cycle/id" /> <br/>
                         </span>
                       </td>
                         

@@ -41,9 +41,9 @@ from zope.app.container.interfaces import IObjectAddedEvent
 from Products.CMFCore.utils import getToolByName
 from plone.z3cform.textlines.textlines import TextLinesFieldWidget
 from plone.namedfile.field import NamedImage
-from plone.formwidget.autocomplete import AutocompleteMultiFieldWidget, AutocompleteFieldWidget
+from plone.formwidget.autocomplete import AutocompleteFieldWidget
+from z3c.form.browser.checkbox import CheckBoxFieldWidget
 
-from plone.formwidget.autocomplete import AutocompleteMultiFieldWidget
 from zope.interface import invariant, Invalid
 
 from Acquisition import aq_inner, aq_parent
@@ -101,11 +101,7 @@ sponsorships = {u"0":[u"0",0],
     u"2.25":[u"2.25",2.25],
     u"2.50":[u"2.50",2.50],
     u"2.75":[u"2.75",2.75],
-    u"3.00":[u"3.00",3.00],
-    u"3.25":[u"3.25",3.25],
-    u"3.50":[u"3.50",3.50],
-    u"3.75":[u"3.75",3.75],
-    u"4.00":[u"4.00",4.00]}
+    u"3.00":[u"3.00",3.00]}
 
 class SchoolsVocabulary(object):
     grok.implements(IVocabularyFactory)
@@ -191,13 +187,13 @@ class IAuteur(form.Schema):
     #     form.widget(id=AutocompleteFieldWidget)
     #     id = schema.Choice(
     #             title=MessageFactory(u"Pseudo"),
-    #             description=MessageFactory(u"Login p10"),
+    #             description=MessageFactory(u"Login EDU"),
     #             vocabulary=u"plone.principalsource.Users",
     #             required=True,
     #         )
     id = schema.TextLine(
             title=MessageFactory(u"id"),
-            description=MessageFactory(u"Identifiant (login)"),
+            description=MessageFactory(u"Identifiant (login EDU)"),
             required=True,
         )
 
@@ -223,12 +219,6 @@ class IAuteur(form.Schema):
             required=True,
         )
 
-    address = schema.Text(
-            title=MessageFactory(u"Adresse"),
-            description=MessageFactory(u"Adresse postale"),
-            required=False,
-        )
-        
     email = schema.TextLine(
             title=MessageFactory(u"Email"),
             description=MessageFactory(u"Adresse courrielle"),
@@ -240,7 +230,13 @@ class IAuteur(form.Schema):
             description=MessageFactory(u"Téléphone"),
             required=False,
         )
-    
+
+    address = schema.Text(
+            title=MessageFactory(u"Adresse"),
+            description=MessageFactory(u"Adresse postale"),
+            required=False,
+        )
+            
     sponsorasked = schema.Choice(
             title=MessageFactory(u"Dégrèvement demandé"),
             description=MessageFactory(u"Dégrèvement total demandé pour cet auteur"),
@@ -248,14 +244,14 @@ class IAuteur(form.Schema):
             required=True,
         )
     
-    dexterity.read_permission(sponsorSEM='cmf.ReviewPortalContent')
-    dexterity.write_permission(sponsorSEM='cmf.ReviewPortalContent')
-    sponsorSEM = schema.Choice(
-            title=MessageFactory(u"Dégrèvement SEM"),
-            description=MessageFactory(u"Dégrèvement SEM attribué pour cet auteur"),
-            vocabulary=u"ageliaco.rd2.sponsorship",
-            required=False,
-        )
+    #     dexterity.read_permission(sponsorSEM='cmf.ReviewPortalContent')
+    #     dexterity.write_permission(sponsorSEM='cmf.ReviewPortalContent')
+    #     sponsorSEM = schema.Choice(
+    #             title=MessageFactory(u"Dégrèvement SEM"),
+    #             description=MessageFactory(u"Dégrèvement SEM attribué pour cet auteur"),
+    #             vocabulary=u"ageliaco.rd2.sponsorship",
+    #             required=False,
+    #         )
     
     dexterity.read_permission(sponsorRD='cmf.ReviewPortalContent')
     dexterity.write_permission(sponsorRD='cmf.ReviewPortalContent')
@@ -275,29 +271,40 @@ class IAuteur(form.Schema):
             required=False,
         )
     
+@form.validator(field=IAuteur['id'])
+def validateId(value):
+    mt = getToolByName(field, 'portal_membership')
+    user = mt.getMemberById(value)
+    if user is None:
+        raise schema.ValidationError(u"Login non valable")
+        
 @grok.subscribe(IAuteur, IObjectAddedEvent)
 def setAuteur(auteur, event):
     portal_url = getToolByName(auteur, 'portal_url')
     acl_users = getToolByName(auteur, 'acl_users')
     
-    #print "Nous y voici ::::>>>> ", auteur.id
     portal = portal_url.getPortalObject() 
     cycles = auteur.aq_parent
-    #print 'auteur id : ' + auteur.id
     user = acl_users.getUserById(auteur.id)
-
+    auteur.firstname = user['firstname']
+    auteur.lastname = user['lastname']
+    auteur.email = user['email']
 
 
 class IProjet(form.Schema):
     """
     Projet RD
     """
+    dexterity.read_permission(start='cmf.ReviewPortalContent')
+    dexterity.write_permission(start='cmf.ReviewPortalContent')
     start = schema.TextLine(
             title=MessageFactory(u"Année"),
             description=MessageFactory(u"L'année à laquelle le projet a commencé ou devrait commencer"),
             required=True,
         )
 
+    dexterity.read_permission(duration='cmf.ReviewPortalContent')
+    dexterity.write_permission(duration='cmf.ReviewPortalContent')
     duration = schema.Int(
             title=MessageFactory(u"Durée"),
             description=MessageFactory(u"Durée (en années) du projet, prévue ou effective"),
@@ -341,13 +348,9 @@ def activeProjects(context):
     cat = catalog(portal_type='ageliaco.rd2.projet',
                    review_state='encours',
                    sort_on='sortable_title')
-    log('catalogue : %s items'%len(cat))
-
     terms = []
                 
     for brain in cat:
-        #print dir(brain)
-        #print "getURL : %s => getPath : %s " % (brain.getURL(),brain.getPath())
         terms.append(SimpleVocabulary.createTerm(brain.getPath(), brain.id, brain.Title))
     return SimpleVocabulary(terms) #SimpleVocabulary([SimpleVocabulary.createTerm(x.id, x.getURL(), x.Title) for x in cat])
 
@@ -448,10 +451,11 @@ class ICycle(form.Schema):
         )
             
     dexterity.write_permission(supervisor='cmf.ReviewPortalContent')
-    supervisor = schema.Choice(
-            title=MessageFactory(u"Superviseur"),
-            description=MessageFactory(u"Personne de R&D qui supervise ce projet"),
-            source=GroupMembers('superviseur'),
+    form.widget(supervisor=CheckBoxFieldWidget)
+    supervisor = schema.List(
+            title=MessageFactory(u"Superviseur(s) R&D"),
+            description=MessageFactory(u"Personne(s) de R&D qui supervise(nt) ce projet"),
+            value_type=schema.Choice(source=GroupMembers('Supervisor')),
             required=False,
         )
         
@@ -532,19 +536,18 @@ def setSupervisor(cycle, event):
     if not cycle.supervisor:
         return
     if IRoleManager.providedBy(cycle):
-        cycle.manage_addLocalRoles(cycle.supervisor, ['Reader', 'Contributor', 'Editor'])
-    log("Role added to %s for %s"%(cycle.id,cycle.supervisor))
+        for supervisor in cycle.supervisor:
+            cycle.manage_addLocalRoles(supervisor, ['Reader', 'Contributor', 'Editor','Reviewer'])
+        log("Role added to %s for %s"%(cycle.id,cycle.supervisor))
 
 @grok.subscribe(ICycle, IObjectAddedEvent)
 def setAuteurs(cycle, event):
-    #print "Projet lié à %s ==> %s ==> %s" % (cycle.id,cycle.projet,cycle.supervisor)
     if not cycle.projet:
         return
     catalog = getToolByName(cycle, 'portal_catalog')
     cat = catalog(portal_type='ageliaco.rd2.cycle',
                    path={'query': cycle.projet, 'depth': 1},
                    sort_on="id",sort_order="reverse")
-    log('catalogue des cycles : %s items'%len(cat))
     
     #if there cycles, take the last one (first in reverse) and copy the authors
     if len(cat):
@@ -556,8 +559,6 @@ def setAuteurs(cycle, event):
             auteur = brain.getObject()
             cb_copy_data = lastCycle.manage_copyObjects([auteur.id])
             cycle.manage_pasteObjects(cb_copy_data)    
-    #projet.setContributors(projet.contributor)
-    #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
     return #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
 
         
@@ -572,8 +573,8 @@ class InterfaceView(grok.View,Form):
     indx = 'Subject'
     searchType = IProjet.__identifier__
     pathDepth = 0
-    allauthors = "cycle,author.id,author.lastname,author.firstname,author.school,ordre,author.sponsorasked,author.sponsorSEM,author.sponsorRD,author.sponsorSchool"
-    
+    allauthors = "cycle,author.id,author.lastname,author.firstname,author.school,ordre,author.sponsorasked,author.sponsorRD,author.sponsorSchool"
+    keyword_dict = {}
          
     def set2float(self,value):
         if not value:
@@ -599,7 +600,6 @@ class InterfaceView(grok.View,Form):
             self.degrevements[objectPath] = [0.0,
                                              0.0,
                                              0.0,
-                                             0.0,
                                              0.0]            
             
         return self.objectPath
@@ -619,13 +619,10 @@ class InterfaceView(grok.View,Form):
         if not projectPath:
             projectPath = '/'.join(context.getPhysicalPath())
         catalog = getToolByName(self.context, 'portal_catalog')
-        #log( 'authors : ' + projectPath)
         cat = catalog(object_provides=[IAuteur.__identifier__],
                        path={'query': projectPath, 'depth': 2},
                        sort_on="modified", sort_order="reverse")
-        for auteur in cat:
-            #print auteur.id, auteur.firstname, auteur.lastname, auteur.email
-            
+        for auteur in cat:            
             if auteur.id not in auteurIDs:
                 auteurs.append(auteur)
                 auteurIDs.append(auteur.id)
@@ -644,19 +641,36 @@ class InterfaceView(grok.View,Form):
         ordre = ''
         if author.school in schools.keys():
             ordre = schools[author.school][1]
-        oneauthor = "\n%s,%s,%s,%s,%s,%s,%s,%d,%d,%d"%(auteur.getPath().split('/')[-2],author.id,author.lastname,
+        oneauthor = "\n%s,%s,%s,%s,%s,%s,%d,%d"%(auteur.getPath().split('/')[-2],author.id,author.lastname,
                                     author.firstname,author.school,ordre,
-                                    self.set2float(author.sponsorasked),self.set2float(author.sponsorSEM),
                                     self.set2float(author.sponsorRD),self.set2float(author.sponsorSchool))
         self.allauthors += oneauthor
         if self.withTotal:
             self.degrevements[self.objectPath][0] += self.set2float(author.sponsorasked)
-            self.degrevements[self.objectPath][1] += self.set2float(author.sponsorSEM)
-            self.degrevements[self.objectPath][2] += self.set2float(author.sponsorRD)
-            self.degrevements[self.objectPath][3] += self.set2float(author.sponsorSchool)
-            self.degrevements[self.objectPath][4] += self.set2float(author.sponsorSchool) + \
-                            self.set2float(author.sponsorRD) + self.set2float(author.sponsorSEM)
-        return (author.sponsorasked,author.sponsorSEM,author.sponsorRD,author.sponsorSchool)
+            self.degrevements[self.objectPath][1] += self.set2float(author.sponsorRD)
+            self.degrevements[self.objectPath][2] += self.set2float(author.sponsorSchool)
+            self.degrevements[self.objectPath][3] += self.set2float(author.sponsorSchool) + \
+                            self.set2float(author.sponsorRD)
+        return (author.sponsorasked,author.sponsorRD,author.sponsorSchool)
+        
+    def __call__(self):
+        if 'search.csvexport' in self.request.keys() and self.request['search.csvexport'] == ' export csv':
+            self.multiselect('review_state',pathDepth=2) 
+            cat = self.results()
+            for cycle in cat:
+                for auteur in self.authors(cycle.getPath()):
+                    self.sponsorasked(auteur)
+            # Add header
+            CSV = self.allauthors
+            dataLen = len(CSV)
+            R = self.request.RESPONSE
+            R.setHeader('Content-Length', dataLen)
+            R.setHeader('Content-Type', 'text/csv')
+            R.setHeader('Content-Disposition', 'attachment; filename=%s.csv' % self.context.getId())
+        
+            #return thefields
+            return CSV
+        return super(InterfaceView, self).__call__()   
         
     def multiselect(self,indx='Subject',pathDepth=0):
         self.indx = indx
@@ -671,12 +685,12 @@ class InterfaceView(grok.View,Form):
             self.searchType = IProjet.__identifier__
 
         else:
-            keywords = catalog.uniqueValuesFor('review_state')
+            self.keyword_dict = dict([(w.title,w.id) for w in wtool['rd2.cycle-workflow'].states.values()])
+            keywords = self.keyword_dict.keys()
             self.multikey = '@@cyclesview'
             label = u'Selectionner un ou plusieurs états'
             self.searchType = ICycle.__identifier__
             
-        #print keywords
         form = factory('form',
             name='search',
             props={
@@ -688,6 +702,11 @@ class InterfaceView(grok.View,Form):
             'vocabulary': keywords,
             'format': 'block',
             'multivalued': True})
+        form['csvexport'] = factory('#field:select', props={
+            'label': 'Export CSV',
+            'vocabulary': [' export csv'," pas d'export csv"],
+            'default':" pas d'export csv",
+            'format': 'radio'})
         form['submit'] = factory(
             'field:submit',
             props={
@@ -701,28 +720,34 @@ class InterfaceView(grok.View,Form):
         return controller.rendered
 
     def results(self):
+        #import pdb; pdb.set_trace()
         if not hasattr(self,'searchterm') or not self.searchterm:
             return []
+        #import pdb; pdb.set_trace()
+        if 'search.csvexport' in self.request.keys() and self.request['search.csvexport']:
+            self.searchType = 'ageliaco.rd2.interface.ICycle'
+            self.pathDepth = 2
         context = aq_inner(self.context)
         cat = getToolByName(self.context, 'portal_catalog')
         query = {}
-    
-        query[self.indx] = self.searchterm
+        wtool = getToolByName(self.context, 'portal_workflow', None)
+
+        #keywords1 = wtool.listWFStatesByTitle(filter_similar=1)
+        self.keyword_dict = dict([(w.title,w.id) for w in wtool['rd2.cycle-workflow'].states.values()])
+
+        query[self.indx] = [self.keyword_dict[term] for term in self.searchterm]
         query['object_provides'] = self.searchType
         if self.pathDepth:
             localpath = {'query': '/'.join(context.getPhysicalPath()), 'depth': self.pathDepth}
             query['path'] = localpath
-        #print query
         return cat(**query)                
 
     def _form_action(self, widget, data):
         #import pdb; pdb.set_trace()
-        #print "retour à ",  self.context.absolute_url()
 
         return '%s/%s' % (self.context.absolute_url(),self.multikey)
 
     def _form_handler(self, widget, data):
-        #import pdb; pdb.set_trace()
         self.searchterm = data['searchterm'].extracted
 
     def projets(self, wf_state='all'):
@@ -731,35 +756,25 @@ class InterfaceView(grok.View,Form):
         
         context = aq_inner(self.context)
         catalog = getToolByName(context, 'portal_catalog')
-        #log( "context's physical path : " + '/'.join(context.getPhysicalPath()))
         if wf_state == 'all':
-            #log( "all projets")
-            #log('/'.join(context.getPhysicalPath()))
             return catalog(portal_type='ageliaco.rd2.projet',
                            path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
                            sort_on="start", sort_order="reverse")        
-        #log('/'.join(context.getPhysicalPath()))
         cat = catalog(portal_type='ageliaco.rd2.projet',
                        review_state=wf_state,
                        path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
                        sort_on='sortable_title')
-        log('catalogue : %s items'%len(cat))
         return cat
 
     def cycles(self, projectPath, wf_state='all'):
         """Return a catalog search result of cycles from a project
         """
-        #import pdb; pdb.set_trace()
         context = aq_inner(self.context)
         catalog = getToolByName(self.context, 'portal_catalog')
-        #log( 'cycle : ' + projectPath)
-        #log( wf_state + " state chosen")
         if wf_state == 'all':
-            #log( "all cycles")
             cat = catalog(object_provides= ICycle.__identifier__,
                            path={'query': projectPath, 'depth': 1},
                            sort_on="modified", sort_order="reverse")  
-            #print len(cat)
             return cat      
         return catalog(object_provides=[ICycle.__identifier__],
                        review_state=wf_state,
@@ -775,4 +790,19 @@ class InterfaceView(grok.View,Form):
         except:
             return pseudo
         
+    def cycle_state(self,review_state):
+        wtool = getToolByName(self.context, 'portal_workflow', None)
+        cycles = dict([(w.id,w.title) for w in wtool['rd2.cycle-workflow'].states.values()])
+        return cycles[review_state]
 
+    def supervisor(self,sup_id):
+        context = aq_inner(self.context)
+        mt = getToolByName(self, 'portal_membership')
+        if mt.getMemberById(sup_id) is None:
+            return ""
+        return mt.getMemberInfo(sup_id)['fullname']
+
+    def supervisor_list(self,supervisor):
+        if type(supervisor) == str:
+            return [supervisor]
+        return supervisor

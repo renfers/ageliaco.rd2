@@ -5,3 +5,7 @@
     enabled="1" expression="" media="screen" rel="stylesheet" rendering="import"
     />
 </object>
+<object name="portal_css">
+ <stylesheet id="++resource++ageliaco.rd/projet.css"
+    remove="True" />
+</object>

@@ -1,39 +1,5 @@
 <?xml version="1.0"?>
 <object>
- <resourcetypes>
-  <linkable>
-   <element value="Topic"/>
-   <element value="Event"/>
-   <element value="File"/>
-   <element value="Folder"/>
-   <element value="Image"/>
-   <element value="Large Plone Folder"/>
-   <element value="News Item"/>
-   <element value="Document"/>
-  </linkable>
-  <customplugins>
-   <element value="ploneimage"/>
-   <element value="plonelink"/>
-  </customplugins>
-  <containsanchors>
-   <element value="Event"/>
-   <element value="News Item"/>
-   <element value="Document"/>
-   <element value="ATRelativePathCriterion"/>
-  </containsanchors>
-  <allow_captioned_images value="False"/>
-  <containsobjects>
-   <element value="Folder"/>
-   <element value="Large Plone Folder"/>
-   <element value="Plone Site"/>
-  </containsobjects>
-  <entity_encoding value="raw"/>
-  <imageobjects>
-   <element value="Image"/>
-  </imageobjects>
-  <link_using_uids value="False"/>
-  <rooted value="False"/>
- </resourcetypes>
  <layout>
   <styles>
    <element value="Heading|h2"/>

@@ -79,7 +79,24 @@
             $("table").tablesorter(); 
         }); 
         </script>
-     </tal:js>
+  <script>
+  $(function() {
+    // run the currently selected effect
+    function runEffect() {
+      // run the effect
+      $( '[id^=effect-]' ).toggle( "slide");
+    };
+  
+    // set effect from select menu value
+    $( '[id^=button-]' ).click(function() {
+      runEffect();
+      return false;
+    });
+ 
+    $( '[id^=effect-]' ).hide();
+  });
+  </script>
+       </tal:js>
     </metal:js>
 
 <!-- ex: tal:define="authors python:view.authors(projet.getPath())" => authors must be defined
@@ -99,12 +116,13 @@
             <td><span tal:condition="not:  here/portal_membership/isAnonymousUser"
                 tal:content="author/email">email</span>
                 </td>
-            <td tal:content="python: view.school(author.school)"/>  
+            <td><span  tal:content="python: view.school(author.school)"/>
+            </td>  
             </tr>
-            <tr tal:condition="view/canReviewContent"><td colspan="2" >
-            <table style="width:100%; margin-bottom:0px"><tr>
+            <tr tal:condition="view/canReviewContent"  tal:attributes="id string:effect-${author/id}"><td colspan="2" >
+            <table style="width:100%; margin-bottom:0px" class="heures"><tr>
             <th style="text-align:right">Dégrèvement:</th><th style="text-align:right">demandé</th>
-            <th style="text-align:right">SEM</th><th style="text-align:right">RD</th>
+            <th style="text-align:right">RD</th>
             <th style="text-align:right">Ecole</th></tr>
             <tr><th>&nbsp;</th>
                 <tal:heure repeat="heure python:view.sponsorasked(author)">
@@ -125,8 +143,9 @@
         </tr>
       </tal:auteur>
     </tal:auteurs>
-        <tr tal:condition="python:view.canReviewContent() or view.canModifyContent()"><td colspan="3" >
-        <table style="width:100%; margin-bottom:0px"><tr>
+        <tr tal:condition="python:view.canReviewContent() or view.canModifyContent()"
+         tal:attributes="id string:effect-${context/id}"><td colspan="3" >
+        <table style="width:100%; margin-bottom:0px" ><tr>
 
             <tr>
                 <th>Totaux</th>
@@ -143,6 +162,9 @@
 
     <metal:projets define-macro="projets_list"
         >
+            <div tal:condition="view/canReviewContent">
+                <a href="#" class="heures" tal:attributes="id string:button-hide-hours">
+                <i class="icon-time"></i></a></div>
             <tal:table>
             <table  class="table table-striped table-condensed tablesorter" id="keywordSearchTable"
              tal:define="isAnonymous here/portal_membership/isAnonymousUser"
@@ -168,7 +190,7 @@
                         <td>
                         <span > 
                         <a tal:attributes="href projet/getURL"
-                           tal:content="projet/Title" />
+                           tal:content="projet/id" />
                         </span>
                       </td>
                       <td >
@@ -211,6 +233,9 @@
     <metal:states define-macro="cycles_by_states"
         >
             <div tal:content="structure python:view.multiselect('review_state',pathDepth=2)">form</div>  
+            <div tal:condition="view/canReviewContent">
+                <a href="#" class="heures" tal:attributes="id string:button-hide-hours">
+                <i class="icon-time"></i></a></div>
             <tal:table define="cycles python:view.results()">
             <table  class="table table-striped table-condensed tablesorter" id="cyclesByStatesTable"
              tal:define="isAnonymous here/portal_membership/isAnonymousUser"
@@ -243,10 +268,15 @@
                         <td>
                         <span > 
                         <a tal:attributes="href cycle/getURL"
-                           tal:content="cycle/review_state" />
+                           tal:content="python:view.cycle_state(cycle.review_state)" />
                         </span>
                       </td>
-                      <td tal:content="cycle/supervisor">supervisor
+                      <td>
+                            <ul tal:define="supervisors python:view.supervisor_list(cycle.supervisor)">
+                                <li tal:repeat="supervisor supervisors" 
+                                    class="description" tal:content="python: view.supervisor(supervisor)" />
+                            </ul>
+
                       </td>
                     <td   class="ProjectAuthors"  
                         tal:define="objectPath python:view.setObjectPath(cycle.getPath(),withTotal=view.canReviewContent())">

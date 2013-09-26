@@ -215,12 +215,12 @@ class View(InterfaceView):
         #print parent.absolute_url()
         return parent.absolute_url()
 
-    def schoolyear(self):
-        context = aq_inner(self.context)
-        parent = context.aq_parent
-        an = int(parent.start)
-        retour = "%s-%s" % (an,an+1)
-        return retour
+    #     def schoolyear(self):
+    #         context = aq_inner(self.context)
+    #         parent = context.aq_parent
+    #         an = int(parent.start)
+    #         retour = "%s-%s" % (an,an+1)
+    #         return retour
 
     def cycle_url(self):
         context = aq_inner(self.context)
@@ -234,6 +234,7 @@ class View(InterfaceView):
         if auteur in context.keys():
             return context[auteur]
         return None
+    
     
     
 @indexer(ICycle)

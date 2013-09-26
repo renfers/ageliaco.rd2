@@ -41,7 +41,7 @@
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-        <div tal:replace="structure provider:plone.belowcontenttitle" />
+ <!--       <div tal:replace="structure provider:plone.belowcontenttitle" /> -->
 
         <div tal:replace="structure provider:plone.abovecontentbody" />
         

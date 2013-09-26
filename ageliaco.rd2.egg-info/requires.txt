@@ -7,6 +7,7 @@ plone.app.users >= 1.0b7
 collective.wtf
 plone.namedfile[blobs]
 plone.formwidget.namedfile
+plone.formwidget.autocomplete
 plone.app.versioningbehavior
 collective.z3cform.datagridfield
 yafowil >= 2.0.2

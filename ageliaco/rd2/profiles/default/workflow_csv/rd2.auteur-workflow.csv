@@ -7,7 +7,7 @@ Initial state:,draft,,,,,,,,,
 [State],,,,,,,,,,
 Id:,draft,,,,,,,,,
 Title:,Brouillon,,,,,,,,,
-Description:,The proposal is being drafted.,,,,,,,,,
+Description:,Auteur en mode brouillon,,,,,,,,,
 Transitions,,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,X,,X,X,X,X,X,X

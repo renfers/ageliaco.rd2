@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.8.6'
+version = '0.9.1'
 
 setup(name='ageliaco.rd2',
       version=version,
@@ -35,6 +35,7 @@ setup(name='ageliaco.rd2',
           'collective.wtf',
           'plone.namedfile[blobs]',
           'plone.formwidget.namedfile',
+          'plone.formwidget.autocomplete',
           'plone.app.versioningbehavior',
           'collective.z3cform.datagridfield',
           'yafowil >= 2.0.2',

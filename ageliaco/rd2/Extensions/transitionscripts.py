@@ -3,11 +3,77 @@ from plone.dexterity.utils import createContent
 from plone.dexterity.utils import createContentInContainer
 from Products.CMFPlone.utils import log
 from Products.CMFCore.utils import getToolByName
+from plone.app.textfield.value import RichTextValue
+
+def reproposeCycle(self, state_change):
+    """ sends an email to the school's director """
+    print "archiveCycle called !!!"
+    dest_folder = None
+    workflowTool = getToolByName(self, "portal_workflow")
+    contentObject = state_change.object
+    parent = contentObject.aq_parent
+    
+    parentState = workflowTool.getStatusOf("rd2.projet-workflow", parent)["review_state"]
+    
+    if parentState == 'archives':
+        return #no moving required
+    portal = self.portal_url.getPortalObject()
+    catalog = getToolByName(portal,'portal_catalog')
+    cat = catalog(portal_type='ageliaco.rd2.projet',
+                   review_state='repository')
+    
+    if not len(cat):
+        log("No ageliaco.rd2.projet archive => cannot migrate cycle to projet repository!")
+        return
+    
+    projet = cat[0].getObject()
+    
+    objectOwner = contentObject.Creator()
+    projetPath = cat[0].getPath()
+    try:
+        # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
+        projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id)) 
+        log("try copy OK!")
+        n = len(projet.keys())
+        projet.manage_renameObject(contentObject.id, projet.start + str(n))
+    except: 
+        log("couldn't copy => then nothing instead")
+    return  
 
 def archiveCycle(self, state_change):
     """ sends an email to the school's director """
     print "archiveCycle called !!!"
-    #pass
+    dest_folder = None
+    workflowTool = getToolByName(self, "portal_workflow")
+    contentObject = state_change.object
+    parent = contentObject.aq_parent
+    
+    parentState = workflowTool.getStatusOf("rd2.projet-workflow", parent)["review_state"]
+    
+    if parentState == 'archives':
+        return #no moving required
+    portal = self.portal_url.getPortalObject()
+    catalog = getToolByName(portal,'portal_catalog')
+    cat = catalog(portal_type='ageliaco.rd2.projet',
+                   review_state='archives')
+    
+    if not len(cat):
+        log("No ageliaco.rd2.projet archive => cannot migrate cycle to projet archives!")
+        return
+    
+    projet = cat[0].getObject()
+    
+    objectOwner = contentObject.Creator()
+    projetPath = cat[0].getPath()
+    #import pdb; pdb.set_trace()
+    try:
+        # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
+        projet.manage_pasteObjects(parent.manage_cutObjects([contentObject.id])) 
+        log("try cut OK!")
+    except: 
+        projet.manage_pasteObjects(parent.manage_copyObjects([contentObject.id]))   
+        log("couldn't cut => then copy instead")
+    return  
     
 def finaliseCycle(self, state_change):
     """ sends an email to the school's director """
@@ -62,9 +128,21 @@ def activateCycle(self, state_change):
         #we must create a new one if grandpa is not "projets"
         if 'depot-de-projet' in parent.absolute_url().split('/'):
             projet = createContentInContainer(projets,'ageliaco.rd2.projet', 
-                title=contentObject.Title, duration=1, presentation=u" ")
+                title=contentObject.Title(), duration=1, presentation=RichTextValue(
+                raw=contentObject.presentation.raw
+                ))
         else:
             contentObject.projet = parent.absolute_url() #ne marche pas !!!
+        parent = contentObject.aq_parent
+        #print "Parent : ", parent, contentObject.id, parent.objectIds()
+        #cb_copy_data = parent.manage_cutObjects(contentObject.id)
+        try:
+            # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
+            projet.manage_pasteObjects(parent.manage_cutObjects(contentObject.id)) 
+            log("try cut OK!")
+        except: 
+            projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id))   
+            log("couldn't cut => then copy instead")
             
     else:
         projetId = projetPath.split('/')[-1]
@@ -78,15 +156,9 @@ def activateCycle(self, state_change):
         #cb_copy_data = parent.manage_cutObjects(contentObject.id)
         try:
             # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
-            print "try cut OK!"
             projet.manage_pasteObjects(parent.manage_cutObjects(contentObject.id)) 
+            log("try cut OK!")
         except: 
-            print "couldn't cut => then copy instead"
             projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id))   
+            log("couldn't cut => then copy instead")
     return  
-#         dest_folder = projet
-#         print "dest_folder.id = ", dest_folder.id
-#     
-#         content_folder = contentObject.aq_parent
-#         content_id = contentObject.getId()
-#         dest_folder.manage_pasteObjects(content_folder.manage_cutObjects(content_id))    

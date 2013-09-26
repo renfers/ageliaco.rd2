@@ -30,7 +30,7 @@
 </div>
 <div  tal:condition="python:len(view.cycles_obj())" id="cycleList">
 <h3 class="cycleListTitle">Cycles</h3>
-<ul class="cycleList">
+<ul class="cycleList" >
         <tal:block repeat="cycle view/cycles_obj">
 	    <li class="genericButton" ><a class='editAuteur'  
 	        tal:content="cycle/id" 
@@ -58,17 +58,6 @@
         </div>
         <span tal:condition="context/presentation" tal:content="structure context/presentation/output" />
         
-        <span class="discreet" tal:condition="python: not view.isRepository()" >
-            <tal:block condition="context/start">
-                <span i18n:translate="label_from">Depuis </span>
-                <span tal:content="python:context.start" />
-            </tal:block>
-            <tal:block condition="context/duration">
-                <span i18n:translate="label_to">pour </span>
-                <span tal:content="python:context.duration" />
-                an(s)
-            </tal:block>
-        </span>
 </div> 
 <div id="create_newcycle" tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()">
   <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">Déposer un nouveau projet</a>

@@ -31,7 +31,7 @@
 Service enseignement et formation - Secteur ressources et développement</p>
 
 <h2 style="text-align : center;">Formulaire de présentation de projet</h2>
-<h3 style="text-align : center;">Année <span tal:replace="view/schoolyear"/></h3>
+<!-- <h3 style="text-align : center;">Année <span tal:replace="view/schoolyear"/></h3> -->
 
 </div>
 
@@ -43,7 +43,10 @@ Service enseignement et formation - Secteur ressources et développement</p>
         <h1 class="documentFirstHeading" tal:content="context/title" />
         
         <div tal:replace="structure provider:plone.belowcontenttitle" />
-
+<p tal:define="creator context/Creator;
+               mtool context/@@plone_tools/membership;
+               author python:mtool.getMemberInfo(creator)"
+   tal:content="python:author and author['fullname'] or creator">Author name</p>
         <p class="documentDescription" tal:content="context/description" />
 
 <div>
@@ -74,7 +77,10 @@ Service enseignement et formation - Secteur ressources et développement</p>
     </div>
     <div tal:condition="python:context.supervisor">
     <h2 >Accompagnateur R et D </h2>
-            <div class="description" tal:content="python: context.supervisor" />
+        <ul>
+            <li tal:repeat="supervisor context/supervisor" 
+                class="description" tal:content="python: view.supervisor(supervisor)" />
+        </ul>
     </div>
 
 <!-- overlayed element -->

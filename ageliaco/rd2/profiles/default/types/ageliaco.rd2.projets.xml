@@ -33,7 +33,10 @@
   <property name="default_view">view</property>
   <property name="default_view_fallback">False</property>
   <property name="view_methods">
-    <element value="base_view" />
+    <element value="view" name="vue par defaut"/>
+    <element value="stateview"/>
+    <element value="keywordview"/>
+    <element value="localsearch"/>
   </property>
 
 
@@ -43,6 +46,9 @@
   <alias from="edit" to="@@edit" />
   <alias from="sharing" to="@@sharing" />
   <alias from="view" to="@@view" />
+  <alias from="stateview" to="@@stateview" />
+  <alias from="keywordview" to="@@keywordview" />
+  <alias from="localsearch" to="@@localsearch" />
 
   <!-- Actions -->
   <action title="View" action_id="view" category="object" condition_expr=""
