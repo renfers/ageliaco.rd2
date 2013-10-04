@@ -9,6 +9,9 @@ from plone.directives import form, dexterity
 
 from ageliaco.rd2 import MessageFactory
 
+from plone.i18n.normalizer.interfaces import IIDNormalizer
+from zope.component import getUtility
+
 
 import datetime
 
@@ -74,8 +77,6 @@ class INote(form.Schema):
     """
     Note de suivi de rendez-vous
     """
-    # -*- Your Zope schema definitions here ... -*-
-    
     title = schema.TextLine(
             title=MessageFactory(u"Titre"),
             required=False,
@@ -126,3 +127,13 @@ def startDefaultValue(data):
     # To get hold of the folder, do: context = data.context
     day =  datetime.datetime.today()
     return "Note-" + day.strftime("%Y-%m-%d")
+
+# @form.default_value(field=INote['id'])
+# def idDefaultValue(data):
+#     # To get hold of the folder, do: context = data.aq_parent
+#     #import pdb; pdb.set_trace()
+#     context = data.context
+#     normalizer = getUtility(IIDNormalizer)
+#     id = normalizer.normalize(data['title'])
+#     return id
+

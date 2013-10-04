@@ -32,10 +32,24 @@
 <h3 class="cycleListTitle">Cycles</h3>
 <ul class="cycleList" >
         <tal:block repeat="cycle view/cycles_obj">
-	    <li class="genericButton" ><a class='editAuteur'  
+	    <li class="genericButton" ><a   
 	        tal:content="cycle/id" 
 	        tal:attributes="href python:cycle.getURL();
 	                        title cycle/Title" href="#">
+	        Cycle id
+            </a></li>
+        
+        </tal:block>
+</ul>
+</div>
+<div  tal:condition="notes" tal:define="notes view/notes" id="cycleList">
+<h3 class="cycleListTitle">Notes de séances</h3>
+<ul class="cycleList" >
+        <tal:block repeat="note notes">
+	    <li class="genericButton" ><a class='editAuteur'  
+	        tal:content="note/Title" 
+	        tal:attributes="href python:note.getURL();
+	                        title note/Title" href="#">
 	        Cycle id
             </a></li>
         

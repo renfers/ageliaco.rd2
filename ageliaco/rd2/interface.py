@@ -27,7 +27,7 @@ from zope.interface import invariant, Invalid, Interface
 
 from ageliaco.rd2 import MessageFactory
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
-
+from .note import INote
 import datetime
 
 import z3c.form
@@ -282,9 +282,34 @@ def validateId(value):
 def setAuteur(auteur, event):
     portal_url = getToolByName(auteur, 'portal_url')
     acl_users = getToolByName(auteur, 'acl_users')
-    
     portal = portal_url.getPortalObject() 
-    cycles = auteur.aq_parent
+    cycle = auteur.aq_parent
+    import pdb; pdb.set_trace()
+    try:
+        acl = acl_users['ldap-plugin'].acl_users
+        members = acl.searchUsers(givenName=auteur.firstname, sn=auteur.lastname)
+        for member in members:
+            ok = False
+            if auteur.firstname.upper() == member['givenName'].upper() and \
+                auteur.lastname.upper() == member['sn'].upper():
+                if auteur.id != member['cn']:
+                    obj = auteur.getObject()
+                    newid = member['cn']
+                    cycle.manage_renameObject(obj.id, newid)
+                    print "changing user id from %s to %s" % (auteur.id, newid)
+                    cycle.manage_addLocalRoles(newid, ['Reader',])
+                    realisation.manage_addLocalRoles(newid, ['Reader', 'Contributor', 'Editor',])
+                    ok = True
+                else:
+                    print "OK => id %s is in !!!" % auteur.id
+                    ok = True
+            if not ok:
+                print "no member found for %s" % auteur.id
+        
+    except:
+        print "no ldap plugin"
+
+    cycle.manage_addLocalRoles(auteur.id, ['Reader',])
     user = acl_users.getUserById(auteur.id)
     auteur.firstname = user['firstname']
     auteur.lastname = user['lastname']
@@ -607,6 +632,22 @@ class InterfaceView(grok.View,Form):
     def getObjectPath(self):
         return self.objectPath
         
+        
+    def notes(self, projectPath=''):
+        """Return a catalog search result of authors from a project
+        problem : same author appears several times 
+        """
+        context = aq_inner(self.context)
+        #import pdb; pdb.set_trace()
+        if not projectPath:
+            projectPath = '/'.join(context.getPhysicalPath())
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides=[INote.__identifier__],
+                       path={'query': projectPath, 'depth': 3},
+                       sort_on="modified", sort_order="reverse")
+        
+        #import pdb; pdb.set_trace()
+        return cat
         
     def authors(self, projectPath=''):
         """Return a catalog search result of authors from a project

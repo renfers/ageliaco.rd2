@@ -508,6 +508,23 @@ class View(grok.View,Form):
         #         else:
         #             print "no Property 'link'"
         return ''
+
+    def notes(self, projectPath=''):
+        """Return a catalog search result of authors from a project
+        problem : same author appears several times 
+        """
+        context = aq_inner(self.context)
+        #import pdb; pdb.set_trace()
+        if not projectPath:
+            projectPath = '/'.join(context.getPhysicalPath())
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides=[INote.__identifier__],
+                       path={'query': projectPath, 'depth': 3},
+                       sort_on="modified", sort_order="reverse")
+        
+        #import pdb; pdb.set_trace()
+        return cat
+        
     
 class CyclesView(InterfaceView):
     grok.context(IProjet)

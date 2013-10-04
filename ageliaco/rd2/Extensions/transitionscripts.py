@@ -7,7 +7,7 @@ from plone.app.textfield.value import RichTextValue
 
 def reproposeCycle(self, state_change):
     """ sends an email to the school's director """
-    print "archiveCycle called !!!"
+    print "reproposeCycle called !!!"
     dest_folder = None
     workflowTool = getToolByName(self, "portal_workflow")
     contentObject = state_change.object
@@ -77,7 +77,7 @@ def archiveCycle(self, state_change):
     
 def finaliseCycle(self, state_change):
     """ sends an email to the school's director """
-    print "archiveCycle called !!!"
+    print "finaliseCycle called !!!"
     #pass
     
 def attributeCycle(self, state_change):
@@ -87,7 +87,7 @@ def attributeCycle(self, state_change):
     
 def publishProjet(self, state_change):
     """ finish any active cycle """
-    print "attributeCycle called !!!"
+    print "publishCycle called !!!"
     #pass
     
 def activateCycle(self, state_change):
@@ -102,6 +102,8 @@ def activateCycle(self, state_change):
     ##parameters=state_change
     ##title=Move published content to subfolder of portal root
     ##
+    # missing :     - sharing of projet for all auteurs in cycle (reader)
+    #               - sharing of projet/realisation (reader,editor,contributor)
     dest_folder = None
     workflowTool = getToolByName(self, "portal_workflow")
     contentObject = state_change.object
@@ -122,35 +124,39 @@ def activateCycle(self, state_change):
     
     projets = cat[0].getObject()
     
+    cat = catalog(portal_type='ageliaco.rd2.projet',
+                   review_state='repository')
+    depot_url = cat[0].getURL()
     objectOwner = contentObject.Creator()
     projetPath = contentObject.projet
+    import pdb; pdb.set_trace()
     if not projetPath: 
         #we must create a new one if grandpa is not "projets"
-        if 'depot-de-projet' in parent.absolute_url().split('/'):
+        if depot_url in parent.absolute_url():
             projet = createContentInContainer(projets,'ageliaco.rd2.projet', 
                 title=contentObject.Title(), duration=1, presentation=RichTextValue(
                 raw=contentObject.presentation.raw
                 ))
+            try:
+                # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
+                projet.manage_pasteObjects(parent.manage_cutObjects(contentObject.id)) 
+                log("try cut OK!")
+            except: 
+                projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id))   
+                log("couldn't cut => then copy instead")            
         else:
             contentObject.projet = parent.absolute_url() #ne marche pas !!!
-        parent = contentObject.aq_parent
+            return
         #print "Parent : ", parent, contentObject.id, parent.objectIds()
         #cb_copy_data = parent.manage_cutObjects(contentObject.id)
-        try:
-            # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
-            projet.manage_pasteObjects(parent.manage_cutObjects(contentObject.id)) 
-            log("try cut OK!")
-        except: 
-            projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id))   
-            log("couldn't cut => then copy instead")
-            
     else:
         projetId = projetPath.split('/')[-1]
         print projetPath, projetId, projets
-        projet = projets[projetId]
-        if not projet:
+        if projetId not in projets.keys() and not projets[projetId]:
             log('Problem, cannot find projet %s in %s !' % (projetPath, projets.id))
-            return
+            self.context.addStatusMessage(u'Problème, projet %s pas trouvé dans %s !' % (projetPath, projets.id))
+            return False
+        projet = projets[projetId]
         parent = contentObject.aq_parent
         print "Parent : ", parent, contentObject.id, parent.objectIds()
         #cb_copy_data = parent.manage_cutObjects(contentObject.id)
