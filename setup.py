@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.9.2'
+version = '0.9.3'
 
 setup(name='ageliaco.rd2',
       version=version,
@@ -27,6 +27,7 @@ setup(name='ageliaco.rd2',
       install_requires=[
           'setuptools',
           'plone.app.dexterity [grok,relations]',
+          'plone.app.event[archetypes, dexterity, ploneintegration]',
           'collective.autopermission',
           # -*- Extra requirements: -*-
           'Plone',

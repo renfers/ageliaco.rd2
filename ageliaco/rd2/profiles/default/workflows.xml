@@ -4,7 +4,7 @@
         <type type_id="ageliaco.rd2.projets">
             <bound-workflow workflow_id="rd2.projets-workflow"/>
         </type>
-        <type type_id="ageliaco.rd2.project">
+        <type type_id="ageliaco.rd2.projet">
             <bound-workflow workflow_id="rd2.projet-workflow"/>
         </type>
         <type type_id="ageliaco.rd2.cycle">

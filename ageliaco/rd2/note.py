@@ -11,7 +11,7 @@ from ageliaco.rd2 import MessageFactory
 
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 from zope.component import getUtility
-
+from z3c.form.browser.checkbox import CheckBoxFieldWidget
 
 import datetime
 
@@ -23,22 +23,7 @@ from zope.schema.vocabulary import SimpleVocabulary
 from Products.CMFCore.utils import getToolByName
 
 from plone.formwidget.autocomplete import AutocompleteMultiFieldWidget
-
-@grok.provider(IContextSourceBinder)
-def possibleAttendees(context):
-    acl_users = getToolByName(context, 'acl_users')
-    parent = context.__parent__
-    #group = acl_users.getGroupById(projectID)
-    terms = []
-    group = parent.getContributor()
-    group.append(parent.getSupervisor())
-    group.append(parent.getSupervisor2())
-    
-    if group is not None:
-        for member in group:
-            terms.append(member)
-            
-    return SimpleVocabulary(terms)
+from .interface import INote, InterfaceView, possibleAttendees
 
 """
 <model xmlns="http://namespaces.plone.org/supermodel/schema">
@@ -73,67 +58,40 @@ ${contributor}</default>
   </schema>
 </model>
 """
-class INote(form.Schema):
-    """
-    Note de suivi de rendez-vous
-    """
-    title = schema.TextLine(
-            title=MessageFactory(u"Titre"),
-            required=False,
-        )    
 
-    #form.widget(presence=AutocompleteMultiFieldWidget)
-    presence = schema.Text(
-            title=MessageFactory(u"Personnes présentes"),
-            #default=[],
-            #value_type=schema.Choice(source=possibleAttendees,),            
-            required=False,
-        )
-
-    #form.widget(absence=AutocompleteMultiFieldWidget)
-    absence = schema.Text(
-            title=MessageFactory(u"Personnes absentes"),
-            #default=[],
-            #value_type=schema.Choice(source=possibleAttendees,),            
-            required=False,
-        )
-
-    presentation = RichText(
-            title=MessageFactory(u"Notes de séance"),
-            description=MessageFactory(u"Compte-rendu de l'avancement du projet"),
-            required=False,
-        )    
-
-    dexterity.read_permission(reviewNotes='cmf.ReviewPortalContent')
-    dexterity.write_permission(reviewNotes='cmf.ReviewPortalContent')
-    reviewNotes = RichText(
-            title=MessageFactory(u"Notes internes"),
-            description=MessageFactory(u"Notes visibles que par R&D"),
-            required=False,
-        )    
+class View(InterfaceView):
+    grok.context(INote)
+    grok.require('zope2.View')
+    grok.name('view')
     
-    nextmeeting = schema.Datetime(
-            title=MessageFactory(u"Date du prochain rendez-vous"),
-            required=False,
-        )
-
-    meetingplace = schema.TextLine(
-            title=MessageFactory(u"Lieu du prochain rendez-vous"),
-            required=False,
-        )    
-
-@form.default_value(field=INote['title'])
-def startDefaultValue(data):
-    # To get hold of the folder, do: context = data.context
-    day =  datetime.datetime.today()
-    return "Note-" + day.strftime("%Y-%m-%d")
-
-# @form.default_value(field=INote['id'])
-# def idDefaultValue(data):
-#     # To get hold of the folder, do: context = data.aq_parent
-#     #import pdb; pdb.set_trace()
-#     context = data.context
-#     normalizer = getUtility(IIDNormalizer)
-#     id = normalizer.normalize(data['title'])
-#     return id
-
+    def presence(self):
+        context = self.context
+        note = context
+        out = [[],[],[]]
+        presents = [] #note.presence
+        absents = [] #note.absence
+        sansexcuse = []
+        cycle = note.aq_parent
+        attendees = possibleAttendees(cycle)
+        #import pdb; pdb.set_trace()
+        for item in attendees._terms:
+            if item.token in note.presence:
+                presents.append(item.title)
+            elif item.token in note.absence:
+                absents.append(item.title)
+            else:
+                sansexcuse.append(item.title)
+        out = presents, absents, sansexcuse
+        return out
+    def rencontres(self):
+        context = aq_inner(self.context)
+        #import pdb; pdb.set_trace()
+        projectPath = '/'.join(context.getPhysicalPath())
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(portal_type='Event',
+                       path={'query': projectPath, 'depth': 2},
+                       sort_on="modified")
+        
+        #import pdb; pdb.set_trace()
+        return cat
+        

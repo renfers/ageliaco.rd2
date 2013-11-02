@@ -12,7 +12,7 @@ from plone.z3cform.textlines import TextLinesFieldWidget
 from zope.interface import invariant, Invalid
 
 from interface import IProjet, IAuteur, ICycle, idDefaultFromContext, InterfaceView
-from interface import cycle_default_problematique, cycle_default_projet_presentation
+#from interface import cycle_default_problematique, cycle_default_projet_presentation
 from note import INote
 
 import yafowil.plone
@@ -338,81 +338,81 @@ class View(grok.View,Form):
     def canReviewContent(self):
         return checkPermission('cmf.ReviewPortalContent', self.context)
         
-    def __call__(self):
-        #import pdb; pdb.set_trace()
-        if 'optionsRadios' in self.request.form: 
-            title = u''
-            projetpath,title = ast.literal_eval(self.request['optionsRadios'])
-            #title = unicode(ast.literal_eval('u"""' + title + '"""'))
-            # look for last cycle in projetpath
-            context = aq_inner(self.context)
-            catalog = getToolByName(self.context, 'portal_catalog')
-            cat = catalog(object_provides= ICycle.__identifier__,
-                       path={'query': projetpath, 'depth': 1},
-                       sort_on="modified", sort_order="reverse")  
-        
-            portal_url = getToolByName(context, "portal_url")
-            portal = portal_url.getPortalObject()
-            # clone the cycle in a new cycle here and remove anything other than auteurs in the new cycle
-            # Bypass security
-            projet = portal.unrestrictedTraverse(projetpath)
-        
-            item = None
-            #getting a copy of last cycle
-            #import pdb; pdb.set_trace()
-            if len(cat):
-                try:
-                    ids = context.manage_pasteObjects(projet.manage_copyObjects(cat[0].id)) 
-                    #context.manage_renameObject(newcycle.id, id + "-old")
-                    cycleId = ids[0]['new_id']
-                    item = context[cycleId]
-                    new_id = idDefaultFromContext(context) #"%s-%s" %(context.start,len(context.objectIds()))
-                    item.aq_parent.manage_renameObject(cycleId, str(new_id))
-                    cycleId = new_id
-                    item.setTitle(title)
-                    if not item.presentation:
-                        item.presentation = RichTextValue(
-                                raw=cycle_default_projet_presentation
-                            ) 
-                    item.problematique = RichTextValue(
-                            raw=cycle_default_problematique
-                        ) 
-                    #removing notes in new cycle
-                    cat = catalog(object_provides= INote.__identifier__,
-                               path={'query': '/'.join(item.getPhysicalPath()), 'depth': 1},
-                               sort_on="modified", sort_order="reverse")  
-                    for note in cat:
-                        del item[note.id]
-                    #removing copy of auteur
-                    cat = catalog(object_provides= IAuteur.__identifier__,
-                               path={'query': '/'.join(item.getPhysicalPath()), 'depth': 1},
-                               sort_on="modified")  
-                    for auteur in cat:
-                        if auteur.id[0:4] == 'copy':
-                            del item[auteur.id]
-                except: #creating a new cycle
-                    new_id = idDefaultFromContext(context)
-                    item = createContentInContainer(context, "ageliaco.rd2.cycle", id=new_id, title="")
-                    item.projet = projetpath
-                    item.presentation = RichTextValue(
-                            raw=cycle_default_projet_presentation
-                        ) 
-                    item.problematique = RichTextValue(
-                            raw=cycle_default_problematique
-                        ) 
-                
-            else: #creating a new cycle
-                context = aq_inner(self.context)
-            #             catalog = getToolByName(self.context, 'portal_catalog')
-            #             cat = catalog(object_provides= ICycle.__identifier__,
-            #                        path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
-            #                        sort_on="modified", sort_order="reverse")  
-            #             print "cat len = ", len(cat), cat
-            #             cycleId = "%s-%i" % (context.start,(len(cat)+1))
-                item = createContentInContainer(context, "ageliaco.rd2.cycle", title=title)
-             
-            return self.request.response.redirect(item.absolute_url() + '/edit')
-        return super(View, self).__call__()   
+    #     def __call__(self):
+    #         #import pdb; pdb.set_trace()
+    #         if 'optionsRadios' in self.request.form: 
+    #             title = u''
+    #             projetpath,title = ast.literal_eval(self.request['optionsRadios'])
+    #             #title = unicode(ast.literal_eval('u"""' + title + '"""'))
+    #             # look for last cycle in projetpath
+    #             context = aq_inner(self.context)
+    #             catalog = getToolByName(self.context, 'portal_catalog')
+    #             cat = catalog(object_provides= ICycle.__identifier__,
+    #                        path={'query': projetpath, 'depth': 1},
+    #                        sort_on="modified", sort_order="reverse")  
+    #         
+    #             portal_url = getToolByName(context, "portal_url")
+    #             portal = portal_url.getPortalObject()
+    #             # clone the cycle in a new cycle here and remove anything other than auteurs in the new cycle
+    #             # Bypass security
+    #             projet = portal.unrestrictedTraverse(projetpath)
+    #         
+    #             item = None
+    #             #getting a copy of last cycle
+    #             #import pdb; pdb.set_trace()
+    #             if len(cat):
+    #                 try:
+    #                     ids = context.manage_pasteObjects(projet.manage_copyObjects(cat[0].id)) 
+    #                     #context.manage_renameObject(newcycle.id, id + "-old")
+    #                     cycleId = ids[0]['new_id']
+    #                     item = context[cycleId]
+    #                     new_id = idDefaultFromContext(context) #"%s-%s" %(context.start,len(context.objectIds()))
+    #                     item.aq_parent.manage_renameObject(cycleId, str(new_id))
+    #                     cycleId = new_id
+    #                     item.setTitle(title)
+    #                     if not item.presentation:
+    #                         item.presentation = RichTextValue(
+    #                                 raw=cycle_default_projet_presentation
+    #                             ) 
+    #                     item.problematique = RichTextValue(
+    #                             raw=cycle_default_problematique
+    #                         ) 
+    #                     #removing notes in new cycle
+    #                     cat = catalog(object_provides= INote.__identifier__,
+    #                                path={'query': '/'.join(item.getPhysicalPath()), 'depth': 1},
+    #                                sort_on="modified", sort_order="reverse")  
+    #                     for note in cat:
+    #                         del item[note.id]
+    #                     #removing copy of auteur
+    #                     cat = catalog(object_provides= IAuteur.__identifier__,
+    #                                path={'query': '/'.join(item.getPhysicalPath()), 'depth': 1},
+    #                                sort_on="modified")  
+    #                     for auteur in cat:
+    #                         if auteur.id[0:4] == 'copy':
+    #                             del item[auteur.id]
+    #                 except: #creating a new cycle
+    #                     new_id = idDefaultFromContext(context)
+    #                     item = createContentInContainer(context, "ageliaco.rd2.cycle", id=new_id, title="")
+    #                     item.projet = projetpath
+    #                     item.presentation = RichTextValue(
+    #                             raw=cycle_default_projet_presentation
+    #                         ) 
+    #                     item.problematique = RichTextValue(
+    #                             raw=cycle_default_problematique
+    #                         ) 
+    #                 
+    #             else: #creating a new cycle
+    #                 context = aq_inner(self.context)
+    #             #             catalog = getToolByName(self.context, 'portal_catalog')
+    #             #             cat = catalog(object_provides= ICycle.__identifier__,
+    #             #                        path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+    #             #                        sort_on="modified", sort_order="reverse")  
+    #             #             print "cat len = ", len(cat), cat
+    #             #             cycleId = "%s-%i" % (context.start,(len(cat)+1))
+    #                 item = createContentInContainer(context, "ageliaco.rd2.cycle", title=title)
+    #              
+    #             return self.request.response.redirect(item.absolute_url() + '/edit')
+    #         return super(View, self).__call__()   
 
     def activeProjets(self):
         catalog = getToolByName(self.context, 'portal_catalog')

@@ -1,5 +1,6 @@
 setuptools
 plone.app.dexterity [grok,relations]
+plone.app.event[archetypes, dexterity, ploneintegration]
 collective.autopermission
 Plone
 plone.principalsource

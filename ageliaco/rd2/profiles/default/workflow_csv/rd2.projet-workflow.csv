@@ -12,7 +12,7 @@ Transitions,"activate, repose, archive",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,X,X,X,X
-Modify portal content,N,,,,X,X,X,,X,
+Modify portal content,N,,,,X,X,X,X,X,
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -21,11 +21,11 @@ Title:,Depot,,,,,,,,,
 Description:,Le projet est en mode depot,,,,,,,,,
 Transitions:,retract,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,,,X,,
-Access contents information,N,,,,X,,,X,,
+View,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,,X,X,X,X
 Modify portal content,N,,,,X,X,X,,,X
-Add portal content,N,,,,X,,,,,
-ageliaco.rd2 : Add Cycle,N,,,,X,,,,,X
+Add portal content,N,,,,X,X,,X,X,X
+ageliaco.rd2 : Add Cycle,N,,,,X,X,,X,X,X
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,archives,,,,,,,,,
@@ -59,7 +59,7 @@ Description:,Le projet est en cours,,,,,,,,,
 Worklist:,Projets en cours,,,,,,,,,
 Worklist label:,Projets en cours,,,,,,,,,
 Worklist guard permission:,Review portal content,,,,,,,,,
-Transitions:,"submit, publish",,,,,,,,,
+Transitions:,"submit, publish, refuser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,X,,,X,,,,,
 Access contents information,N,X,,,X,,,,,
@@ -75,6 +75,15 @@ View,Y,X,,,X,,,,,
 Access contents information,Y,X,,,X,,,,,
 Modify portal content,Y,,,,X,,,,,
 ,,,,,,,,,,
+[State],,,,,,,,,,
+Id:,nonpublic,,,,,,,,,
+Title:,Non Public,,,,,,,,,
+Description:,Le projet est pas publie (refus),,,,,,,,,
+Transitions:,retract,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
+View,N,,,,X,X,,,,X
+Access contents information,N,,,,X,,,,,X
+Modify portal content,N,,,,X,,,,,
 [Transition],,,,,,,,,,
 Id:,submit,,,,,,,,,
 Title:,Soumettre pour publication,,,,,,,,,
@@ -87,6 +96,13 @@ Id:,reject,,,,,,,,,
 Title:,Rejeter,,,,,,,,,
 Description:,Rejet du projet pour publication,,,,,,,,,
 Target state:,encours,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,
+,,,,,,,,,,
+[Transition],,,,,,,,,,
+Id:,refuser,,,,,,,,,
+Title:,Refuser,,,,,,,,,
+Description:,Rejet du projet pour publication,,,,,,,,,
+Target state:,nonpublic,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
 ,,,,,,,,,,
 [Transition],,,,,,,,,,

@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="ageliaco.rd2">
+
+    <permission
+        id="ageliaco.rd2.AddNote"
+        title="ageliaco.rd2 : Add Note"
+        />
+        
+    <permission
+        id="ageliaco.rd2.AddCycle"
+        title="ageliaco.rd2 : Add Cycle"
+        />
+        
+</configure>

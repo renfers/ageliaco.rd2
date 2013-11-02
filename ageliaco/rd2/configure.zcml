@@ -7,10 +7,13 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="ageliaco.rd2">
+    
+    <include package="collective.autopermission" />
+    <permission id="ageliaco.rd2.addProject" title="ageliaco.rd2: Add Projects Repository" />
 
   <!-- Include configuration for dependencies listed in setup.py -->
   <includeDependencies package="." />
-
+    <include file="permissions.zcml" />
   <!-- Grok the package to initialise schema interfaces and content classes -->
   <include package="five.grok" />
   <grok:grok package="." />
@@ -36,4 +39,14 @@
     <browser:resourceDirectory
       name="ageliaco.rd2"
       directory="static" />
+      
+    <genericsetup:upgradeStep
+        title="Convert Cycle and Auteur objects to new schemas"
+        description="Fields have been added or dropped"
+        source="1"
+        destination="*"
+        handler="ageliaco.rd2.upgrades.convert_to_new_cycle"
+        sortkey="1"
+        profile="ageliaco.rd2:default"/>
+
 </configure>

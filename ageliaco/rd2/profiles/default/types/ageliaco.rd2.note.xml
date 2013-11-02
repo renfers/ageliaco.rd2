@@ -1,54 +1,56 @@
 <?xml version="1.0"?>
-<object name="ageliaco.rd2.note"
-   meta_type="Dexterity FTI"
-   i18n:domain="ageliaco.rd2" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
-
-  <!-- Basic metadata -->
-  <property name="title" i18n:translate="">note</property>
-  <property name="description"
+<object name="ageliaco.rd2.note" meta_type="Dexterity FTI"
+   i18n:domain="ageliaco.rd2"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="title" i18n:translate="">note</property>
+ <property name="description"
     i18n:translate="">Note de suivi de rendez-vous</property>
-  <property name="content_icon">document_icon.gif</property>
-  <property name="global_allow">True</property>
-  <property name="filter_content_types">True</property>  
-    <element value="File" />
-    <element value="Image" />
-    <element value="Link" />
-  <property name="allow_discussion">False</property>
-
- <!-- schema interface FIXME: this is ugly -->
- <property name="schema">ageliaco.rd2.note.INote</property> 
-
- <!-- class used for content items -->
- <property name="klass">plone.dexterity.content.Container</property>
-<!--
-  <property name="product">ageliaco.rd2</property>
-  <property name="factory">addnote</property>
--->
- <property name="add_permission">cmf.AddPortalContent</property>
- <property name="behaviors">
+ <property name="icon_expr">string:${portal_url}/document_icon.gif</property>
+ <property name="factory">ageliaco.rd2.note</property>
+ <property
+    name="add_view_expr">string:${folder_url}/++add++ageliaco.rd2.note</property>
+ <property name="link_target"></property>
+ <property name="immediate_view">view</property>
+ <property name="global_allow">False</property>
+ <property name="filter_content_types">True</property>
+ <property name="allowed_content_types">
+  <element value="File"/>
+  <element value="Image"/>
+  <element value="Link"/>
+  <element value="Event"/>
+  <element value="ageliaco.rd2.note"/>
  </property>
-
-  <!-- View information -->
-  <property name="default_view">view</property>
-  <property name="default_view_fallback">False</property>
-  <property name="view_methods">
-    <element value="base_view" />
-  </property>
-
-  <!-- Method aliases -->
-  <alias from="(Default)" to="(selected layout)" />
-  <alias from="edit" to="@@edit" />
-  <alias from="sharing" to="@@sharing" />
-  <alias from="view" to="@@view" />
-
-  <!-- Actions -->
-  <action title="View" action_id="view" category="object" condition_expr=""
+ <property name="allow_discussion">False</property>
+ <property name="default_view">view</property>
+ <property name="view_methods">
+  <element value="view"/>
+ </property>
+ <property name="default_view_fallback">False</property>
+ <property name="add_permission">ageliaco.rd2.AddNote</property>
+ <property name="klass">plone.dexterity.content.Container</property>
+ <property name="behaviors">
+  <element value="plone.app.event.dx.behaviors.IEventAttendees"/>
+  <element value="plone.app.content.interfaces.INameFromTitle"/>
+ </property>
+ <property name="schema">ageliaco.rd2.note.INote</property>
+ <property
+    name="model_source">&lt;model xmlns="http://namespaces.plone.org/supermodel/schema"&gt;
+      &lt;schema /&gt;
+  &lt;/model&gt;</property>
+ <property name="model_file"></property>
+ <property name="schema_policy">dexterity</property>
+ <alias from="(Default)" to="(selected layout)"/>
+ <alias from="edit" to="@@edit"/>
+ <alias from="sharing" to="@@sharing"/>
+ <alias from="view" to="@@view"/>
+ <action title="View" action_id="view" category="object" condition_expr=""
+    description="" icon_expr="" link_target=""
     url_expr="string:${object_url}/" visible="True">
-    <permission value="View" />
-  </action>
-
-  <action title="Edit" action_id="edit" category="object" condition_expr=""
+  <permission value="View"/>
+ </action>
+ <action title="Edit" action_id="edit" category="object" condition_expr=""
+    description="" icon_expr="" link_target=""
     url_expr="string:${object_url}/edit" visible="True">
-    <permission value="Review portal content" />
-  </action>
+  <permission value="Review portal content"/>
+ </action>
 </object>

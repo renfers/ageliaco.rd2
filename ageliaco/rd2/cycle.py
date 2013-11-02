@@ -186,10 +186,10 @@ class Single_view(dexterity.DisplayForm):
 #     #projet.setContributors(projet.contributor)
 #     return #projet.request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd.cycle')
         
-class View(InterfaceView):
+class ReView(InterfaceView):
     grok.context(ICycle)
-    grok.require('zope2.View')
-    grok.name('view')
+    grok.require('cmf.ReviewPortalContent')
+    grok.name('review')
     
         
         

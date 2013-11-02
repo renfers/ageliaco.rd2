@@ -1,6 +1,55 @@
 var common_content_filter = '#content>*:not(div.configlet),dl.portalMessage.error,dl.portalMessage.info';
 var common_jqt_config = {fixed:false,speed:'fast',mask:{color:'#fff',opacity: 0.4,loadSpeed:0,closeSpeed:0}};
 
+var prevnext = {
+    formTabs: null,
+
+    next: function() { prevnext.formTabs.data('tabs').next(); prevnext._scrollToTop(); },
+    prev: function() { prevnext.formTabs.data('tabs').prev(); prevnext._scrollToTop(); },
+
+    _scrollToTop: function() {
+        $(window).scrollTop(prevnext.formTabs.closest('form').offset().top);  
+    },
+
+    showButtons: function(event, index) {
+        var tabs = prevnext.formTabs.data('tabs'),
+            index = typeof(index) === 'undefined' ? tabs.getIndex() : index,
+            current = tabs.getTabs()[index],
+            count = tabs.getTabs().length;
+
+        $('#prevnext_previous').toggle(index !== 0);
+        $('#prevnext_next').toggle(index !== (count - 1));
+
+        $('.formControls:last :submit[name=form_submit]').toggle(index === )count - 1));
+    },
+
+    init: function() {
+        var tabs;
+        prevnext.formTabs = $('.formTabs');
+        tabs = prevnext.formTabs.data('tabs');
+        if (tabs.getTabs().length > 0) {
+            if ($('fieldset#fieldset-distribution').length === 0)
+                 return;
+            $('.formControls:last :submit:first')
+                .before($('<input id="prevnext_previous" class="context" ' +
+                          '       type="button" value="" />')
+                      .val('< Previous')
+                      .click(prevnext.prev))
+                .before(document.createTextNode(' '));
+            $('.formControls:last :submit:first')
+                .before($('<input id="prevnext_next" class="context" ' +
+                          '       type="button" value="" />')
+                      .val('Next >')
+                      .click(prevnext.next))
+                .before(document.createTextNode(' '));
+            prevnext.showButtons();
+            tabs.onClick(prevnext.showButtons);
+        }
+    }
+};
+
+$(prevnext.init());
+
 // jQuery.extend(jQuery.tools.overlay.conf, 
 //     {
 //         fixed:false,
@@ -83,6 +132,19 @@ jQuery(function($){
 //                 }
 //             }
 //         }
+//     );
+    // add dialog
+//     $('a.editAuteurs').prepOverlay(
+//     {
+//         subtype: 'ajax',
+//         //filter: common_content_filter,
+//         cssclass: 'overlay-editAuteurs',
+//         formselector: '.crud-form',
+//             noform: function(el) {return $.plonepopups.noformerrorshow(el, 'redirect');},
+//             redirect: $.plonepopups.redirectbasehref,
+//             closeselector: '[name="form.button.Cancel"]',
+//         width: '100%'
+//     }
 //     );
     // add dialog
     $('a.addAuteur').prepOverlay(

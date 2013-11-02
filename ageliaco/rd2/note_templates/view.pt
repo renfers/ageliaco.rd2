@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="ageliaco.rd2">
+      
+ <head>
+    <metal:block fill-slot="style_slot">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+    </metal:block>
+    <metal:block fill-slot="javascript_head_slot" >
+        <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
+    </metal:block>
+ 
+</head>
+      
+<body>
+
+<metal:main fill-slot="main">
+    <tal:main-macro metal:define-macro="main"
+        tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime">
+
+<div  class="printonly"
+  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<img src='logo-GE.png' class="printlogo" 
+    tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/logo-GE.png"/>
+<p>REPUBLIQUE ET CANTON DE GENEVE<br />Département de l'instruction publique, de la culture et du sport
+<br />Enseignement secondaire II postobligatoire<br /><b>Direction générale<br /></b>
+Service enseignement et formation - Secteur ressources et développement</p>
+
+<h2 style="text-align : center;">Note de rencontre R&D</h2>
+
+</div>
+
+        <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+<a class="noprint" id="printer" href="javascript:window.print()" title="Imprimer cette page" ><h3 class="icon-print"></h3></a>
+
+
+        <h1 class="documentFirstHeading" tal:content="context/title" />
+        
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
+<p tal:define="creator context/Creator;
+               mtool context/@@plone_tools/membership;
+               author python:mtool.getMemberInfo(creator)"
+   tal:content="python:author and author['fullname'] or creator">Author name</p>
+        <p class="documentDescription" tal:content="context/description" />
+
+<div>
+
+
+<div >
+<h3  i18n:translate="heading_auteurs"
+    tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()),withTotal=view.canReviewContent())">Prochaines rencontres 
+            <span class="noprint"  tal:condition="view/canModifyContent">
+              <a title="Ajouter un rendez-vous" class="noprint" 
+                tal:attributes="href string:${context/absolute_url}/createObject?type_name=Event">
+                <i class="icon-plus-sign-alt"></i></a>
+            </span>
+</h3>
+<!-- afficher les rendez-vous -->
+<tal:rencontres define="rencontres view/rencontres">
+<ul tal:repeat="rv rencontres">
+    <li><a tal:attributes="href rv/getURL">
+        <span tal:content="python: here.toLocalizedTime(rv.start, long_format='%H:%M %d.%m.%Y')"/>
+        </a> <b>lieu :</b> <span tal:content="rv/location"/></li> 
+</ul>
+</tal:rencontres>
+</div>
+
+</div>
+    <tal:presence define="presence view/presence">
+     <b tal:condition="python: presence[0]">Présents :</b> 
+     <ul tal:repeat="personne python: presence[0]">
+        <li tal:content="personne"/>
+     </ul>
+     <b tal:condition="python: presence[1]">Excusés :</b> 
+     <ul tal:repeat="personne python: presence[1]">
+        <li tal:content="personne"/>
+     </ul>
+     <b tal:condition="python: presence[1]">Absents :</b> 
+     <ul tal:repeat="personne python: presence[2]">
+        <li tal:content="personne"/>
+     </ul>
+    </tal:presence>
+    <div tal:condition="python:context.presentation" tal:content="structure context/presentation"/>
+
+       <div tal:replace="structure provider:plone.belowcontentbody" /> 
+
+    </tal:main-macro>
+</metal:main>
+<div />
+
+</body>
+</html>
+
