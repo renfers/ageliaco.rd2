@@ -76,51 +76,7 @@
 <div id="create_newcycle" tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()">
   <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">Déposer un nouveau projet</a>
 </div>
-<div id="create_newcycle" tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()">
-    <form id="reconduction_form" action="#">
-      <fieldset>
-        <h2>Reconduire un projet en cours</h2>
-        <span class="help-block">Sélectionner un projet et cliquer sur le bouton en dessous!</span>
-        <select  id='monselect'>
-        <tal:block repeat="projet view/activeProjets">
-            <option  tal:attributes="value projet"
-             tal:content="python:projet[1]"> Check me out
-            </option>
-        </tal:block>
-        </select><br/>
-        <input type="hidden" id="selectedProjet" name="optionsRadios" value=''/>
-        <button type="submit" name="form.action.reconduct" class="btn btn-large btn-info">Reconduire le projet</button>
-      </fieldset>
-    </form>
-<script>
-  	$(document).ready(function(){
-  		$('#monselect').change(function () {
-          var str = "";
-          str = $("#monselect option:selected").val();
-          $("#selectedProjet").val(str);
-        })
-        .trigger('change');
-  	});
 
-</script>
-
-    <!--
-        <div class="btn-group"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-            Reconduire un projet en cours
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu"  role="menu" aria-labelledby="dLabel">
-            <tal:block repeat="projet view/activeProjets" define="reconduct nocall:view/reconductionProjet">
-                  <li ><a href="@@stateview" class="btn-projets-reconduction"
-                    tal:attributes="href string: @@reconduction?projetInfo=${projet}"
-                    tal:content="python:projet[1]">Projet</a></li>
-            </tal:block>
-          </ul>
-        
-        </div>  
-     -->         
-</div>
 
         <div tal:replace="structure provider:plone.belowcontentbody" />
 </div>

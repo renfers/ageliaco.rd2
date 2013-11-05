@@ -52,6 +52,7 @@ from plone.z3cform.z2 import processInputs
 from plone.z3cform.crud import crud
 # for debug purpose => log(...)
 from Products.CMFPlone.utils import log
+from plone.z3cform import layout
 
 
 from zope.schema.interfaces import IContextSourceBinder
@@ -939,6 +940,7 @@ class AuteursEditForm(crud.EditForm):
     
     buttons = crud.EditForm.buttons.copy().omit('delete')
     handlers = crud.EditForm.handlers.copy()
+
     @button.buttonAndHandler(_(u"Retour au formulaire"),name= "Cancel")
     def handleCancel(self, action):
         """User cancelled. Redirect back to the front page.
@@ -956,10 +958,23 @@ class AuteursForm(crud.CrudForm,grok.View):
     grok.require('zope2.View')
     grok.name('Auteurs')
     #grok.template('interface_templates/auteursEdit.pt')
-    #template = Zope3PageTemplateFile('interface_templates/auteursEdit.pt')    
+    #template = Zope3PageTemplateFile('interface_templates/auteursEdit.pt')  
+      
+    #     def updateWidgets(self):
+    #         import pdb; pdb.set_trace()
+    #         self.widgets["select"].mode = z3c.form.interfaces.HIDDEN_MODE
+        
     def get_items(self):
         #import pdb; pdb.set_trace()
         return self.context.objectItems()
+
+class EditAuteurs(layout.FormWrapper):
+    form = AuteursForm
+    grok.context(ICycle)
+    grok.require('zope2.View')
+    grok.name('EditAuteurs')
+    
+#EditAuteursView = layout.wrap_form(AuteursForm)
         
 #     def remove(self, (id, item)):
 #         self.context.manage_deleteItems([id,])
