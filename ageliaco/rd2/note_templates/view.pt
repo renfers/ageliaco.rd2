@@ -36,17 +36,12 @@ Service enseignement et formation - Secteur ressources et développement</p>
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-<a class="noprint" id="printer" href="javascript:window.print()" title="Imprimer cette page" ><h3 class="icon-print"></h3></a>
+<a class="noprint" id="printer" href="javascript:window.print()" title="Imprimer cette page" ><i class="fa fa-print fa-2x"></i></a>
 
 
         <h1 class="documentFirstHeading" tal:content="context/title" />
         
         <div tal:replace="structure provider:plone.belowcontenttitle" />
-<p tal:define="creator context/Creator;
-               mtool context/@@plone_tools/membership;
-               author python:mtool.getMemberInfo(creator)"
-   tal:content="python:author and author['fullname'] or creator">Author name</p>
-        <p class="documentDescription" tal:content="context/description" />
 
 <div>
 

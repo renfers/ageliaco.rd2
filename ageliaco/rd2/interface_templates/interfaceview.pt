@@ -23,11 +23,12 @@
         <link rel="stylesheet" href="assets/css/prettify.css"
          tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/widget.css"
          >
-        <link rel="stylesheet" href="assets/css/prettify.css"
+  <!--      <link rel="stylesheet" href="assets/css/prettify.css"
          tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/prettify.css"
          >
+         -->
       <link rel="stylesheet" href="assets/css/font-awesome.css"
-         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome.css"
+         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/font-awesome/css/font-awesome.min.css"
          >
         <link rel="stylesheet" type="text/css" 
             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"

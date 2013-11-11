@@ -37,7 +37,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-<a class="noprint" id="printer" href="javascript:window.print()" title="Imprimer cette page" ><h4 class="icon-print"></h4></a>
+<a class="noprint" id="printer" href="javascript:window.print()" title="Imprimer cette page" ><i class="fa fa-print fa-2x"></i></a>
 
 
 <div class="noprint sommaire">
@@ -100,16 +100,16 @@ Service enseignement et formation - Secteur ressources et développement</p>
 <h4  i18n:translate="heading_auteurs"
     tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()),withTotal=view.canReviewContent())">Auteurs 
        <!--     <span class="noprint"  tal:condition="view/canModifyContent">
-              <a title="Ajouter un auteur" class="addAuteur noprint" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur"><i class="icon-plus-sign-alt"></i></a>
+              <a title="Ajouter un auteur" class="addAuteur noprint" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur"><i class="fa fa-plus-sign-alt"></i></a>
             </span>
         -->
             <span class="noprint"  tal:condition="view/canModifyContent">
-              <a title="Editer les auteurs" class="editAuteurs noprint" tal:attributes="href string:${view/cycle_url}/Auteurs"><i class="icon-pencil"></a>
+              <a title="Editer les auteurs" class="editAuteurs noprint" tal:attributes="href string:${view/cycle_url}/Auteurs"><i class="fa fa-pencil"></i></a>
             </span>
 </h4>
             <div tal:condition="view/canReviewContent">
                 <a class="noprint"  href="#" class="heures" tal:attributes="id string:button-hide-hours">
-                <i class="icon-time"></i></a></div>
+                <i class="fa fa-clock-o"></i></a></div>
                     <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
 
 </div>
@@ -127,6 +127,16 @@ Service enseignement et formation - Secteur ressources et développement</p>
     </fieldset>
 </tal:fieldsets>
 
+<div style="text-align: center;" class="printonly" ">
+    <i class="fa fa-smile-o fa-2x" style="color:yellow;"></i>
+    <span style="color: rgb(204, 0, 0); ">
+        <strong> 
+            Le secteur Ressources et développement vous remercie d'avoir complété ce formulaire auquel 
+            il portera toute son attention
+        </strong> 
+    </span> 
+    <i class="fa fa-smile-o fa-2x" style="color:yellow;"></i>
+</div>
 
 <!-- overlayed element -->
 <div class="apple_overlay" id="overlay">
