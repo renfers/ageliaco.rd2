@@ -49,6 +49,47 @@ th.ProjectCycles{
     display : none;
 }
 
+fieldset, .editionComment {
+    line-height: 1.5em;
+    margin: 1em 0;
+    padding: 0 1em 1em;
+    width: auto;
+}
+#content legend {
+    border-color: rgb(204,0,0);
+    border-image: none;
+    border-style: none none solid;
+    border-width: 0.1em;
+    background-color: #eee;
+    text-outline: 2px 2px #c00;
+    font-size: 300%;
+    font-weight:900;
+    color: rgb(204,0,0);
+    padding: 0.2em;
+}
+
+legend {
+    font-family:Georgia,Serif;
+    color: rgb(204,0,0);
+}
+
+fieldset, .editionComment {
+    line-height: 1.5em;
+}
+.sommaire {
+    float : right;
+}
+
+h2 {
+    font-size : 200%;
+}
+h3 {
+    font-size : 175%;
+}
+h4 {
+    font-size : 150%;
+}
+
 @media print { 
     .printonly { 
         display: block; 
@@ -82,6 +123,12 @@ th.ProjectCycles{
     }
     #eepmenu {
         display:none;
+    }
+
+
+    legend, #content legend {
+        font-family:Georgia,Serif;
+        color: rgb(204,0,0);
     }
 
 } 

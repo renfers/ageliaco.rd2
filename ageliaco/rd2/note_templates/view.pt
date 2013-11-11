@@ -85,7 +85,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
         <li tal:content="personne"/>
      </ul>
     </tal:presence>
-    <div tal:condition="python:context.presentation" tal:content="structure context/presentation"/>
+    <div tal:condition="python:context.presentation" tal:content="structure context/presentation/output"/>
 
        <div tal:replace="structure provider:plone.belowcontentbody" /> 
 

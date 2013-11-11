@@ -22,10 +22,11 @@ Description:,Le projet est en mode depot,,,,,,,,,
 Transitions:,retract,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,X,X,X
-Access contents information,N,,,,X,,X,X,X,X
+Access contents information,N,,,,X,,X,,X,X
 Modify portal content,N,,,,X,X,X,,,X
 Add portal content,N,,,,X,X,,X,X,X
 ageliaco.rd2 : Add Cycle,N,,,,X,X,,X,X,X
+Add Folders,N,,,,X,X,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,archives,,,,,,,,,
@@ -61,9 +62,11 @@ Worklist label:,Projets en cours,,,,,,,,,
 Worklist guard permission:,Review portal content,,,,,,,,,
 Transitions:,"submit, publish, refuser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,X,,,X,,,,,
-Access contents information,N,X,,,X,,,,,
-Modify portal content,N,,,,X,X,X,,X,X
+View,N,X,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X
+Add portal content,N,,,,X,X,X,,X,X
+Modify portal content,N,,,,X,X,X,,,X
+ageliaco.rd2 : Add Cycle,N,,,,X,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,published,,,,,,,,,
@@ -71,9 +74,10 @@ Title:,Public,,,,,,,,,
 Description:,Le projet est publie,,,,,,,,,
 Transitions:,retract,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,Y,X,,,X,,,,,
-Access contents information,Y,X,,,X,,,,,
-Modify portal content,Y,,,,X,,,,,
+View,Y,X,,,X,X,X,X,X,X
+Access contents information,Y,X,,,X,X,X,X,X,X
+Add portal content,N,,,,X,X,X,,X,
+Modify portal content,Y,,,,X,X,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,nonpublic,,,,,,,,,
@@ -82,7 +86,7 @@ Description:,Le projet est pas publie (refus),,,,,,,,,
 Transitions:,retract,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,,,,X
-Access contents information,N,,,,X,,,,,X
+Access contents information,N,,,,X,X,,,,X
 Modify portal content,N,,,,X,,,,,
 [Transition],,,,,,,,,,
 Id:,submit,,,,,,,,,

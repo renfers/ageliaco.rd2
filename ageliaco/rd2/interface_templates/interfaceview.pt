@@ -10,9 +10,6 @@
     <metal:css_head define-macro="css_head_slot">
      <tal:css  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         <link rel="stylesheet" type="text/css" 
-            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
-            />
-        <link rel="stylesheet" type="text/css" 
             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.css"
             />
         <link rel="stylesheet" href="bootstrap/js/themes/blue/style.css" type="text/css" media="print, projection, screen"
@@ -32,6 +29,9 @@
       <link rel="stylesheet" href="assets/css/font-awesome.css"
          tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome.css"
          >
+        <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
+            />
       <!--[if IE 7]>
       <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"
          tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome-ie7.min.css"
@@ -79,23 +79,23 @@
             $("table").tablesorter(); 
         }); 
         </script>
-  <script>
-  $(function() {
-    // run the currently selected effect
-    function runEffect() {
-      // run the effect
-      $( '[id^=effect-]' ).toggle( "slide");
-    };
+          <script>
+          $(function() {
+            // run the currently selected effect
+            function runEffect() {
+              // run the effect
+              $( '[id^=effect-]' ).toggle( "slide");
+            };
   
-    // set effect from select menu value
-    $( '[id^=button-]' ).click(function() {
-      runEffect();
-      return false;
-    });
+            // set effect from select menu value
+            $( '[id^=button-]' ).click(function() {
+              runEffect();
+              return false;
+            });
  
-    $( '[id^=effect-]' ).hide();
-  });
-  </script>
+            $( '[id^=effect-]' ).hide();
+          });
+          </script>
        </tal:js>
     </metal:js>
 
@@ -136,9 +136,12 @@
                     <li><a title="Editer cet auteur" class='editAuteur'  
 	        tal:attributes="href python:author.getURL() + '/edit'" href="#"><i class="icon-pencil"></i>
             </a></li>
-                    <li><a title="Supprimer cet auteur" class='delAuteur'  
+            <!--        <li><a title="Supprimer cet auteur" class='delAuteur'  
 	        tal:attributes="href python:author.getURL() + '/delete_confirmation'" href="#"><i class="icon-remove"></i>
-            </a></li></ul></div>
+
+            </a></li>
+	        -->
+            </ul></div>
             </td>
         </tr>
       </tal:auteur>

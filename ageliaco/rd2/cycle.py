@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import os.path
-
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.interfaces.browser import IBrowserRequest
 from five import grok
 from zope import schema
 from plone.namedfile import field as namedfile
@@ -56,6 +57,7 @@ from ageliaco.rd2 import MessageFactory
 #from projet import IProjet
 from interface import ICycle, IAuteur, InterfaceView
 
+_ = MessageFactory
 
 
 """
@@ -186,12 +188,11 @@ class Single_view(dexterity.DisplayForm):
 #     #projet.setContributors(projet.contributor)
 #     return #projet.request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd.cycle')
         
-class ReView(InterfaceView):
+class View(InterfaceView, dexterity.DisplayForm):
     grok.context(ICycle)
-    grok.require('cmf.ReviewPortalContent')
-    grok.name('review')
+    grok.require('zope2.View')
+    grok.name('view')
     
-        
         
     def auteurs(self):
         context = aq_inner(self.context)
@@ -235,7 +236,20 @@ class ReView(InterfaceView):
             return context[auteur]
         return None
     
-    
+    def projet(self,url):
+        context = aq_inner(self.context)
+        
+        catalog = getToolByName(self.context, 'portal_catalog')
+        
+        cat = catalog(portal_type='ageliaco.rd2.projet',
+                    review_state='encours',
+                    path={'query': '/'.join(url.split('/')[:-1]), 'depth': 1},
+                    id=url.split('/')[-1])    
+        if len(cat)==0:
+            return ""
+        obj = cat[0].getObject()
+        return obj.title            
+        
     
 @indexer(ICycle)
 def searchableIndexer(context):
@@ -260,6 +274,16 @@ def supervisorIndexer(obj):
     return obj.supervisor
 grok.global_adapter(supervisorIndexer, name="supervisor")
 
+class ILayer(IDefaultBrowserLayer):
+    pass
+
+class EditForm(dexterity.EditForm):
+    grok.context(ICycle)
+    grok.layer(ILayer)
+    grok.name('edit')
+
+    label = _(u"Proposer un projet")
+    description = _(u"Make your changes below.")
 
 # class Add(dexterity.AddForm):
 #     grok.name('ageliaco.rd2.cycle')

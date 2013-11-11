@@ -25,8 +25,8 @@ Transitions:,"attribuer, reject",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,,X,X
 Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,X,X,,X,
-"Add Documents, Images, and Files",N,,,,X,X,,,X,
+Modify portal content,N,,,,X,,X,,X,
+"Add Documents, Images, and Files",N,,,,X,,,,X,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
@@ -38,8 +38,8 @@ Transitions:,"activate, reject, reviser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,,X,X
 Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,X,X,,X,
-"Add Documents, Images, and Files",N,,,,X,X,,,X,
+Modify portal content,N,,,,X,,X,,X,
+"Add Documents, Images, and Files",N,,,,X,,,,X,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,

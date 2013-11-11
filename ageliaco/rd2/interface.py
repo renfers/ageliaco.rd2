@@ -133,15 +133,31 @@ ECASO : école d'assistant-e-s en soins et santé communautaire
 ordres = {
     "COLLEGES" : u"COLLEGES",
     "ECG" : u"ECG",
-    "CFP" : u"ECOLES PROFESSIONNELLES",
+    "CFP" : u"CFP",
     "INSERTION" : u"INSERTION",
     }
 
 professionnelles = {
     "CFPPC": u"CFPPC",
     "CFPS":u"CFPS",
+    "CFPS-ECASE":u"CFPS-ECASE",
+    "CFPS-ECASO":u"CFPS-ECASO",
+    "CFPS-ESHYD":u"CFPS-ESHYD",
+    "CFPS-FORAD":u"CFPS-FORAD",
+    "CFPS-ECLAB":u"CFPS-ECLAB",
+    "CFPS-CUISI":u"CFPS-CUISI",
+    "CFPS-ECAME":u"CFPS-ECAME",
+    "CFPS-ESPOD":u"CFPS-ESPOD",
+    "CFPS-ESEDE":u"CFPS-ESEDE",
+    "CFPS-ESAMB":u"CFPS-ESAMB",
     "CFPT":u"CFPT",
-    "CFPSH":u"CFPSHR-EGEI",
+    "CFPT-MECATRONIQUE":u"CFPT-MECATRONIQUE",
+    "CFPT-ELECTRONIQUE":u"CFPT-ELECTRONIQUE",
+    "CFPT-AUTOMOBILE":u"CFPT-AUTOMOBILE",
+    "CFPT-HORLOGERIE":u"CFPT-HORLOGERIE",
+    "CFPT-INFORMATIQUE":u"CFPT-INFORMATIQUE",
+    "CFPSH":u"CFPSHR",
+    "CFPSHR-ECGEI":u"CFPSHR-ECGEI",
     "CFPNE":u"CFPNE",
     "CFPAA":u"CFPAA",
     }
@@ -608,7 +624,7 @@ class ICycle(form.Schema):
 
     discipline = schema.Text(
             title=MessageFactory(u"Discipline(s)"),
-            description=MessageFactory(u"Discipline(s) touchée(s) par le projet (une par ligne)"),
+            description=MessageFactory(u"Discipline(s) concernée(s) par le projet (une par ligne)"),
             required=False,
             default=u'',
         )
@@ -630,14 +646,14 @@ class ICycle(form.Schema):
     experiences = RichText(
             title=MessageFactory(u"Expériences préalables"),
             description=MessageFactory(u"Sur quelles expériences ou connaissances préalables repose le projet? Quels sont le travail et la réflexion déjà entamés dans le domaine de la recherche proposée (bibliographie, inventaire d'expériences, etc.)"),
-            required=True,
+            required=False,
             default=u'',
         )    
 
     besoin = RichText(
             title=MessageFactory(u"Origine du besoin"),
             description=MessageFactory(u"Quels éléments de la situation présente sont à l'origine du besoin exprimé ? Justification et preuves du besoin (plan cadre, directives, etc.)"),
-            required=True,
+            required=False,
             default=u'',
         )    
 
@@ -651,7 +667,7 @@ class ICycle(form.Schema):
     problematique = RichText(
             title=MessageFactory(u"Objectifs généraux du projet"),
             description=MessageFactory(u"Changements et actions concrets auxquels on peut s'attendre à court et à long terme"),
-            required=True,
+            required=False,
             default=u'',
         )    
 
@@ -659,13 +675,13 @@ class ICycle(form.Schema):
         title=MessageFactory(u"Filière visée"),
         description=MessageFactory(u"Sélectionnez la filière concernée"),
         value_type=schema.Choice(vocabulary=u"ageliaco.rd2.ordres"),
-        required=True,
+        required=False,
         missing_value=(),
         )
     
     pro = schema.List(
         title=MessageFactory(u"CFP"),
-        description=MessageFactory(u"Si école professionnelle, précisez laquelle"),
+        description=MessageFactory(u"Si CFP, précisez lequel"),
         value_type=schema.Choice(vocabulary=u"ageliaco.rd2.professionnelles"),
         required=False,
         missing_value=(),
@@ -674,7 +690,7 @@ class ICycle(form.Schema):
     forme = RichText(
             title=MessageFactory(u"Forme du produit fini"),
             description=MessageFactory(u"Quels types de documents seront déposés sur le site de R&D? (documents maître, documents élève, documents de référence)"),
-            required=True,
+            required=False,
             default=u'',
         )    
 
@@ -689,53 +705,54 @@ class ICycle(form.Schema):
             title=MessageFactory(u"Durée du projet"),
             description=MessageFactory(u"Durée estimée du projet en années scolaires"),
             default = 1,
+            required=False,
         )
 
     planification = RichText(
             title=MessageFactory(u"Planification des objectifs par année"),
             description=MessageFactory(u"Organisation des objectifs sur toute la durée du projet"),
-            required=True,
+            required=False,
             default=u'',
         )    
 
     plan = RichText(
             title=MessageFactory(u"Echéancier"),
             description=MessageFactory(u"Planification détaillée pour l'année à venir"),
-            required=True,
+            required=False,
             default=u'',
         )    
     
     repartition = RichText(
             title=MessageFactory(u"Répartition et rôles"),
             description=MessageFactory(u"Répartition prévue des tâches entre participants"),
-            required=True,
+            required=False,
             default=u'',
         )    
 
     modalites = RichText(
             title=MessageFactory(u"Modalités de travail"),
             description=MessageFactory(u"Plage horaire commune : demande du groupe de travail auprès des établissements concernés"),
-            required=True,
+            required=False,
             default=u'',
         )    
 
     participants = schema.Text(
             title=MessageFactory(u"Participants pour l'année à venir"),
-            description=MessageFactory(u"Mettre le login EDU de chaque participant, un par ligne (ex: 'edu-travoltaj')"),
-            required=True,
+            description=MessageFactory(u"Mettre le login EDU de chaque participant, un par ligne (ex: 'edu-travoltaj'). La liste des auteurs sera générée automatiquement."),
+            required=False,
             default=u'',
         )    
 
     porteparole = schema.TextLine(
             title=MessageFactory(u"Coordinateur"),
             description=MessageFactory(u"Porte-parole du projet pour R&D (mettre le login EDU)"),
-            required=True,
+            required=False,
             default=u'',
         )
 
     @invariant
     def validatePorteparole(data):
-        if data.porteparole not in data.participants.split():
+        if data.porteparole and not data.participants and data.porteparole not in data.participants.split():
             raise PorteparoleNotInParticipants(_(u"Le porte-parole doit faire partie des participants"))
                 
         
@@ -859,6 +876,7 @@ def aboutAuteurs(cycle, value=u""):
                 #cycle.manage_renameObject(auteur.id, str(login).upper())
                 cycle[auteur.id]=auteur
                 cycle.manage_addLocalRoles(auteur.id.upper(), ['Reader','Owner'])
+                cycle.reindexObjectSecurity()
                 print "OK => id %s is in !!!" % auteur.id
                 ok = True
         if not ok:
@@ -894,13 +912,29 @@ class EditForm(dexterity.EditForm):
         else:
             processInputs(self.request)
             extrapath = ''
-            if data['participants'] != cycle.participants:
+            if not cycle.participants and not data['participants']:
+                extrapath = ''
+            elif data['participants'] != cycle.participants:
                 # changes were made
                 extrapath = '/'+'Auteurs'
             #save changes
             self.applyChanges(data)
             cycle.reindexObject()
             return self.request.response.redirect(cycle.absolute_url()+extrapath)
+
+    @button.buttonAndHandler(_('Soumettre le projet'), name='submit')
+    def handle_submit(self, action):
+        data, errors = self.extractData()
+        if errors:
+            self.status = "Corriger les erreurs ..."
+            return
+
+        self.applyChanges(data)
+        context = aq_inner(self.context)
+        workflowTool = getToolByName(context, "portal_workflow")
+        workflowTool.doActionFor(context, "soumettre")
+        self.status = _(u"Cliquez sur l'imprimante, vous pouvez créer un document PDF que vous soumettez à votre direction d'établissement.")
+        
 
 
 class AddForm(dexterity.AddForm):

@@ -107,12 +107,13 @@ def activateCycle(self, state_change):
     dest_folder = None
     workflowTool = getToolByName(self, "portal_workflow")
     contentObject = state_change.object
+    cycle = contentObject
     parent = contentObject.aq_parent
     
     parentState = workflowTool.getStatusOf("rd2.projet-workflow", parent)["review_state"]
     
-    if parentState == 'encours':
-        return #no moving required
+    #     if parentState == 'encours':
+    #         return #no moving required
     portal = self.portal_url.getPortalObject()
     catalog = getToolByName(portal,'portal_catalog')
     cat = catalog(portal_type='ageliaco.rd2.projets',
@@ -120,22 +121,25 @@ def activateCycle(self, state_change):
     
     if not len(cat):
         log("No ageliaco.rd2.projets published => cannot migrate cycle to projet !")
-        return
+        return False
     
+    #there should be only one ageliaco.rd2.projets object
     projets = cat[0].getObject()
     
     cat = catalog(portal_type='ageliaco.rd2.projet',
                    review_state='repository')
+                   
+    #there should be only one ageliaco.rd2.projet object with state 'repository'
     depot_url = cat[0].getURL()
     objectOwner = contentObject.Creator()
     projetPath = contentObject.projet
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     if not projetPath: 
         #we must create a new one if grandpa is not "projets"
         if depot_url in parent.absolute_url():
             projet = createContentInContainer(projets,'ageliaco.rd2.projet', 
-                title=contentObject.Title(), duration=1, presentation=RichTextValue(
-                raw=contentObject.presentation.raw
+                title=contentObject.Title(), duration=contentObject.duree, presentation=RichTextValue(
+                raw=contentObject.synopsys.raw
                 ))
             try:
                 # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
@@ -143,28 +147,38 @@ def activateCycle(self, state_change):
                 log("try cut OK!")
             except: 
                 projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id))   
-                log("couldn't cut => then copy instead")            
+                log("couldn't cut => then copy instead")    
+            contentObject.projet = projet.absolute_url()  
+            parent = projet     
         else:
             contentObject.projet = parent.absolute_url() #ne marche pas !!!
-            return
-        #print "Parent : ", parent, contentObject.id, parent.objectIds()
-        #cb_copy_data = parent.manage_cutObjects(contentObject.id)
-    else:
-        projetId = projetPath.split('/')[-1]
-        print projetPath, projetId, projets
-        if projetId not in projets.keys() and not projets[projetId]:
-            log('Problem, cannot find projet %s in %s !' % (projetPath, projets.id))
-            self.context.addStatusMessage(u'Problème, projet %s pas trouvé dans %s !' % (projetPath, projets.id))
-            return False
-        projet = projets[projetId]
-        parent = contentObject.aq_parent
+            #return
+        
         print "Parent : ", parent, contentObject.id, parent.objectIds()
         #cb_copy_data = parent.manage_cutObjects(contentObject.id)
-        try:
-            # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
-            projet.manage_pasteObjects(parent.manage_cutObjects(contentObject.id)) 
-            log("try cut OK!")
-        except: 
-            projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id))   
-            log("couldn't cut => then copy instead")
+    if parentState != 'encours':
+        workflowTool.doActionFor(parent, "activate")
+    owners = [auteur for auteur,roles in cycle.get_local_roles() if 'Owner' in roles]
+    for owner in owners:
+        parent.manage_addLocalRoles(owner, ['Reader','Owner'])
+        parent.reindexObjectSecurity()
+    
+    #     else:
+    #         projetId = projetPath.split('/')[-1]
+    #         print projetPath, projetId, projets
+    #         if projetId not in projets.keys() and not projets[projetId]:
+    #             log('Problem, cannot find projet %s in %s !' % (projetPath, projets.id))
+    #             self.context.addStatusMessage(u'Problème, projet %s pas trouvé dans %s !' % (projetPath, projets.id))
+    #             return False
+    #         projet = projets[projetId]
+    #         parent = contentObject.aq_parent
+    #         print "Parent : ", parent, contentObject.id, parent.objectIds()
+    #         #cb_copy_data = parent.manage_cutObjects(contentObject.id)
+    #         try:
+    #             # trying to cut => won't work if on the object itself, will work if from folderContent of the parent
+    #             projet.manage_pasteObjects(parent.manage_cutObjects(contentObject.id)) 
+    #             log("try cut OK!")
+    #         except: 
+    #             projet.manage_pasteObjects(parent.manage_copyObjects(contentObject.id))   
+    #             log("couldn't cut => then copy instead")
     return  

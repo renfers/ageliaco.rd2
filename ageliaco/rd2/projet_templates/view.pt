@@ -74,7 +74,7 @@
         
 </div> 
 <div id="create_newcycle" tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()">
-  <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">Déposer un nouveau projet</a>
+  <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">Proposer un projet</a>
 </div>
 
 
