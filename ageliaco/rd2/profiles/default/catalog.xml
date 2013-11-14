@@ -28,4 +28,8 @@
         <indexed_attr value="supervisor"/>
     </index>
     <column value="supervisor"/>
+    <index name="Title" meta_type="ZCTextIndex ">
+        <indexed_attr value="title"/>
+    </index>
+    <column value="title"/>
 </object>

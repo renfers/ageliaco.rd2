@@ -30,7 +30,11 @@ def add_catalog_indexes(context, logger=None):
     catalog = getToolByName(context, 'portal_catalog')
     indexes = catalog.indexes()
     # Specify the indexes you want, with ('index_name', 'index_type')
-    wanted = (('start', 'DateIndex'),
+    wanted = (('Title','ZCTextIndex'),
+              ('Description','ZCTextIndex'),
+              ('Creator', 'FieldIndex'),
+              ('Subject', 'KeywordIndex'),
+              ('start', 'DateIndex'),
               ('end', 'DateIndex'),
               ('firstname', 'FieldIndex'),
               ('lastname', 'FieldIndex'),
@@ -38,10 +42,7 @@ def add_catalog_indexes(context, logger=None):
               ('address', 'FieldIndex'),
               ('school', 'FieldIndex'),
               ('supervisor', 'KeywordIndex'),
-              ('authors', 'KeywordIndex'),
-              ('cycles', 'KeywordIndex'),
               ('sponsorasked', 'FieldIndex'),
-              ('sponsorSEM', 'FieldIndex'),
               ('sponsorRD', 'FieldIndex'),
               ('sponsorSchool', 'FieldIndex'),
               ('SearchableText', 'ZCTextIndex'),

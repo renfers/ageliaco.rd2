@@ -7,35 +7,36 @@ var common_jqt_config = {fixed:false,speed:'fast',mask:{color:'#fff',opacity: 0.
 //         speed:'fast',
 //         mask:{color:'#fff',opacity: 0.4,loadSpeed:0,closeSpeed:0}
 //     });
-(function($) {
-		
-	// static constructs
-	$.plonepopups = $.plonepopups || {};
-    
-    $.extend($.plonepopups,
-        {
-            // method to show error message in a noform
-            // situation.
-            noformerrorshow: function noformerrorshow(el, noform) {
-                var o = $(el),
-                    emsg = o.find('dl.portalMessage.error');
-                if (emsg.length) {
-                    o.children().replaceWith(emsg);
-                    return false;
-                } else {
-                    return noform;
-                }
-            },
-            // After deletes we need to redirect to the target page.
-            redirectbasehref: function redirectbasehref(el, responseText) {
-                var mo = responseText.match(/<base href="(\S+?)"/i);
-                if (mo.length === 2) {
-                    return mo[1];
-                }
-                return location;
-            }
-        });
-})(jQuery);
+
+// (function($) {
+// 		
+// 	// static constructs
+// 	$.plonepopups = $.plonepopups || {};
+//     
+//     $.extend($.plonepopups,
+//         {
+//             // method to show error message in a noform
+//             // situation.
+//             noformerrorshow: function noformerrorshow(el, noform) {
+//                 var o = $(el),
+//                     emsg = o.find('dl.portalMessage.error');
+//                 if (emsg.length) {
+//                     o.children().replaceWith(emsg);
+//                     return false;
+//                 } else {
+//                     return noform;
+//                 }
+//             },
+//             // After deletes we need to redirect to the target page.
+//             redirectbasehref: function redirectbasehref(el, responseText) {
+//                 var mo = responseText.match(/<base href="(\S+?)"/i);
+//                 if (mo.length === 2) {
+//                     return mo[1];
+//                 }
+//                 return location;
+//             }
+//         });
+// })(jQuery);
 
 jQuery(function($){
 
@@ -46,6 +47,23 @@ jQuery(function($){
         return;
     }
 
+// projet submission confirmation
+$('.soumissionprojet').prepOverlay({
+    var checkstr =  confirm('Votre projet ne sera plus modifiable! Cliquez sur l\'imprimante pour soumettre cette version à votre directeur!');
+    subtype: 'ajax',
+    filter: '#content>*',
+    closeselector: '[name=form.button.Cancel]'
+    });
+
+$('.soumissionprojet').click(function(){
+var checkstr =  confirm('Votre projet ne sera plus modifiable ;-) Cliquez sur l\'imprimante pour soumettre cette version à votre directeur!');
+if(checkstr == true){
+    return true;
+  // do your code
+}else{
+return false;
+}
+});
 
 // delete dialog
 //     $('a.delAuteur').prepOverlay(

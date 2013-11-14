@@ -80,6 +80,7 @@ from yafowil.controller import Controller
 from yafowil.plone.form import Form
 
 from AccessControl.interfaces import IRoleManager
+from Products.statusmessages.interfaces import IStatusMessage
 
 _ = MessageFactory
 
@@ -537,6 +538,15 @@ class IProjet(form.Schema):
             required=False,
         )
 
+@indexer(IProjet)
+def projet_description(object):
+    return object.text[:]
+grok.global_adapter(projet_description, name="Description")
+    
+@indexer(IProjet)
+def projet_title(object):
+    return object.title
+grok.global_adapter(projet_title, name="Title")
     
 @grok.subscribe(IProjet, IObjectAddedEvent)
 def setRealisation(projet, event):
@@ -826,7 +836,7 @@ def checkAuteurs(cycle, value=u""):
         try:
             login = ligne
             if login :
-                newparticipants[login.upper()] = login.upper()
+                newparticipants[login] = login
         except:
             inputproblem += u"%s\n" % ligne
             raise ActionExecutionError(Invalid(_(u"Il y a un problème avec le ligne suivante : %s" % ligne)))
@@ -839,13 +849,15 @@ def aboutAuteurs(cycle, value=u""):
     cyclepath = '/'.join(cycle.getPhysicalPath())
     auteurBrains = catalog(portal_type='ageliaco.rd2.auteur',
                     path={'query': cyclepath, 'depth': 1})
+    mt = getToolByName(cycle, 'portal_membership')
+
     for brain in auteurBrains:
-        if brain.id.upper() in newparticipants.keys():
+        if brain.id in newparticipants.keys():
             del newparticipants[brain.id]
             continue
         
         else: #auteur removed
-            cycle.manage_delLocalRoles([brain.id.upper()])
+            cycle.manage_delLocalRoles([brain.id])
             #import pdb; pdb.set_trace()
             if brain.id in cycle.keys():
                 del cycle[brain.id]
@@ -853,32 +865,81 @@ def aboutAuteurs(cycle, value=u""):
     
         #try:
     acl_users = getToolByName(cycle, 'acl_users')
-    acl = acl_users['ldap-plugin'].acl_users
+    ldap_active = False
+    if 'ldap-plugin' in acl_users:
+        acl = acl_users['ldap-plugin'].acl_users
+        ldap_active = True
+    else:
+        acl = acl_users.source_users
     #import pdb; pdb.set_trace()
     for login in newparticipants.keys():
         ok = False
-        members = acl.searchUsers(cn=login)
-        for member in members:
-            ok = False
-            if login.upper() == member['cn'].upper():
-                # create an auteur
-                #auteur = createContentInContainer(cycle,"ageliaco.rd2.auteur", 
-                auteur = createContent("ageliaco.rd2.auteur", 
-                    id = str(login).upper(),
-                    title = u"%s %s" % (member['sn'],member['givenName']),
-                    firstname = member['givenName'],
-                    lastname = member['sn'],
-                    email = member['mail'],)
-                    #sponsorasked = newparticipants[login])
-                #print "rename %s to %s" % (auteur.id, str(login).upper())
-                #auteur.id = str(login).upper()
-                #cycle[str(login).upper()] = auteur
-                #cycle.manage_renameObject(auteur.id, str(login).upper())
-                cycle[auteur.id]=auteur
-                cycle.manage_addLocalRoles(auteur.id.upper(), ['Reader','Owner'])
-                cycle.reindexObjectSecurity()
-                print "OK => id %s is in !!!" % auteur.id
-                ok = True
+        member = mt.getMemberById(id)
+        if member:
+            auteur = createContent("ageliaco.rd2.auteur", 
+                id = str(login).upper(),
+                title = u"%s %s" % (member['lastname'],member['firstname']),
+                firstname = member['firstname'],
+                lastname = member['lastname'],
+                email = member['email'],)
+                #sponsorasked = newparticipants[login])
+            #print "rename %s to %s" % (auteur.id, str(login).upper())
+            #auteur.id = str(login).upper()
+            #cycle[str(login).upper()] = auteur
+            #cycle.manage_renameObject(auteur.id, str(login).upper())
+            cycle[auteur.id]=auteur
+            cycle.manage_addLocalRoles(auteur.id, ['Reader','Owner'])
+            cycle.reindexObjectSecurity()
+            print "OK => id %s is in !!!" % auteur.id
+            ok = True
+
+        #         if ldap_active:
+        #             members = acl.searchUsers(cn=login)
+        #             for member in members:
+        #                 ok = False
+        #                 if login.upper() == member['cn'].upper():
+        #                     # create an auteur
+        #                     #auteur = createContentInContainer(cycle,"ageliaco.rd2.auteur", 
+        #                     auteur = createContent("ageliaco.rd2.auteur", 
+        #                         id = str(login).upper(),
+        #                         title = u"%s %s" % (member['sn'],member['givenName']),
+        #                         firstname = member['givenName'],
+        #                         lastname = member['sn'],
+        #                         email = member['mail'],)
+        #                         #sponsorasked = newparticipants[login])
+        #                     #print "rename %s to %s" % (auteur.id, str(login).upper())
+        #                     #auteur.id = str(login).upper()
+        #                     #cycle[str(login).upper()] = auteur
+        #                     #cycle.manage_renameObject(auteur.id, str(login).upper())
+        #                     cycle[auteur.id]=auteur
+        #                     cycle.manage_addLocalRoles(auteur.id.upper(), ['Reader','Owner'])
+        #                     cycle.reindexObjectSecurity()
+        #                     print "OK => id %s is in !!!" % auteur.id
+        #                     ok = True
+        #         else:
+        #             members = acl.searchUsers(cn=login)
+        #             for member in members:
+        #                 ok = False
+        #                 if login.upper() == member['cn'].upper():
+        #                     # create an auteur
+        #                     #auteur = createContentInContainer(cycle,"ageliaco.rd2.auteur", 
+        #                     auteur = createContent("ageliaco.rd2.auteur", 
+        #                         id = str(login).upper(),
+        #                         title = u"%s %s" % (member['sn'],member['givenName']),
+        #                         firstname = member['givenName'],
+        #                         lastname = member['sn'],
+        #                         email = member['mail'],)
+        #                         #sponsorasked = newparticipants[login])
+        #                     #print "rename %s to %s" % (auteur.id, str(login).upper())
+        #                     #auteur.id = str(login).upper()
+        #                     #cycle[str(login).upper()] = auteur
+        #                     #cycle.manage_renameObject(auteur.id, str(login).upper())
+        #                     cycle[auteur.id]=auteur
+        #                     cycle.manage_addLocalRoles(auteur.id.upper(), ['Reader','Owner'])
+        #                     cycle.reindexObjectSecurity()
+        #                     print "OK => id %s is in !!!" % auteur.id
+        #                     ok = True
+                
         if not ok:
             print "no member found for %s" % login
             raise ActionExecutionError(Invalid(_(u"Le login suivant n'est pas reconnu : %s" % login)))
@@ -888,6 +949,12 @@ def aboutAuteurs(cycle, value=u""):
 def setAuteurs(cycle,event):
     aboutAuteurs(cycle, cycle.participants)
     #return cycle.absolute_url()+'/Auteurs'
+
+def okToSubmit(form):
+    #import pdb; pdb.set_trace()
+    workflowTool = getToolByName(form.context, "portal_workflow")
+    status = workflowTool.getStatusOf("rd2.cycle-workflow",form.context)['review_state']
+    return status == 'draft'
  
 class EditForm(dexterity.EditForm):
     grok.context(ICycle)
@@ -895,6 +962,7 @@ class EditForm(dexterity.EditForm):
     #         """ """
     #         dexterity.EditForm.updateWidgets(self)
 
+        
     @button.buttonAndHandler(_(u'Sauvegarder'))
     def handleApply(self, action):
         data, errors = self.extractData()
@@ -922,19 +990,49 @@ class EditForm(dexterity.EditForm):
             cycle.reindexObject()
             return self.request.response.redirect(cycle.absolute_url()+extrapath)
 
-    @button.buttonAndHandler(_('Soumettre le projet'), name='submit')
+    @button.buttonAndHandler(_('Soumettre le projet'), name="soumettre", condition=okToSubmit)
     def handle_submit(self, action):
         data, errors = self.extractData()
         if errors:
             self.status = "Corriger les erreurs ..."
             return
 
+        cycle = self.context
+
         self.applyChanges(data)
         context = aq_inner(self.context)
         workflowTool = getToolByName(context, "portal_workflow")
         workflowTool.doActionFor(context, "soumettre")
-        self.status = _(u"Cliquez sur l'imprimante, vous pouvez créer un document PDF que vous soumettez à votre direction d'établissement.")
+        confirmation_message = (_(u"Cliquez sur l'imprimante, vous pouvez créer un document PDF que vous soumettez à votre direction d'établissement."))
+        messages = IStatusMessage(self.request)
+        messages.addStatusMessage(confirmation_message, type="info")
+        return self.request.response.redirect(cycle.absolute_url())
         
+    def updateActions(self):
+        super(EditForm, self).updateActions()
+        if 'soumettre' in self.actions.keys():
+            self.actions['soumettre'].addClass("soumissionprojet")
+
+#     def update(self):
+#             # Hide form buttons
+#             import copy
+#             # Create immutable copy which you can manipulate
+#             self.buttons = copy.deepcopy(self.buttons)
+# 
+#             # Remove button using dictionary style delete
+#             if not self.okToSubmit():
+#                 self.buttons["soumettre"].mode = z3c.form.interfaces.HIDDEN_MODE
+                
+#     def setActions(self):
+#         """ Add button to the form based on dynamic conditions. """
+# 
+#         if self.okToSubmit():
+# 
+#             but = button.Button("soumettre", title=_('Soumettre le projet'))
+#             self.form.buttons += button.Buttons(but)
+# 
+#             handler = button.Handler(but, self.form.__class__.handle_submit)
+#             self.form.handlers.addHandler(but, handler)
 
 
 class AddForm(dexterity.AddForm):

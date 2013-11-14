@@ -68,6 +68,10 @@ fieldset, .editionComment {
     padding: 0.2em;
 }
 
+div#content fieldset {
+    border-style: none none none;
+}
+
 legend {
     font-family:Georgia,Serif;
     color: rgb(204,0,0);

@@ -13,6 +13,7 @@ Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,C
 View,N,,,,X,X,X,,X,X
 Access contents information,N,,,,X,X,X,,X,X
 Modify portal content,N,,,,X,X,X,,X,
+Review portal content,N,,,,X,X,X,,,X
 "Add Documents, Images, and Files",N,,,,X,X,,,X,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
@@ -53,7 +54,7 @@ Worklist label:,Cycles en cours,,,,,,,,,
 Worklist guard permission:,Review portal content,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,X,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,,,,X
+Access contents information,N,,,,X,X,,X,,X
 Modify portal content,N,,,,X,,,,,X
 "Add Documents, Images, and Files",N,,,,X,,,,,X
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
