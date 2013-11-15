@@ -1,11 +1,19 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
+<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      metal:use-macro="context/main_template/macros/master"
-      i18n:domain="plone.app.widgets"
-      lang="en"
-      >
+      i18n:domain="ageliaco.rd2"
+      metal:use-macro="context/main_template/macros/master">
+      
+ <head>
+    <metal:block fill-slot="style_slot">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+    </metal:block>
+    <metal:block fill-slot="javascript_head_slot" >
+        <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
+    </metal:block>
+ 
+</head>
 <body>
 
    <metal:main fill-slot="main">
@@ -21,7 +29,9 @@
                      that form is presented in "view" TAL variable.
 
                   -->
-                    <div tal:content="structure view/update_schema" />
+        <div id="content-core">
+            <metal:block use-macro="context/@@ploneform-macros/titlelessform" />
+        </div>
 
           </div>
 

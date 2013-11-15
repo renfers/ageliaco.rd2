@@ -48,22 +48,22 @@ jQuery(function($){
     }
 
 // projet submission confirmation
-$('.soumissionprojet').prepOverlay({
-    var checkstr =  confirm('Votre projet ne sera plus modifiable! Cliquez sur l\'imprimante pour soumettre cette version à votre directeur!');
-    subtype: 'ajax',
-    filter: '#content>*',
-    closeselector: '[name=form.button.Cancel]'
-    });
-
-$('.soumissionprojet').click(function(){
-var checkstr =  confirm('Votre projet ne sera plus modifiable ;-) Cliquez sur l\'imprimante pour soumettre cette version à votre directeur!');
-if(checkstr == true){
-    return true;
-  // do your code
-}else{
-return false;
-}
-});
+// $('submit.soumissionprojet').prepOverlay({
+//     var checkstr =  confirm('Votre projet ne sera plus modifiable! Cliquez sur l\'imprimante pour soumettre cette version à votre directeur!');
+//     subtype: 'ajax',
+//     filter: '#content>*',
+//     closeselector: '[name=form.button.Cancel]'
+//     });
+// 
+// $('submit.soumissionprojet').click(function(){
+// var checkstr =  confirm('Votre projet ne sera plus modifiable ;-) Cliquez sur l\'imprimante pour soumettre cette version à votre directeur!');
+// if(checkstr == true){
+//     return true;
+//   // do your code
+// }else{
+// return false;
+// }
+// });
 
 // delete dialog
 //     $('a.delAuteur').prepOverlay(
@@ -115,6 +115,19 @@ return false;
 //         width: '100%'
 //     }
 //     );
+// crud-form
+    // edit dialog
+//     $('a.editAuteurs').prepOverlay(
+//     {
+//         subtype: 'ajax',
+//         filter: common_content_filter,
+//         cssclass: 'overlay-addAuteurs',
+//         filter: 'div[class="crud-form"]',
+//         width: '100%'
+//     }
+//     );
+
+
     // add dialog
     $('a.addAuteur').prepOverlay(
     {

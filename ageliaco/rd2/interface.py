@@ -826,8 +826,6 @@ def checkAuteurs(cycle, value=u""):
         newauteurs = value.split('\n')
     else:
         newauteurs = []
-    inputproblem = u""
-    notfoundproblem = u""
     newparticipants = {}
     #import pdb; pdb.set_trace()
     for ligne in newauteurs:
@@ -838,7 +836,6 @@ def checkAuteurs(cycle, value=u""):
             if login :
                 newparticipants[login] = login
         except:
-            inputproblem += u"%s\n" % ligne
             raise ActionExecutionError(Invalid(_(u"Il y a un problème avec le ligne suivante : %s" % ligne)))
     return newparticipants
     
@@ -852,8 +849,13 @@ def aboutAuteurs(cycle, value=u""):
     mt = getToolByName(cycle, 'portal_membership')
 
     for brain in auteurBrains:
-        if brain.id in newparticipants.keys():
-            del newparticipants[brain.id]
+        if brain.id.upper() in [id.upper() for id in newparticipants.keys()]:
+            if brain.id in newparticipants.keys():
+                del newparticipants[brain.id]
+            elif brain.id.upper() in newparticipants.keys():
+                del newparticipants[brain.id.upper()]
+            elif brain.id.lower() in newparticipants.keys():
+                del newparticipants[brain.id.lower()]
             continue
         
         else: #auteur removed
@@ -874,14 +876,16 @@ def aboutAuteurs(cycle, value=u""):
     #import pdb; pdb.set_trace()
     for login in newparticipants.keys():
         ok = False
-        member = mt.getMemberById(id)
+        member = mt.getMemberById(str(login))
+        if not member: # ldap EEL keeps login in upper !!!
+            member = mt.getMemberById(str(login).upper())
         if member:
             auteur = createContent("ageliaco.rd2.auteur", 
-                id = str(login).upper(),
-                title = u"%s %s" % (member['lastname'],member['firstname']),
-                firstname = member['firstname'],
-                lastname = member['lastname'],
-                email = member['email'],)
+                id = member.getProperty('id'),
+                title = u"%s %s" % (member.getProperty('lastname'),member.getProperty('firstname')),
+                firstname = member.getProperty('firstname'),
+                lastname = member.getProperty('lastname'),
+                email = member.getProperty('email'),)
                 #sponsorasked = newparticipants[login])
             #print "rename %s to %s" % (auteur.id, str(login).upper())
             #auteur.id = str(login).upper()
@@ -990,7 +994,8 @@ class EditForm(dexterity.EditForm):
             cycle.reindexObject()
             return self.request.response.redirect(cycle.absolute_url()+extrapath)
 
-    @button.buttonAndHandler(_('Soumettre le projet'), name="soumettre", condition=okToSubmit)
+    @button.buttonAndHandler(_('Soumettre le projet'), name="soumettre", 
+                        condition=okToSubmit)
     def handle_submit(self, action):
         data, errors = self.extractData()
         if errors:
@@ -1012,6 +1017,7 @@ class EditForm(dexterity.EditForm):
         super(EditForm, self).updateActions()
         if 'soumettre' in self.actions.keys():
             self.actions['soumettre'].addClass("soumissionprojet")
+            self.actions['soumettre'].title = u'Soumettre le projet (ne sera plus modifiable après soumission!)'
 
 #     def update(self):
 #             # Hide form buttons
@@ -1063,17 +1069,19 @@ class AddForm(dexterity.AddForm):
 class AuteursEditForm(crud.EditForm):
     """ Pigeonhole edit form.  Just a normal CRUD form without the form title or edit button.
     """
-
-    label = u"""Complétez les informations
     
+    label = u"""Complétez les informations
+
     école : attachement administratif, 
-    dégrèvement demandé : une heure de dégrèvement correspond à 2 demi-journées de travail par mois!"""
+    dégrèvement demandé : une heure de dégrèvement correspond à 2 demi-journées de travail par mois!
+    
+    """
 
     
     buttons = crud.EditForm.buttons.copy().omit('delete')
     handlers = crud.EditForm.handlers.copy()
 
-    @button.buttonAndHandler(_(u"Retour au formulaire"),name= "Cancel")
+    @button.buttonAndHandler(_(u"Retour à la proposition de projet"),name= "Cancel")
     def handleCancel(self, action):
         """User cancelled. Redirect back to the front page.
         """
@@ -1099,6 +1107,7 @@ class AuteursForm(crud.CrudForm,grok.View):
     def get_items(self):
         #import pdb; pdb.set_trace()
         return self.context.objectItems()
+
 
 class EditAuteurs(layout.FormWrapper):
     form = AuteursForm
