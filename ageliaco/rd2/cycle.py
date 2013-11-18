@@ -193,6 +193,11 @@ class View(InterfaceView, dexterity.DisplayForm):
     grok.require('zope2.View')
     grok.name('view')
     
+    def isDraft(self):
+        context = aq_inner(self.context)
+        portal_workflow = getToolByName(context, 'portal_workflow')
+        review_state = portal_workflow.getInfoFor(context, 'review_state')
+        return review_state == 'draft'
         
     def auteurs(self):
         context = aq_inner(self.context)

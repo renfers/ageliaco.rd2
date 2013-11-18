@@ -994,24 +994,24 @@ class EditForm(dexterity.EditForm):
             cycle.reindexObject()
             return self.request.response.redirect(cycle.absolute_url()+extrapath)
 
-    @button.buttonAndHandler(_('Soumettre le projet'), name="soumettre", 
-                        condition=okToSubmit)
-    def handle_submit(self, action):
-        data, errors = self.extractData()
-        if errors:
-            self.status = "Corriger les erreurs ..."
-            return
-
-        cycle = self.context
-
-        self.applyChanges(data)
-        context = aq_inner(self.context)
-        workflowTool = getToolByName(context, "portal_workflow")
-        workflowTool.doActionFor(context, "soumettre")
-        confirmation_message = (_(u"Cliquez sur l'imprimante, vous pouvez créer un document PDF que vous soumettez à votre direction d'établissement."))
-        messages = IStatusMessage(self.request)
-        messages.addStatusMessage(confirmation_message, type="info")
-        return self.request.response.redirect(cycle.absolute_url())
+    #     @button.buttonAndHandler(_('Soumettre le projet'), name="soumettre", 
+    #                         condition=okToSubmit)
+    #     def handle_submit(self, action):
+    #         data, errors = self.extractData()
+    #         if errors:
+    #             self.status = "Corriger les erreurs ..."
+    #             return
+    # 
+    #         cycle = self.context
+    # 
+    #         self.applyChanges(data)
+    #         context = aq_inner(self.context)
+    #         workflowTool = getToolByName(context, "portal_workflow")
+    #         workflowTool.doActionFor(context, "soumettre")
+    #         confirmation_message = (_(u"Cliquez sur l'imprimante, vous pouvez créer un document PDF que vous soumettez à votre direction d'établissement."))
+    #         messages = IStatusMessage(self.request)
+    #         messages.addStatusMessage(confirmation_message, type="info")
+    #         return self.request.response.redirect(cycle.absolute_url())
         
     def updateActions(self):
         super(EditForm, self).updateActions()
@@ -1043,6 +1043,7 @@ class EditForm(dexterity.EditForm):
 
 class AddForm(dexterity.AddForm):
     grok.name('ageliaco.rd2.cycle')
+    label = u"Proposition de projet"
 
     @button.buttonAndHandler(_(u'Sauvegarder'))
     def handleApply(self, action):

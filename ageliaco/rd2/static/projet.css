@@ -137,9 +137,11 @@ h4 {
 
 } 
 
+/* 
 #printer {
     float : right;
 }
+ */
  #cycleList {
 	background: #CCC url(blue.png) no-repeat -652px 0;
     float : right;
