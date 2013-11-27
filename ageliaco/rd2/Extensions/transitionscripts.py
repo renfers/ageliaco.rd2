@@ -40,6 +40,9 @@ def reproposeCycle(self, state_change):
         log("couldn't copy => then nothing instead")
     return  
 
+def retractCycle(self, state_change):
+    pass
+
 def archiveCycle(self, state_change):
     """ sends an email to the school's director """
     print "archiveCycle called !!!"

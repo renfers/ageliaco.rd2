@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.9.9'
+version = '0.9.10'
 
 setup(name='ageliaco.rd2',
       version=version,
@@ -43,6 +43,7 @@ setup(name='ageliaco.rd2',
           'yafowil.plone >= 2.0.1',
           'yafowil.widget.richtext >= 1.3.1dev',
           'yafowil.widget.multiselect',
+          'collective.wfcomment',
         ],
       entry_points="""
       # -*- Entry points: -*-

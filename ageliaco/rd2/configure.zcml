@@ -36,6 +36,13 @@
                 />
 
   <!-- -*- extra stuff goes here -*- -->
+  <!-- Register the import step -->
+  <genericsetup:importStep
+      name="ageliaco.rd2"
+      title="ageliaco.rd2 special import handlers"
+      description=""
+      handler="ageliaco.rd2.setuphandlers.import_various" />
+
     <browser:resourceDirectory
       name="ageliaco.rd2"
       directory="static" />

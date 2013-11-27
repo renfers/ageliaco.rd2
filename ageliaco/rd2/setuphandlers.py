@@ -63,6 +63,7 @@ def import_various(context):
     """
     # Only run step if a flag file is present
     if context.readDataFile('ageliaco.rd2-default.txt') is None:
+        print "ageliaco.rd2-default.txt not found!"
         return
     logger = context.getLogger('ageliaco.rd2')
     site = context.getSite()

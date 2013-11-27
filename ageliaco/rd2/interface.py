@@ -63,6 +63,7 @@ from plone.z3cform.textlines.textlines import TextLinesFieldWidget
 from plone.namedfile.field import NamedImage
 from plone.formwidget.autocomplete import AutocompleteFieldWidget
 from z3c.form.browser.checkbox import CheckBoxFieldWidget
+from z3c.form import field
 
 from zope.interface import invariant, Invalid
 
@@ -134,11 +135,7 @@ ECASO : école d'assistant-e-s en soins et santé communautaire
 ordres = {
     "COLLEGES" : u"COLLEGES",
     "ECG" : u"ECG",
-    "CFP" : u"CFP",
     "INSERTION" : u"INSERTION",
-    }
-
-professionnelles = {
     "CFPPC": u"CFPPC",
     "CFPS":u"CFPS",
     "CFPS-ECASE":u"CFPS-ECASE",
@@ -162,6 +159,31 @@ professionnelles = {
     "CFPNE":u"CFPNE",
     "CFPAA":u"CFPAA",
     }
+
+# professionnelles = {
+#     "CFPPC": u"CFPPC",
+#     "CFPS":u"CFPS",
+#     "CFPS-ECASE":u"CFPS-ECASE",
+#     "CFPS-ECASO":u"CFPS-ECASO",
+#     "CFPS-ESHYD":u"CFPS-ESHYD",
+#     "CFPS-FORAD":u"CFPS-FORAD",
+#     "CFPS-ECLAB":u"CFPS-ECLAB",
+#     "CFPS-CUISI":u"CFPS-CUISI",
+#     "CFPS-ECAME":u"CFPS-ECAME",
+#     "CFPS-ESPOD":u"CFPS-ESPOD",
+#     "CFPS-ESEDE":u"CFPS-ESEDE",
+#     "CFPS-ESAMB":u"CFPS-ESAMB",
+#     "CFPT":u"CFPT",
+#     "CFPT-MECATRONIQUE":u"CFPT-MECATRONIQUE",
+#     "CFPT-ELECTRONIQUE":u"CFPT-ELECTRONIQUE",
+#     "CFPT-AUTOMOBILE":u"CFPT-AUTOMOBILE",
+#     "CFPT-HORLOGERIE":u"CFPT-HORLOGERIE",
+#     "CFPT-INFORMATIQUE":u"CFPT-INFORMATIQUE",
+#     "CFPSH":u"CFPSHR",
+#     "CFPSHR-ECGEI":u"CFPSHR-ECGEI",
+#     "CFPNE":u"CFPNE",
+#     "CFPAA":u"CFPAA",
+#     }
     
 schools = {
     'CALV' : ['CALV',u"collège Calvin",u"COLLEGES"],
@@ -220,10 +242,12 @@ class SchoolsVocabulary(object):
     grok.implements(IVocabularyFactory)
     def __call__(self, context):
         terms = []
-        for school in sorted(schools.keys()):
-            terms.append(SimpleVocabulary.createTerm(school, 
-                            str(school),
-                            schools[school][1]))
+        ecoles = [(value[1],key) for key,value in schools.iteritems()]
+        ecoles.sort()
+        for school,school_id in ecoles:
+            terms.append(SimpleVocabulary.createTerm(school_id, 
+                            str(school_id),
+                            school))
         return SimpleVocabulary(terms)
 grok.global_utility(SchoolsVocabulary, name=u"ageliaco.rd2.schools")
 
@@ -238,16 +262,16 @@ class OrdresEnseignementVocabulary(object):
         return SimpleVocabulary(terms)
 grok.global_utility(OrdresEnseignementVocabulary, name=u"ageliaco.rd2.ordres")
 
-class ProfessionnellesVocabulary(object):
-    grok.implements(IVocabularyFactory)
-    def __call__(self, context):
-        terms = []
-        for ordre in sorted(professionnelles.keys()):
-            terms.append(SimpleVocabulary.createTerm(ordre, 
-                            str(ordre),
-                            professionnelles[ordre]))
-        return SimpleVocabulary(terms)
-grok.global_utility(ProfessionnellesVocabulary, name=u"ageliaco.rd2.professionnelles")
+# class ProfessionnellesVocabulary(object):
+#     grok.implements(IVocabularyFactory)
+#     def __call__(self, context):
+#         terms = []
+#         for ordre in sorted(professionnelles.keys()):
+#             terms.append(SimpleVocabulary.createTerm(ordre, 
+#                             str(ordre),
+#                             professionnelles[ordre]))
+#         return SimpleVocabulary(terms)
+# grok.global_utility(ProfessionnellesVocabulary, name=u"ageliaco.rd2.professionnelles")
 
 
 class SponsorshipVocabulary(object):
@@ -627,7 +651,7 @@ class ICycle(form.Schema):
         
     domaine = schema.Text(
             title=MessageFactory(u"Domaine(s)"),
-            description=MessageFactory(u"Domaine(s) couvert(s) par le projet (un par ligne)"),
+            description=MessageFactory(u"Domaine(s) couvert(s) par le projet, un par ligne"),
             required=False,
             default=u'',
         )
@@ -640,18 +664,25 @@ class ICycle(form.Schema):
         )
         
     presentation = RichText(
-            title=MessageFactory(u"Problématique"),
-            description=MessageFactory(u"Quel est le thème du projet? Expliciter le(s) contenu(s) sur le(s)quel(s) les participants au projet souhaitent travailler."),
-            required=True,
+            title=MessageFactory(u"Objectifs généraux du projet"),
+            description=MessageFactory(u"Changements et actions concrets auxquels on peut s'attendre à court et à long terme"),
+            required=False,
             default=u'',
         )    
-
+        
     # contexte Fieldset
     form.fieldset(
         'contexte',
         label=_(u"Contexte"),
-        fields=['experiences', 'besoin']
+        fields=['problematique', 'experiences', 'besoin']
     )
+
+    problematique = RichText(
+            title=MessageFactory(u"Problématique"),
+            description=MessageFactory(u"Quel postulat et/ou quelles hypothèses sont à l'origine du projet?"),
+            required=True,
+            default=u'',
+        )    
 
     experiences = RichText(
             title=MessageFactory(u"Expériences préalables"),
@@ -662,7 +693,7 @@ class ICycle(form.Schema):
 
     besoin = RichText(
             title=MessageFactory(u"Origine du besoin"),
-            description=MessageFactory(u"Quels éléments de la situation présente sont à l'origine du besoin exprimé ? Justification et preuves du besoin (plan cadre, directives, etc.)"),
+            description=MessageFactory(u"Quels éléments de la situation présente sont à l'origine du besoin exprimé ? Justification et preuves du besoin : plan cadre, directives, etc."),
             required=False,
             default=u'',
         )    
@@ -671,16 +702,9 @@ class ICycle(form.Schema):
     form.fieldset(
         'objectifs',
         label=_(u"Objectifs"),
-        fields=['problematique', 'cible', 'pro', 'forme']
+        fields=['cible', 'forme']
     )
     
-    problematique = RichText(
-            title=MessageFactory(u"Objectifs généraux du projet"),
-            description=MessageFactory(u"Changements et actions concrets auxquels on peut s'attendre à court et à long terme"),
-            required=False,
-            default=u'',
-        )    
-
     cible = schema.List(
         title=MessageFactory(u"Filière visée"),
         description=MessageFactory(u"Sélectionnez la filière concernée"),
@@ -689,16 +713,16 @@ class ICycle(form.Schema):
         missing_value=(),
         )
     
-    pro = schema.List(
-        title=MessageFactory(u"CFP"),
-        description=MessageFactory(u"Si CFP, précisez lequel"),
-        value_type=schema.Choice(vocabulary=u"ageliaco.rd2.professionnelles"),
-        required=False,
-        missing_value=(),
-        )
+    #     pro = schema.List(
+    #         title=MessageFactory(u"CFP"),
+    #         description=MessageFactory(u"Si CFP, précisez lequel"),
+    #         value_type=schema.Choice(vocabulary=u"ageliaco.rd2.professionnelles"),
+    #         required=False,
+    #         missing_value=(),
+    #         )
     
     forme = RichText(
-            title=MessageFactory(u"Forme du produit fini"),
+            title=MessageFactory(u"Forme du produit fini au terme du projet"),
             description=MessageFactory(u"Quels types de documents seront déposés sur le site de R&D? (documents maître, documents élève, documents de référence)"),
             required=False,
             default=u'',
@@ -708,11 +732,11 @@ class ICycle(form.Schema):
     form.fieldset(
         'organisation',
         label=_(u"Organisation"),
-        fields=['duree','planification', 'plan', 'repartition', 'modalites', 'participants','porteparole']
+        fields=['duree','planification', 'production', 'plan', 'repartition', 'modalites', 'participants','porteparole']
     )
 
     duree = schema.Int(
-            title=MessageFactory(u"Durée du projet"),
+            title=MessageFactory(u"Durée du projet (en années scolaires)"),
             description=MessageFactory(u"Durée estimée du projet en années scolaires"),
             default = 1,
             required=False,
@@ -725,9 +749,16 @@ class ICycle(form.Schema):
             default=u'',
         )    
 
+    production = RichText(
+            title=MessageFactory(u"Production pour l'année à venir"),
+            description=MessageFactory(u"Matériel produit pour les élèves et pour les maîtres"),
+            required=False,
+            default=u'',
+        )    
+    
     plan = RichText(
-            title=MessageFactory(u"Echéancier"),
-            description=MessageFactory(u"Planification détaillée pour l'année à venir"),
+            title=MessageFactory(u"Echéancier pour l'année à venir"),
+            description=MessageFactory(u"Planification mensuelle détaillée : phases d'élaboration, phases de test, phase de finalisation"),
             required=False,
             default=u'',
         )    
@@ -787,16 +818,19 @@ def idDefaultFromContext(context):
     if len(cat): #first is last generated,if it is not a copy from an old cycle
         for cycle in cat:
             lastId = cycle.id
-            index = lastId.find('-')
-            if (index > -1) and (lastId[:index]==start):
-                indice = int(lastId[index+1:])
-                indice+=1
-                break
-                
-    newId =  "%s-%s" % (start,indice)
+            try:
+                index = lastId.split('-')[1]
+                newId =  "%s-%s" % (start,index)
+                if (newId not in context.objectIds()):
+                    return newId
+            except:
+                print "oups not good"
+    index = len(cat)
+            
+    newId =  "%s-%s" % (start,index)
     while newId in context.objectIds():
-        indice+=1
-        newId =  "%s-%s" % (start,indice)
+        index += 1
+        newId =  "%s-%s" % (start,index)
         
     return newId
     
@@ -967,7 +1001,7 @@ class EditForm(dexterity.EditForm):
     #         dexterity.EditForm.updateWidgets(self)
 
         
-    @button.buttonAndHandler(_(u'Sauvegarder'))
+    @button.buttonAndHandler(_(u'Sauvegarder, pas nécessaire à la fin de chaque onglet, seulement avant déconnexion'))
     def handleApply(self, action):
         data, errors = self.extractData()
         #import pdb; pdb.set_trace()
@@ -1063,7 +1097,8 @@ class AddForm(dexterity.AddForm):
             #cycle.index()
             cycle = self.context[cycle.id]    
             if 'participants' in data:
-                checkAuteurs(cycle, data['participants'])
+                if not checkAuteurs(cycle, data['participants']):
+                    extrapath = ''
             #import pdb; pdb.set_trace()
         return self.request.response.redirect(cycle.absolute_url()+extrapath)
 
@@ -1074,7 +1109,7 @@ class AuteursEditForm(crud.EditForm):
     label = u"""Complétez les informations
 
     école : attachement administratif, 
-    dégrèvement demandé : une heure de dégrèvement correspond à 2 demi-journées de travail par mois!
+    dégrèvement demandé : une heure de dégrèvement correspond à 2 demi-journées de travail par mois.
     
     """
 
@@ -1092,7 +1127,9 @@ class AuteursEditForm(crud.EditForm):
 
 
 class AuteursForm(crud.CrudForm,grok.View):
-    update_schema = IAuteur
+    #update_schema = IAuteur
+    view_schema = field.Fields(IAuteur).select('id','firstname','lastname')
+    update_schema = field.Fields(IAuteur).select('phone','email','school','sponsorasked')
     addform_factory = crud.NullForm
     editform_factory = AuteursEditForm
     grok.context(ICycle)
@@ -1105,9 +1142,12 @@ class AuteursForm(crud.CrudForm,grok.View):
     #         import pdb; pdb.set_trace()
     #         self.widgets["select"].mode = z3c.form.interfaces.HIDDEN_MODE
         
+    #     def get_items(self):
+    #         #import pdb; pdb.set_trace()
+    #         return self.context.objectItems()
+
     def get_items(self):
-        #import pdb; pdb.set_trace()
-        return self.context.objectItems()
+        return sorted(self.context.objectItems(), key=lambda x: x[1].lastname)        
 
 
 class EditAuteurs(layout.FormWrapper):

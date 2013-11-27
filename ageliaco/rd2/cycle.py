@@ -259,10 +259,32 @@ class View(InterfaceView, dexterity.DisplayForm):
 @indexer(ICycle)
 def searchableIndexer(context):
     try:
-        return u"%s %s %s %s" % (context.title, 
-                            context.description, 
-                            context.problematique, 
-                            context.presentation)
+        retour = u""
+        all = (
+                context.id,
+                context.title, 
+                context.description, 
+                context.projet,
+                context.domaine,
+                context.discipline,
+                context.problematique, 
+                context.presentation,
+                context.experiences,
+                context.besoin,
+                context.cible,
+                context.pro,
+                context.forme,
+                context.planification,
+                context.plan,
+                context.repartition,
+                context.modalites,
+                context.participants,
+                context.porteparole,
+                )
+        for elem in all:
+            retour += u" %s" % elem
+        return retour
+            
     except:
         log( 'tOO BAD an INDEX (bad cycle) : ' + context.absolute_url())
         return u""        

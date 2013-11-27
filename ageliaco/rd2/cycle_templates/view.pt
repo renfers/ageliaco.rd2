@@ -37,8 +37,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 <div style="float : right" tal:condition="view/isDraft">
-<a class="noprint" id="soumission" tal:attributes="id string:button-hide-hours;
-                href string:${context/absolute_url}/content_status_modify?workflow_action=soumettre" title="Soumettre la proposition de projet (plus modifiable après cette étape)" ><i class="fa fa-share"></i></a>
+<a class="noprint" id="soumission" tal:attributes="href string:${context/absolute_url}/content_status_modify?workflow_action=soumettre" title="Soumettre la proposition de projet (plus modifiable après cette étape)" >soumettre <i class="fa fa-share"></i></a>
 </div>
 
 <div class="sommaire">
@@ -89,7 +88,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
     </div>
 
     <div tal:condition="context/presentation" >
-        <h3>Problématique</h3>
+        <h3 >Objectifs généraux du projet</h3>
         <div class="description" tal:content="structure context/presentation/output" />
     </div>
         <div tal:condition="python: hasattr(context.problematique,'output')" class="description" tal:content="structure python: context.problematique.output" />
@@ -131,14 +130,13 @@ Service enseignement et formation - Secteur ressources et développement</p>
 </tal:fieldsets>
 
 <div style="text-align: center;" class="printonly" ">
-    <i class="fa fa-smile-o fa-2x" style="color:yellow;"></i>
+    <i class="fa fa-smile-o fa-2x noprint" style="color:yellow;"></i>
     <span style="color: rgb(204, 0, 0); ">
         <strong> 
-            Le secteur Ressources et développement vous remercie d'avoir complété ce formulaire auquel 
-            il portera toute son attention
+            Ressources et développement vous remercie pour votre collaboration
         </strong> 
     </span> 
-    <i class="fa fa-smile-o fa-2x" style="color:yellow;"></i>
+    <i class="fa fa-smile-o fa-2x noprint" style="color:yellow;"></i>
 </div>
 
 <!-- overlayed element -->
