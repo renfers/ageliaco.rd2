@@ -141,6 +141,18 @@ jQuery(function($){
         width: '50%'
     }
     );
+    $('a.addEvent').prepOverlay(
+    {
+        subtype: 'ajax',
+        filter: common_content_filter,
+        cssclass: 'overlay-addAuteur',
+        formselector: 'kssattr-formname-++add++Event, form[id="form"]',
+            noform: function(el) {return $.plonepopups.noformerrorshow(el, 'redirect');},
+            redirect: $.plonepopups.redirectbasehref,
+            closeselector: '[name="form.button.Cancel"]',
+        width: '50%'
+    }
+    );
     // Delete dialog
     $('a.delAuteur').prepOverlay(
         {
@@ -169,7 +181,7 @@ jQuery(function($){
         }
     );
     // edit dialog
-    $('a.editAuteur').prepOverlay(
+    $('.editAuteur').prepOverlay(
     {
             subtype: 'ajax',
             filter: common_content_filter,

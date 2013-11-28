@@ -137,6 +137,9 @@ h4 {
 
 } 
 
+#kss-spinner {
+     display: none;
+}
 /* 
 #printer {
     float : right;

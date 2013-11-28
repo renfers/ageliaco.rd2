@@ -74,13 +74,20 @@ class View(InterfaceView):
         cycle = note.aq_parent
         attendees = possibleAttendees(cycle)
         #import pdb; pdb.set_trace()
-        for item in attendees._terms:
-            if item.token in note.presence:
-                presents.append(item.title)
-            elif item.token in note.absence:
-                absents.append(item.title)
-            else:
-                sansexcuse.append(item.title)
+        if type(note.presence)==unicode: # old notes
+            presents = note.presence.split(',')
+            if type(note.absence)==unicode:
+                absents = note.absence.split(',')  
+            elif type(note.absence)==list:
+                absents = note.absence  
+        else:
+            for item in attendees._terms:
+                if item.token in note.presence:
+                    presents.append(item.title)
+                elif item.token in note.absence:
+                    absents.append(item.title)
+                else:
+                    sansexcuse.append(item.title)
         out = presents, absents, sansexcuse
         return out
     def rencontres(self):

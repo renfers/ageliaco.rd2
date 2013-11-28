@@ -33,11 +33,6 @@
         <link rel="stylesheet" type="text/css" 
             tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/projet.css"
             />
-      <!--[if IE 7]>
-      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"
-         tal:attributes="href string:${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome-ie7.min.css"
-         >
-      <![endif]-->
      </tal:css>
     </metal:css_head>
      
