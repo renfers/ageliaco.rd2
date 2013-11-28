@@ -67,7 +67,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
 
 </div>
     <tal:presence define="presence view/presence">
-     <b tal:condition="python: presence[0]">Présents :</b> 
+     <b tal:condition="python: presence and presence[0]">Présents :</b> 
      <ul tal:repeat="personne python: presence[0]">
         <li tal:content="personne"/>
      </ul>

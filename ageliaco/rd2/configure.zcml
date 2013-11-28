@@ -56,4 +56,12 @@
         sortkey="1"
         profile="ageliaco.rd2:default"/>
 
+    <genericsetup:upgradeStep
+        title="Convert Note to new schema"
+        description="Fields have been added or dropped"
+        source="2"
+        destination="3"
+        handler="ageliaco.rd2.upgrades.convert_to_new_note"
+        profile="ageliaco.rd2:default"/>
+
 </configure>

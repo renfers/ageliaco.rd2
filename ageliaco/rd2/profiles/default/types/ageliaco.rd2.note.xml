@@ -29,7 +29,6 @@
  <property name="add_permission">ageliaco.rd2.AddNote</property>
  <property name="klass">plone.dexterity.content.Container</property>
  <property name="behaviors">
-  <element value="plone.app.event.dx.behaviors.IEventAttendees"/>
   <element value="plone.app.content.interfaces.INameFromTitle"/>
  </property>
  <property name="schema">ageliaco.rd2.note.INote</property>
