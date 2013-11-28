@@ -80,8 +80,15 @@ legend {
 fieldset, .editionComment {
     line-height: 1.5em;
 }
-.sommaire {
-    float : right;
+.sommaire, #meetings {
+    clear: right;
+    float: right;
+    border-color: #D32F2F;
+    border-style: solid;
+    border-width: 0.1em;
+    margin-top: 1em;
+    width: 25em;
+    padding-left: 1em;
 }
 
 h2 {

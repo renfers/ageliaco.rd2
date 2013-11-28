@@ -46,25 +46,29 @@ Service enseignement et formation - Secteur ressources et développement</p>
 <div>
 
 
-<div >
+<div     id="meetings"
+>
 
 <div  
     tal:define="objectPath python:context.absolute_url()"
     >
-            <span class="editAuteur noprint" >
+            <span class="noprint" >
               <a title="Ajouter un rendez-vous" class="noprint" 
                 tal:attributes="href string:${objectPath}/++add++Event">
                 <i class="fa fa-plus-square"></i> Ajouter un rendez-vous</a>
             </span>
 </div>
+
+
 <!-- afficher les rendez-vous -->
 <tal:rencontres define="rencontres view/rencontres">
 <h3  i18n:translate="heading_auteurs"  tal:condition="rencontres"
     tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()))">Prochaines rencontres 
 </h3><ul tal:repeat="rv rencontres">
-    <li><a tal:attributes="href rv/getURL" class="editAuteur">
+    <li><a tal:attributes="href rv/getURL;
+                            title rv/Description" class="editAuteur">
         <span tal:content="python: here.toLocalizedTime(rv.start, long_format='%H:%M %d.%m.%Y')"/>
-        </a> <b>lieu :</b> <span tal:content="rv/location"/></li> 
+        </a> "<span tal:content="rv/Title"/>" <br><b> lieu : </b> <span tal:content="rv/location"/></li> 
 </ul>
 </tal:rencontres>
 </div>
@@ -86,14 +90,6 @@ Service enseignement et formation - Secteur ressources et développement</p>
     </tal:presence>
     <div tal:condition="python:context.presentation" tal:content="structure context/presentation/output"/>
 
-
-<!-- overlayed element -->
-<div class="apple_overlay" id="overlay">
-
-	<!-- the external content is loaded inside this tag -->
-	<div class="contentWrap"></div>
-
-</div>
 
 
        <div tal:replace="structure provider:plone.belowcontentbody" /> 

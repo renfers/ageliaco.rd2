@@ -4,6 +4,7 @@ from zope import schema
 from plone.namedfile import field as namedfile
 from z3c.relationfield.schema import RelationChoice, RelationList
 from plone.formwidget.contenttree import ObjPathSourceBinder
+import datetime
 
 from plone.directives import form, dexterity
 
@@ -45,7 +46,7 @@ ${contributor}</default>
       <required>False</required>
       <title>Objectifs</title>
     </field>
-    <field name="date_prochain_rdv" type="zope.schema.Datetime">
+    <field name="date_prochain_rdv" type="zope.schema.datetime">
       <description>Date fixee pour le prochain rendez-vous</description>
       <required>False</required>
       <title>Date du prochain rdv</title>
@@ -94,10 +95,15 @@ class View(InterfaceView):
         context = aq_inner(self.context)
         #import pdb; pdb.set_trace()
         projectPath = '/'.join(context.getPhysicalPath())
+        now = datetime.datetime.now()
         catalog = getToolByName(self.context, 'portal_catalog')
+        start =  datetime.datetime(now.year,now.month,now.day - 1) # yesterday
+        end = datetime.datetime(now.year + 1,now.month,now.day)  # Twelve months future
+        date_range_query = {'query': (start, end), 'range': 'min:max'}
         cat = catalog(portal_type='Event',
-                       path={'query': projectPath, 'depth': 2},
-                       sort_on="modified")
+                        start = date_range_query,
+                        sort_on = "start",
+                        path={'query': projectPath, 'depth': 2})
         
         #import pdb; pdb.set_trace()
         return cat
