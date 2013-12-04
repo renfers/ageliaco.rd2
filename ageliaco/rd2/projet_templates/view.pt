@@ -64,17 +64,25 @@
 <!-- overlay triggers. overlay is referenced in the 'rel' attribute -->
         <div tal:define="picture nocall:context/picture"
              tal:condition="nocall:picture">
-            <img tal:attributes="src string:${context/absolute_url}/@@download/picture/${picture/filename};
+            <img 
+tal:attributes="src 
+    string:${context/absolute_url}/@@download/picture/${picture/filename};
                                  height picture/_height | nothing;
                                  width picture/_width | nothing;"
                 style="float:left;margin:0 30px 30px 0;"
                 />
         </div>
-        <span tal:condition="context/presentation" tal:content="structure context/presentation/output" />
+        <span 
+            tal:condition="context/presentation" 
+            tal:content="structure context/presentation/output" 
+            />
         
 </div> 
-<div id="create_newcycle" tal:condition="python:  view.isRepository() and not here.portal_membership.isAnonymousUser()">
-  <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">Proposer un projet</a>
+<div id="create_newcycle" 
+tal:condition="python:view.isRepository() and \
+not here.portal_membership.isAnonymousUser()">
+  <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">
+  Proposer un projet</a>
 </div>
 
 

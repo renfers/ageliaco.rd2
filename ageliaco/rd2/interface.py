@@ -262,18 +262,6 @@ class OrdresEnseignementVocabulary(object):
         return SimpleVocabulary(terms)
 grok.global_utility(OrdresEnseignementVocabulary, name=u"ageliaco.rd2.ordres")
 
-# class ProfessionnellesVocabulary(object):
-#     grok.implements(IVocabularyFactory)
-#     def __call__(self, context):
-#         terms = []
-#         for ordre in sorted(professionnelles.keys()):
-#             terms.append(SimpleVocabulary.createTerm(ordre, 
-#                             str(ordre),
-#                             professionnelles[ordre]))
-#         return SimpleVocabulary(terms)
-# grok.global_utility(ProfessionnellesVocabulary, name=u"ageliaco.rd2.professionnelles")
-
-
 class SponsorshipVocabulary(object):
     grok.implements(IVocabularyFactory)
     def __call__(self, context):
@@ -306,7 +294,11 @@ class GroupMembers(object):
                 user = acl_users.getUserById(member_id)
                 if user is not None:
                     member_name = user.getProperty('fullname') or member_id
-                    terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_name))
+                    terms.append(
+                        SimpleVocabulary.createTerm(member_id, 
+                            str(member_id), member_name
+                            )
+                        )
             
         return SimpleVocabulary(terms)    
 
@@ -331,7 +323,11 @@ class ProjetsVoc(object):
                 user = acl_users.getUserById(member_id)
                 if user is not None:
                     member_name = user.getProperty('fullname') or member_id
-                    terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_name))
+                    terms.append(
+                        SimpleVocabulary.createTerm(member_id, 
+                            str(member_id), member_name
+                            )
+                        )
             
         return SimpleVocabulary(terms)    
 
@@ -346,7 +342,8 @@ def possibleAttendees(context):
     if context.portal_type == 'ageliaco.rd2.cycle':
         cycle = context
     else:
-        return  SimpleVocabulary(terms) #no list for internal notes (notes in a note)
+        #no list for internal notes (notes in a note)
+        return  SimpleVocabulary(terms) 
     mt = getToolByName(context, 'portal_membership')
     for supervisor in cycle.supervisor:
         member =  mt.getMemberById(supervisor)
@@ -395,9 +392,10 @@ class INote(form.Schema):
 
     presentation = RichText(
             title=MessageFactory(u"Notes de séance"),
-            description=MessageFactory(u"Compte-rendu de l'avancement du projet"),
+            description=MessageFactory(
+                u"Compte-rendu de l'avancement du projet"),
             required=False,
-        )    
+            )    
 
 @form.default_value(field=INote['title'])
 def startDefaultValue(data):
@@ -474,7 +472,10 @@ class IAuteur(form.Schema):
             
     sponsorasked = schema.Choice(
             title=MessageFactory(u"Dégrèvement demandé"),
-            description=MessageFactory(u"Dégrèvement total demandé pour cet auteur (1 heure ~= 2 x 1/2 journées/mois sur le projet)"),
+            description=MessageFactory(
+                u"Dégrèvement total demandé pour cet auteur " + 
+                u"(1 heure ~= 2 x 1/2 journées/mois sur le projet)"
+                ),
             vocabulary=u"ageliaco.rd2.sponsorship",
             required=True,
             default='',
@@ -484,7 +485,8 @@ class IAuteur(form.Schema):
     dexterity.write_permission(sponsorRD='cmf.ReviewPortalContent')
     sponsorRD = schema.Choice(
             title=MessageFactory(u"Dégrèvement R&D"),
-            description=MessageFactory(u"Dégrèvement R&D attribué pour cet auteur"),
+            description=MessageFactory(
+                u"Dégrèvement R&D attribué pour cet auteur"),
             vocabulary=u"ageliaco.rd2.sponsorship",
             required=False,
         )
@@ -493,14 +495,16 @@ class IAuteur(form.Schema):
     dexterity.write_permission(sponsorSchool='cmf.ReviewPortalContent')
     sponsorSchool= schema.Choice(
             title=MessageFactory(u"Dégrèvement Ecole"),
-            description=MessageFactory(u"Dégrèvement école attribué pour cet auteur"),
+            description=MessageFactory(
+                u"Dégrèvement école attribué pour cet auteur"),
             vocabulary=u"ageliaco.rd2.sponsorship",
             required=False,
         )
 
 class Auteur(object):
     grok.implements(IAuteur)
-    def __init__(self,id,lastname,firstname,email,phone='',school='',sponsorasked='',sponsorRD='',sponsorSchool=''): 
+    def __init__(self,id,lastname,firstname,email,phone='',
+            school='',sponsorasked='',sponsorRD='',sponsorSchool=''): 
         self.id = id
         self.lastname = lastname
         self.firstname = self.firstname
@@ -533,7 +537,9 @@ class IProjet(form.Schema):
     dexterity.write_permission(start='cmf.ReviewPortalContent')
     start = schema.TextLine(
             title=MessageFactory(u"Année"),
-            description=MessageFactory(u"L'année à laquelle le projet a commencé ou devrait commencer"),
+            description=MessageFactory(
+                u"L'année à laquelle le projet a commencé ou devrait commencer"
+                ),
             required=True,
         )
 
@@ -541,13 +547,15 @@ class IProjet(form.Schema):
     dexterity.write_permission(duration='cmf.ReviewPortalContent')
     duration = schema.Int(
             title=MessageFactory(u"Durée"),
-            description=MessageFactory(u"Durée (en années) du projet, prévue ou effective"),
+            description=MessageFactory(
+                u"Durée (en années) du projet, prévue ou effective"),
             required=True,
         )
     
     presentation = RichText(
             title=MessageFactory(u"Présentation"),
-            description=MessageFactory(u"Présentation synthétique du projet (présentation publiée)"),
+            description=MessageFactory(
+                u"Présentation synthétique du projet (présentation publiée)"),
             required=True,
         )    
 
@@ -581,9 +589,8 @@ def setRealisation(projet, event):
         rea = projet.invokeFactory("Folder", id=admid, title=u'Réalisation')
         #projet[admid] = rea
     
-    #projet.setContributors(projet.contributor)
-    #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
-    return #request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
+    return 
+#request.response.redirect(cycles.absolute_url() + '++add++ageliaco.rd2.cycle')
 
 @grok.provider(IContextSourceBinder)
 def activeProjects(context):
@@ -594,8 +601,11 @@ def activeProjects(context):
     terms = []
                 
     for brain in cat:
-        terms.append(SimpleVocabulary.createTerm(brain.getPath(), brain.id, brain.Title))
-    return SimpleVocabulary(terms) #SimpleVocabulary([SimpleVocabulary.createTerm(x.id, x.getURL(), x.Title) for x in cat])
+        terms.append(SimpleVocabulary.createTerm(brain.getPath(), 
+            brain.id, brain.Title))
+    return SimpleVocabulary(terms) 
+#SimpleVocabulary(
+#   [SimpleVocabulary.createTerm(x.id, x.getURL(), x.Title) for x in cat])
 
 
 class PorteparoleNotInParticipants(Invalid):
@@ -611,7 +621,8 @@ class ICycle(form.Schema):
     form.mode(id='hidden')
     id = schema.TextLine(
             title=MessageFactory(u"Identifiant"),
-            description=MessageFactory(u"Ne pas changer celui donné par défaut! Merci!"),
+            description=MessageFactory(
+                u"Ne pas changer celui donné par défaut! Merci!"),
             required=True,
         )
         
@@ -624,7 +635,8 @@ class ICycle(form.Schema):
         
     description = schema.Text(
             title=MessageFactory(u"Synopsys"),
-            description=MessageFactory(u"Présentation du projet en un paragraphe"),
+            description=MessageFactory(
+                u"Présentation du projet en un paragraphe"),
             required=False,
             default=u'',
         )
@@ -632,7 +644,8 @@ class ICycle(form.Schema):
     #form.widget(projet=AutocompleteFieldWidget)
     projet = schema.Choice(
             title=MessageFactory(u"Projet existant"),
-            description=MessageFactory(u"Lien vers un projet existant (en cas de reconduction)"),
+            description=MessageFactory(
+                u"Lien vers un projet existant (en cas de reconduction)"),
             source=activeProjects,
             required=False,
             default=u'',
@@ -642,7 +655,8 @@ class ICycle(form.Schema):
     form.widget(supervisor=CheckBoxFieldWidget)
     supervisor = schema.List(
             title=MessageFactory(u"Superviseur(s) R&D"),
-            description=MessageFactory(u"Personne(s) de R&D qui supervise(nt) ce projet"),
+            description=MessageFactory(
+                u"Personne(s) de R&D qui supervise(nt) ce projet"),
             value_type=schema.Choice(source=GroupMembers('Supervisor')),
             required=False,
             missing_value=(),
@@ -651,21 +665,26 @@ class ICycle(form.Schema):
         
     domaine = schema.Text(
             title=MessageFactory(u"Domaine(s)"),
-            description=MessageFactory(u"Domaine(s) couvert(s) par le projet, un par ligne"),
+            description=MessageFactory(
+                u"Domaine(s) couvert(s) par le projet, un par ligne"),
             required=False,
             default=u'',
         )
 
     discipline = schema.Text(
             title=MessageFactory(u"Discipline(s)"),
-            description=MessageFactory(u"Discipline(s) concernée(s) par le projet (une par ligne)"),
+            description=MessageFactory(
+                u"Discipline(s) concernée(s) par le projet (une par ligne)"),
             required=False,
             default=u'',
         )
         
     presentation = RichText(
             title=MessageFactory(u"Objectifs généraux du projet"),
-            description=MessageFactory(u"Changements et actions concrets auxquels on peut s'attendre à court et à long terme"),
+            description=MessageFactory(
+                u"Changements et actions concrets auxquels " +
+                u"on peut s'attendre à court et à long terme"
+                ),
             required=False,
             default=u'',
         )    
@@ -679,21 +698,33 @@ class ICycle(form.Schema):
 
     problematique = RichText(
             title=MessageFactory(u"Problématique"),
-            description=MessageFactory(u"Quel postulat et/ou quelles hypothèses sont à l'origine du projet?"),
+            description=MessageFactory(
+                u"Quel postulat et/ou quelles hypothèses " +
+                u"sont à l'origine du projet?"
+                ),
             required=True,
             default=u'',
         )    
 
     experiences = RichText(
             title=MessageFactory(u"Expériences préalables"),
-            description=MessageFactory(u"Sur quelles expériences ou connaissances préalables repose le projet? Quels sont le travail et la réflexion déjà entamés dans le domaine de la recherche proposée (bibliographie, inventaire d'expériences, etc.)"),
+            description=MessageFactory(
+                u"Sur quelles expériences ou connaissances préalables " +
+                u"repose le projet? Quels sont le travail et la réflexion " +
+                u"déjà entamés dans le domaine de la recherche proposée " +
+                u"(bibliographie, inventaire d'expériences, etc.)"
+                ),
             required=False,
             default=u'',
         )    
 
     besoin = RichText(
             title=MessageFactory(u"Origine du besoin"),
-            description=MessageFactory(u"Quels éléments de la situation présente sont à l'origine du besoin exprimé ? Justification et preuves du besoin : plan cadre, directives, etc."),
+            description=MessageFactory(
+                u"Quels éléments de la situation présente sont à l'origine " +
+                u"du besoin exprimé ? Justification et preuves du besoin : " +
+                u"plan cadre, directives, etc."
+                ),
             required=False,
             default=u'',
         )    
@@ -713,17 +744,13 @@ class ICycle(form.Schema):
         missing_value=(),
         )
     
-    #     pro = schema.List(
-    #         title=MessageFactory(u"CFP"),
-    #         description=MessageFactory(u"Si CFP, précisez lequel"),
-    #         value_type=schema.Choice(vocabulary=u"ageliaco.rd2.professionnelles"),
-    #         required=False,
-    #         missing_value=(),
-    #         )
     
     forme = RichText(
             title=MessageFactory(u"Forme du produit fini au terme du projet"),
-            description=MessageFactory(u"Quels types de documents seront déposés sur le site de R&D? (documents maître, documents élève, documents de référence)"),
+            description=MessageFactory(
+                u"Quels types de documents seront déposés sur le site de R&D?"+
+                u" (documents maître, documents élève, documents de référence)"
+                ),
             required=False,
             default=u'',
         )    
@@ -732,69 +759,87 @@ class ICycle(form.Schema):
     form.fieldset(
         'organisation',
         label=_(u"Organisation"),
-        fields=['duree','planification', 'production', 'plan', 'repartition', 'modalites', 'participants','porteparole']
+        fields=['duree','planification', 'production', 'plan', 
+            'repartition', 'modalites', 'participants','porteparole']
     )
 
     duree = schema.Int(
             title=MessageFactory(u"Durée du projet (en années scolaires)"),
-            description=MessageFactory(u"Durée estimée du projet en années scolaires"),
+            description=MessageFactory(
+                u"Durée estimée du projet en années scolaires"),
             default = 1,
             required=False,
         )
 
     planification = RichText(
             title=MessageFactory(u"Planification des objectifs par année"),
-            description=MessageFactory(u"Organisation des objectifs sur toute la durée du projet"),
+            description=MessageFactory(
+                u"Organisation des objectifs sur toute la durée du projet"),
             required=False,
             default=u'',
         )    
 
     production = RichText(
             title=MessageFactory(u"Production pour l'année à venir"),
-            description=MessageFactory(u"Matériel produit pour les élèves et pour les maîtres"),
+            description=MessageFactory(
+                u"Matériel produit pour les élèves et pour les maîtres"),
             required=False,
             default=u'',
         )    
     
     plan = RichText(
             title=MessageFactory(u"Echéancier pour l'année à venir"),
-            description=MessageFactory(u"Planification mensuelle détaillée : phases d'élaboration, phases de test, phase de finalisation"),
+            description=MessageFactory(
+                u"Planification mensuelle détaillée : phases d'élaboration," +
+                u" phases de test, phase de finalisation"
+                ),
             required=False,
             default=u'',
         )    
     
     repartition = RichText(
             title=MessageFactory(u"Répartition et rôles"),
-            description=MessageFactory(u"Répartition prévue des tâches entre participants"),
+            description=MessageFactory(
+                u"Répartition prévue des tâches entre participants"),
             required=False,
             default=u'',
         )    
 
     modalites = RichText(
             title=MessageFactory(u"Modalités de travail"),
-            description=MessageFactory(u"Plage horaire commune : demande du groupe de travail auprès des établissements concernés"),
+            description=MessageFactory(
+                u"Plage horaire commune : demande du groupe de travail " +
+                u"auprès des établissements concernés"
+                ),
             required=False,
             default=u'',
         )    
 
     participants = schema.Text(
             title=MessageFactory(u"Participants pour l'année à venir"),
-            description=MessageFactory(u"Mettre le login EDU de chaque participant, un par ligne (ex: 'edu-travoltaj'). La liste des auteurs sera générée automatiquement."),
+            description=MessageFactory(
+                u"Mettre le login EDU de chaque " +
+                u"participant, un par ligne (ex: 'edu-travoltaj'). " +
+                u"La liste des auteurs sera générée automatiquement."
+                ),
             required=False,
             default=u'',
         )    
 
     porteparole = schema.TextLine(
             title=MessageFactory(u"Coordinateur"),
-            description=MessageFactory(u"Porte-parole du projet pour R&D (mettre le login EDU)"),
+            description=MessageFactory(
+                u"Porte-parole du projet pour R&D (mettre le login EDU)"),
             required=False,
             default=u'',
         )
 
     @invariant
     def validatePorteparole(data):
-        if data.porteparole and not data.participants and data.porteparole not in data.participants.split():
-            raise PorteparoleNotInParticipants(_(u"Le porte-parole doit faire partie des participants"))
+        if data.porteparole and not data.participants and \
+                data.porteparole not in data.participants.split():
+            raise PorteparoleNotInParticipants(_(
+                u"Le porte-parole doit faire partie des participants"))
                 
         
 
@@ -806,9 +851,11 @@ def idDefaultFromContext(context):
     
     
     catalog = getToolByName(context, 'portal_catalog')
-    cat = catalog.unrestrictedSearchResults(object_provides= ICycle.__identifier__,
-               path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
-               sort_on="modified", sort_order="reverse")  
+    cat = catalog.unrestrictedSearchResults(
+        object_provides= ICycle.__identifier__,
+        path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+        sort_on="modified", sort_order="reverse"
+        )  
 
     if hasattr(context,'start'):
         start = context.start
@@ -851,7 +898,9 @@ def setSupervisor(cycle, event):
         return
     if IRoleManager.providedBy(cycle):
         for supervisor in cycle.supervisor:
-            cycle.manage_addLocalRoles(supervisor, ['Reader', 'Contributor', 'Editor','Reviewer'])
+            cycle.manage_addLocalRoles(supervisor, 
+                ['Reader', 'Contributor', 'Editor','Reviewer']
+                )
         log("Role added to %s for %s"%(cycle.id,cycle.supervisor))
 
 
@@ -870,7 +919,12 @@ def checkAuteurs(cycle, value=u""):
             if login :
                 newparticipants[login] = login
         except:
-            raise ActionExecutionError(Invalid(_(u"Il y a un problème avec le ligne suivante : %s" % ligne)))
+            raise ActionExecutionError(
+                Invalid(_(u"Il y a un problème avec le ligne suivante : %s" %
+                     ligne
+                     )
+                )
+            )
     return newparticipants
     
 def aboutAuteurs(cycle, value=u""):
@@ -916,7 +970,8 @@ def aboutAuteurs(cycle, value=u""):
         if member:
             auteur = createContent("ageliaco.rd2.auteur", 
                 id = member.getProperty('id'),
-                title = u"%s %s" % (member.getProperty('lastname'),member.getProperty('firstname')),
+                title = u"%s %s" % (member.getProperty('lastname'),
+                    member.getProperty('firstname')),
                 firstname = member.getProperty('firstname'),
                 lastname = member.getProperty('lastname'),
                 email = member.getProperty('email'),)
@@ -931,52 +986,6 @@ def aboutAuteurs(cycle, value=u""):
             print "OK => id %s is in !!!" % auteur.id
             ok = True
 
-        #         if ldap_active:
-        #             members = acl.searchUsers(cn=login)
-        #             for member in members:
-        #                 ok = False
-        #                 if login.upper() == member['cn'].upper():
-        #                     # create an auteur
-        #                     #auteur = createContentInContainer(cycle,"ageliaco.rd2.auteur", 
-        #                     auteur = createContent("ageliaco.rd2.auteur", 
-        #                         id = str(login).upper(),
-        #                         title = u"%s %s" % (member['sn'],member['givenName']),
-        #                         firstname = member['givenName'],
-        #                         lastname = member['sn'],
-        #                         email = member['mail'],)
-        #                         #sponsorasked = newparticipants[login])
-        #                     #print "rename %s to %s" % (auteur.id, str(login).upper())
-        #                     #auteur.id = str(login).upper()
-        #                     #cycle[str(login).upper()] = auteur
-        #                     #cycle.manage_renameObject(auteur.id, str(login).upper())
-        #                     cycle[auteur.id]=auteur
-        #                     cycle.manage_addLocalRoles(auteur.id.upper(), ['Reader','Owner'])
-        #                     cycle.reindexObjectSecurity()
-        #                     print "OK => id %s is in !!!" % auteur.id
-        #                     ok = True
-        #         else:
-        #             members = acl.searchUsers(cn=login)
-        #             for member in members:
-        #                 ok = False
-        #                 if login.upper() == member['cn'].upper():
-        #                     # create an auteur
-        #                     #auteur = createContentInContainer(cycle,"ageliaco.rd2.auteur", 
-        #                     auteur = createContent("ageliaco.rd2.auteur", 
-        #                         id = str(login).upper(),
-        #                         title = u"%s %s" % (member['sn'],member['givenName']),
-        #                         firstname = member['givenName'],
-        #                         lastname = member['sn'],
-        #                         email = member['mail'],)
-        #                         #sponsorasked = newparticipants[login])
-        #                     #print "rename %s to %s" % (auteur.id, str(login).upper())
-        #                     #auteur.id = str(login).upper()
-        #                     #cycle[str(login).upper()] = auteur
-        #                     #cycle.manage_renameObject(auteur.id, str(login).upper())
-        #                     cycle[auteur.id]=auteur
-        #                     cycle.manage_addLocalRoles(auteur.id.upper(), ['Reader','Owner'])
-        #                     cycle.reindexObjectSecurity()
-        #                     print "OK => id %s is in !!!" % auteur.id
-        #                     ok = True
                 
         if not ok:
             print "no member found for %s" % login
@@ -996,9 +1005,6 @@ def okToSubmit(form):
  
 class EditForm(dexterity.EditForm):
     grok.context(ICycle)
-    #     def updateWidgets(self):
-    #         """ """
-    #         dexterity.EditForm.updateWidgets(self)
 
         
     @button.buttonAndHandler(_(u'Sauvegarder, pas nécessaire à la fin de chaque onglet, seulement avant déconnexion'))
@@ -1028,52 +1034,11 @@ class EditForm(dexterity.EditForm):
             cycle.reindexObject()
             return self.request.response.redirect(cycle.absolute_url()+extrapath)
 
-    #     @button.buttonAndHandler(_('Soumettre le projet'), name="soumettre", 
-    #                         condition=okToSubmit)
-    #     def handle_submit(self, action):
-    #         data, errors = self.extractData()
-    #         if errors:
-    #             self.status = "Corriger les erreurs ..."
-    #             return
-    # 
-    #         cycle = self.context
-    # 
-    #         self.applyChanges(data)
-    #         context = aq_inner(self.context)
-    #         workflowTool = getToolByName(context, "portal_workflow")
-    #         workflowTool.doActionFor(context, "soumettre")
-    #         confirmation_message = (_(u"Cliquez sur l'imprimante, vous pouvez créer un document PDF que vous soumettez à votre direction d'établissement."))
-    #         messages = IStatusMessage(self.request)
-    #         messages.addStatusMessage(confirmation_message, type="info")
-    #         return self.request.response.redirect(cycle.absolute_url())
-        
     def updateActions(self):
         super(EditForm, self).updateActions()
         if 'soumettre' in self.actions.keys():
             self.actions['soumettre'].addClass("soumissionprojet")
             self.actions['soumettre'].title = u'Soumettre le projet (ne sera plus modifiable après soumission!)'
-
-#     def update(self):
-#             # Hide form buttons
-#             import copy
-#             # Create immutable copy which you can manipulate
-#             self.buttons = copy.deepcopy(self.buttons)
-# 
-#             # Remove button using dictionary style delete
-#             if not self.okToSubmit():
-#                 self.buttons["soumettre"].mode = z3c.form.interfaces.HIDDEN_MODE
-                
-#     def setActions(self):
-#         """ Add button to the form based on dynamic conditions. """
-# 
-#         if self.okToSubmit():
-# 
-#             but = button.Button("soumettre", title=_('Soumettre le projet'))
-#             self.form.buttons += button.Buttons(but)
-# 
-#             handler = button.Handler(but, self.form.__class__.handle_submit)
-#             self.form.handlers.addHandler(but, handler)
-
 
 class AddForm(dexterity.AddForm):
     grok.name('ageliaco.rd2.cycle')
@@ -1103,13 +1068,15 @@ class AddForm(dexterity.AddForm):
         return self.request.response.redirect(cycle.absolute_url()+extrapath)
 
 class AuteursEditForm(crud.EditForm):
-    """ Pigeonhole edit form.  Just a normal CRUD form without the form title or edit button.
+    """ Pigeonhole edit form.  
+        Just a normal CRUD form without the form title or edit button.
     """
     
     label = u"""Complétez les informations
 
     école : attachement administratif, 
-    dégrèvement demandé : une heure de dégrèvement correspond à 2 demi-journées de travail par mois.
+    dégrèvement demandé : une heure de dégrèvement correspond 
+                          à 2 demi-journées de travail par mois.
     
     """
 
@@ -1117,7 +1084,9 @@ class AuteursEditForm(crud.EditForm):
     buttons = crud.EditForm.buttons.copy().omit('delete')
     handlers = crud.EditForm.handlers.copy()
 
-    @button.buttonAndHandler(_(u"Retour à la proposition de projet"),name= "Cancel")
+    @button.buttonAndHandler(_(u"Retour à la proposition de projet"),
+        name= "Cancel"
+        )
     def handleCancel(self, action):
         """User cancelled. Redirect back to the front page.
         """
@@ -1129,7 +1098,8 @@ class AuteursEditForm(crud.EditForm):
 class AuteursForm(crud.CrudForm,grok.View):
     #update_schema = IAuteur
     view_schema = field.Fields(IAuteur).select('id','firstname','lastname')
-    update_schema = field.Fields(IAuteur).select('phone','email','school','sponsorasked')
+    update_schema = field.Fields(IAuteur).select('phone','email','school',
+        'sponsorasked')
     addform_factory = crud.NullForm
     editform_factory = AuteursEditForm
     grok.context(ICycle)
@@ -1189,7 +1159,9 @@ class InterfaceView(grok.View,Form):
     indx = 'Subject'
     searchType = IProjet.__identifier__
     pathDepth = 0
-    allauthors = "cycle,author.id,author.lastname,author.firstname,author.school,ordre,author.sponsorasked,author.sponsorRD,author.sponsorSchool"
+    allauthors = "cycle,author.id,author.lastname,author.firstname," + \
+        "author.school,ordre,author.sponsorasked,author.sponsorRD," + \
+        "author.sponsorSchool"
     keyword_dict = {}
          
     def set2float(self,value):
@@ -1273,20 +1245,28 @@ class InterfaceView(grok.View,Form):
         ordre = ''
         if author.school in schools.keys():
             ordre = schools[author.school][1]
-        oneauthor = "\n%s,%s,%s,%s,%s,%s,%d,%d"%(auteur.getPath().split('/')[-2],author.id,author.lastname,
-                                    author.firstname,author.school,ordre,
-                                    self.set2float(author.sponsorRD),self.set2float(author.sponsorSchool))
+        oneauthor = "\n%s,%s,%s,%s,%s,%s,%d,%d"% \
+            (auteur.getPath().split('/')[-2],
+            author.id,author.lastname,
+            author.firstname,author.school,ordre,
+            self.set2float(author.sponsorRD),
+            self.set2float(author.sponsorSchool))
         self.allauthors += oneauthor
         if self.withTotal:
-            self.degrevements[self.objectPath][0] += self.set2float(author.sponsorasked)
-            self.degrevements[self.objectPath][1] += self.set2float(author.sponsorRD)
-            self.degrevements[self.objectPath][2] += self.set2float(author.sponsorSchool)
-            self.degrevements[self.objectPath][3] += self.set2float(author.sponsorSchool) + \
+            self.degrevements[self.objectPath][0] += \
+                self.set2float(author.sponsorasked)
+            self.degrevements[self.objectPath][1] += \
+                self.set2float(author.sponsorRD)
+            self.degrevements[self.objectPath][2] += \
+                self.set2float(author.sponsorSchool)
+            self.degrevements[self.objectPath][3] += \
+                self.set2float(author.sponsorSchool) + \
                             self.set2float(author.sponsorRD)
         return (author.sponsorasked,author.sponsorRD,author.sponsorSchool)
         
     def __call__(self):
-        if 'search.csvexport' in self.request.keys() and self.request['search.csvexport'] == ' export csv':
+        if 'search.csvexport' in self.request.keys() and \
+                self.request['search.csvexport'] == ' export csv':
             self.multiselect('review_state',pathDepth=2) 
             cat = self.results()
             for cycle in cat:
@@ -1298,7 +1278,8 @@ class InterfaceView(grok.View,Form):
             R = self.request.RESPONSE
             R.setHeader('Content-Length', dataLen)
             R.setHeader('Content-Type', 'text/csv')
-            R.setHeader('Content-Disposition', 'attachment; filename=%s.csv' % self.context.getId())
+            R.setHeader('Content-Disposition', 
+                'attachment; filename=%s.csv' % self.context.getId())
         
             #return thefields
             return CSV
@@ -1317,7 +1298,8 @@ class InterfaceView(grok.View,Form):
             self.searchType = IProjet.__identifier__
 
         else:
-            self.keyword_dict = dict([(w.title,w.id) for w in wtool['rd2.cycle-workflow'].states.values()])
+            self.keyword_dict = dict([(w.title,w.id) 
+                for w in wtool['rd2.cycle-workflow'].states.values()])
             keywords = self.keyword_dict.keys()
             self.multikey = '@@cyclesview'
             label = u'Selectionner un ou plusieurs états'
@@ -1360,29 +1342,34 @@ class InterfaceView(grok.View,Form):
         cat = getToolByName(self.context, 'portal_catalog')
         query = {}
         if self.indx == 'Subject':
-            if 'search.csvexport' in self.request.keys() and self.request['search.csvexport']:
+            if 'search.csvexport' in self.request.keys() and \
+                    self.request['search.csvexport']:
                 self.searchType = 'ageliaco.rd2.interface.IProjet'
                 self.pathDepth = 3
             query[self.indx] = self.searchterm
             query['object_provides'] = self.searchType
             if self.pathDepth:
-                localpath = {'query': '/'.join(context.getPhysicalPath()), 'depth': self.pathDepth}
+                localpath = {'query': '/'.join(context.getPhysicalPath()), 
+                    'depth': self.pathDepth}
                 query['path'] = localpath
             #print query
             return cat(**query)                
         
-        if 'search.csvexport' in self.request.keys() and self.request['search.csvexport']:
+        if 'search.csvexport' in self.request.keys() and \
+                self.request['search.csvexport']:
             self.searchType = 'ageliaco.rd2.interface.ICycle'
             self.pathDepth = 2
         wtool = getToolByName(self.context, 'portal_workflow', None)
 
         #keywords1 = wtool.listWFStatesByTitle(filter_similar=1)
-        self.keyword_dict = dict([(w.title,w.id) for w in wtool['rd2.cycle-workflow'].states.values()])
+        self.keyword_dict = dict([(w.title,w.id) for w in 
+                wtool['rd2.cycle-workflow'].states.values()])
 
         query[self.indx] = [self.keyword_dict[term] for term in self.searchterm]
         query['object_provides'] = self.searchType
         if self.pathDepth:
-            localpath = {'query': '/'.join(context.getPhysicalPath()), 'depth': self.pathDepth}
+            localpath = {'query': '/'.join(context.getPhysicalPath()), 
+                'depth': self.pathDepth}
             query['path'] = localpath
         return cat(**query)                
 
@@ -1402,11 +1389,13 @@ class InterfaceView(grok.View,Form):
         catalog = getToolByName(context, 'portal_catalog')
         if wf_state == 'all':
             return catalog(portal_type='ageliaco.rd2.projet',
-                           path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+                           path={'query': '/'.join(context.getPhysicalPath()), 
+                            'depth': 1},
                            sort_on="start", sort_order="reverse")        
         cat = catalog(portal_type='ageliaco.rd2.projet',
                        review_state=wf_state,
-                       path={'query': '/'.join(context.getPhysicalPath()), 'depth': 1},
+                       path={'query': '/'.join(context.getPhysicalPath()), 
+                        'depth': 1},
                        sort_on='sortable_title')
         return cat
 
@@ -1436,10 +1425,13 @@ class InterfaceView(grok.View,Form):
         
     def cycle_state(self,review_state):
         wtool = getToolByName(self.context, 'portal_workflow', None)
-        cycles = dict([(w.id,w.title) for w in wtool['rd2.cycle-workflow'].states.values()])
+        cycles = dict([(w.id,w.title) 
+            for w in wtool['rd2.cycle-workflow'].states.values()])
         return cycles[review_state]
 
     def supervisor(self,sup_id):
+        if not sup_id:
+            return ""
         context = aq_inner(self.context)
         mt = getToolByName(self, 'portal_membership')
         if mt.getMemberById(sup_id) is None:

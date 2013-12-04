@@ -18,7 +18,8 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary
 from Products.CMFCore.utils import getToolByName
 
-from plone.formwidget.autocomplete import AutocompleteMultiFieldWidget, AutocompleteFieldWidget
+from plone.formwidget.autocomplete import AutocompleteMultiFieldWidget,\
+    AutocompleteFieldWidget
 from zope.interface import invariant, Invalid
 
 from Acquisition import aq_inner, aq_parent
@@ -52,17 +53,6 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from interface import ICycle, IAuteur, InterfaceView
 
-
-# def getView(context, request, name):
-#     # Remove acquisition wrapper which may cause false context assumptions
-#     context = aq_inner(context)
-#     # Will raise ComponentLookUpError
-#     view = getMultiAdapter((context, request), name=name)
-#     # Put view to acquisition chain
-#     view.context = context
-#     view.request = request
-#     return view
-    
 class IProjets(form.Schema):
     """
     Projets de Projet RD
@@ -131,18 +121,6 @@ class View(InterfaceView):
             query['path']={'query': '/'.join(context.getPhysicalPath())}
         #print query
         return cat(**query)                
-
-# 
-#     def render_table(self, projets):
-#         """ return a table of projets """
-#         #self.summary_template = ViewPageTemplateFile("projets_templates/projectlisting.pt")
-#         #return self.summary_template(projets)
-# 
-#         projectlisting = ProjectListing(self.context,self.request)
-#         listingview = getView(self.context,self.request, name="projectlisting")
-#         options = {}
-#         options['projets'] = projets
-#         return projectlisting.render_table(options=options)
 
 class KeywordView(InterfaceView):
     grok.context(IProjets)

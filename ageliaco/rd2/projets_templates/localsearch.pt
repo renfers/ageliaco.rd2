@@ -6,17 +6,20 @@
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="ageliaco.rd2">
  <head>
-    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <metal:block fill-slot="style_slot" 
+    tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
     </metal:block>
-<metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<metal:block fill-slot="javascript_head_slot" 
+tal:define="navroot context/@@plone_portal_state/navigation_root_url">
     <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
 </metal:block>
  
 </head>
 <body>
 
-<metal:main fill-slot="main"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<metal:main fill-slot="main"  tal:define="navroot 
+        context/@@plone_portal_state/navigation_root_url">
     <tal:main-macro metal:define-macro="main"
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
                     DateTime python:modules['DateTime'].DateTime">
@@ -31,7 +34,8 @@
         
      <div metal:use-macro="context/@@interface/macros/projets_menu"/>        
         <div>
-              <div tal:content="structure python:view.form()"   id="local_search">form</div>
+              <div tal:content="structure python:view.form()"   
+                id="local_search">form</div>
             <ul>
                <tal:block repeat="item python:view.results()">
                   <li>

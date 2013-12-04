@@ -63,12 +63,18 @@ Service enseignement et formation - Secteur ressources et développement</p>
 <!-- afficher les rendez-vous -->
 <tal:rencontres define="rencontres view/rencontres">
 <h3  i18n:translate="heading_auteurs"  tal:condition="rencontres"
-    tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()))">Prochaines rencontres 
+    tal:define="objectPath 
+    python:view.setObjectPath('/'.join(context.getPhysicalPath()))"
+    >Prochaines rencontres 
 </h3><ul tal:repeat="rv rencontres">
     <li><a tal:attributes="href rv/getURL;
                             title rv/Description" class="editAuteur">
-        <span tal:content="python: here.toLocalizedTime(rv.start, long_format='%H:%M %d.%m.%Y')"/>
-        </a> "<span tal:content="rv/Title"/>" <br><b> lieu : </b> <span tal:content="rv/location"/></li> 
+            <span 
+        tal:content="
+        python: here.toLocalizedTime(rv.start, long_format='%H:%M %d.%m.%Y')"/>
+        </a> "<span tal:content="rv/Title"/>" <br><b> lieu : </b> 
+            <span tal:content="rv/location"/>
+    </li> 
 </ul>
 </tal:rencontres>
 </div>
@@ -88,7 +94,8 @@ Service enseignement et formation - Secteur ressources et développement</p>
         <li tal:content="personne"/>
      </ul>
     </tal:presence>
-    <div tal:condition="python:context.presentation" tal:content="structure context/presentation/output"/>
+    <div tal:condition="python:context.presentation" 
+        tal:content="structure context/presentation/output"/>
 
 
 

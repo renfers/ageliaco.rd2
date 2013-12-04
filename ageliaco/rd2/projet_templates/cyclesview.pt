@@ -6,18 +6,21 @@
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="ageliaco.rd2">
  <head>
-    <metal:block fill-slot="style_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <metal:block fill-slot="style_slot" 
+        tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
      
 
-      <link tal:attributes="href  string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/css/multi-select.css"
+      <link tal:attributes="href  
+string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/css/multi-select.css"
             href="#"
             rel="stylesheet"
             type="text/css"
             media="all" />
     
     
-      <link tal:attributes="href  string:${navroot}/++resource++yafowil.widget.multiselect/widget.css"
+      <link tal:attributes="href  
+    string:${navroot}/++resource++yafowil.widget.multiselect/widget.css"
             href="#"
             rel="stylesheet"
             type="text/css"
@@ -25,16 +28,23 @@
 
      
     </metal:block>
-<metal:block fill-slot="javascript_head_slot" tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<metal:block fill-slot="javascript_head_slot" 
+    tal:define="navroot context/@@plone_portal_state/navigation_root_url">
     <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
-    <script tal:attributes="src string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/js/jquery.multi-select.js"></script>
-    <script tal:attributes="src string:${navroot}/++resource++yafowil.widget.multiselect/widget.js"></script>
+    <script tal:attributes="src 
+string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/js/jquery.multi-select.js"
+        >
+    </script>
+    <script tal:attributes="src 
+    string:${navroot}/++resource++yafowil.widget.multiselect/widget.js">
+    </script>
 </metal:block>
  
 </head>
 <body>
 
-<metal:main fill-slot="main"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<metal:main fill-slot="main"  
+    tal:define="navroot context/@@plone_portal_state/navigation_root_url">
     <tal:main-macro metal:define-macro="main"
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
                     DateTime python:modules['DateTime'].DateTime">

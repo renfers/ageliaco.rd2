@@ -97,13 +97,16 @@ class View(InterfaceView):
         projectPath = '/'.join(context.getPhysicalPath())
         now = datetime.datetime.now()
         catalog = getToolByName(self.context, 'portal_catalog')
-        start =  datetime.datetime(now.year,now.month,now.day - 1) # yesterday
-        end = datetime.datetime(now.year + 1,now.month,now.day)  # Twelve months future
+        # yesterday
+        start =  datetime.datetime(now.year,now.month,now.day - 1)
+        # Twelve months future
+        end = datetime.datetime(now.year + 1,now.month,now.day)  
         date_range_query = {'query': (start, end), 'range': 'min:max'}
         cat = catalog(portal_type='Event',
                         start = date_range_query,
                         sort_on = "start",
-                        path={'query': projectPath, 'depth': 2})
+                        path={'query': projectPath, 'depth': 2}
+                        )
         
         #import pdb; pdb.set_trace()
         return cat

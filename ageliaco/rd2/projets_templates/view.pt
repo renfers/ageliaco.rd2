@@ -16,7 +16,8 @@
 </head>
 <body>
 
-<metal:main fill-slot="main"  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<metal:main fill-slot="main"  
+tal:define="navroot context/@@plone_portal_state/navigation_root_url">
     <tal:main-macro metal:define-macro="main"
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
                     DateTime python:modules['DateTime'].DateTime">

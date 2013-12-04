@@ -73,12 +73,6 @@ def sponsoraskedIndexer(obj):
     return obj.sponsorasked
 grok.global_adapter(sponsoraskedIndexer, name="sponsorasked")
 
-# @indexer(IAuteur)
-# def sponsorSEMIndexer(obj):
-#     if obj.sponsorSEM is None:
-#         return None
-#     return obj.sponsorSEM
-# grok.global_adapter(sponsorSEMIndexer, name="sponsorSEM")
 
 @indexer(IAuteur)
 def sponsorSchoolIndexer(obj):

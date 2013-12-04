@@ -26,28 +26,42 @@
   tal:define="navroot context/@@plone_portal_state/navigation_root_url">
 <img src='logo-GE.png' class="printlogo" 
     tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/logo-GE.png"/>
-<p>REPUBLIQUE ET CANTON DE GENEVE<br />Département de l'instruction publique, de la culture et du sport
-<br />Enseignement secondaire II postobligatoire<br /><b>Direction générale<br /></b>
+<p>REPUBLIQUE ET CANTON DE GENEVE
+<br />Département de l'instruction publique, de la culture et du sport
+<br />Enseignement secondaire II postobligatoire<br />
+<b>Direction générale<br /></b>
 Service enseignement et formation - Secteur ressources et développement</p>
 
-<h4 style="text-align : center;">Formulaire de présentation de projet</h4>
-<!-- <h4 style="text-align : center;">Année <span tal:replace="view/schoolyear"/></h4> -->
+<h4 style="text-align : center;">Proposition de projet</h4>
 
 </div>
 
-        <div tal:replace="structure provider:plone.abovecontenttitle" />
+<div tal:replace="structure provider:plone.abovecontenttitle" />
 <div style="float : right" tal:condition="view/isDraft">
-<a class="noprint" id="soumission" tal:attributes="href string:${context/absolute_url}/content_status_modify?workflow_action=soumettre" title="Soumettre la proposition de projet (plus modifiable après cette étape)" >soumettre <i class="fa fa-share"></i></a>
+    <a class="noprint" id="soumission" 
+        tal:attributes="href 
+string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
+    title="Soumettre la proposition de projet 
+        (plus modifiable après cette étape)" >soumettre 
+        <i class="fa fa-share"></i>
+    </a>
 </div>
 
-<div class="sommaire">
+<div class="sommaire noprint" tal:condition="python:not view.isOldCycle()">
 <h4>Sommaire
-    <a class="noprint" id="printer" href="javascript:window.print()" title="Imprimer cette page" ><i class="fa fa-print"></i></a>
+    <a class="noprint" id="printer" href="javascript:window.print()" 
+        title="Imprimer cette page" ><i class="fa fa-print"></i>
+    </a>
 </h4>
 <ul tal:repeat="fieldset view/groups" class="menu">
-    <li><a  tal:content="fieldset/label" tal:attributes="href string:${context/absolute_url}#${fieldset/__name__}"/></li>
+    <li><a  tal:content="fieldset/label" 
+    tal:attributes="href string:${context/absolute_url}#${fieldset/__name__}"/>
+    </li>
     <ul tal:repeat="field fieldset/fields">
-        <li ><a tal:attributes="href python:context.absolute_url() + '#' + field" tal:content="python: view.w[field].label"/></li>
+        <li ><a 
+            tal:attributes="href python:context.absolute_url() + '#' + field" 
+            tal:content="python: view.w[field].label"/>
+        </li>
     </ul>
 </ul>
 </div>
@@ -57,7 +71,9 @@ Service enseignement et formation - Secteur ressources et développement</p>
         
         <div tal:replace="structure provider:plone.belowcontenttitle" />
 
-<h4 tal:condition="python:not context.id == context.title">ID : <span  tal:content="context/id"/></h4>
+<h4 tal:condition="python:not context.id == context.title">ID : 
+    <span  tal:content="context/id"/>
+</h4>
 
 
     <div tal:condition="context/description" >
@@ -65,11 +81,16 @@ Service enseignement et formation - Secteur ressources et développement</p>
         <div class="description" tal:content="structure context/description" />
     </div>
     
-    <div tal:condition="python:context.supervisor">
-    <h3 >Accompagnateur R et D </h3>
+    <div tal:condition="python:context.supervisor and \
+                        type(context.supervisor)==list">
+    <h3 >Accompagnateur R&D </h3>
         <ul>
-            <li tal:repeat="supervisor context/supervisor" 
-                class="description" tal:content="python: view.supervisor(supervisor)" />
+            <tal:supervisor repeat="supervisor context/supervisor">
+            <li class="description" 
+                tal:content="python: view.supervisor(supervisor.strip())"
+                tal:condition="python:supervisor.strip()!=''"
+            />
+            </tal:supervisor>
         </ul>
     </div>
 
@@ -78,56 +99,129 @@ Service enseignement et formation - Secteur ressources et développement</p>
 
     <div tal:condition="context/domaine" >
         <h3>Domaine(s)</h3>
-        <div class="description" tal:content="structure context/domaine" />
+        <tal:domaine define="domaine context/domaine">
+        <ul tal:define="domaine_list python:domaine.split('\n')">
+            <li tal:repeat="domain domaine_list">
+                <span tal:replace="domain"/>
+            </li>
+        </ul>
+        
+        </tal:domaine>
     </div>
 
 
     <div tal:condition="context/discipline" >
         <h3>Discipline(s)</h3>
-        <div class="description" tal:content="structure context/discipline" />
+        <tal:domaine define="discipline context/discipline">
+        <ul tal:define="discipline_list python:discipline.split('\n')">
+            <li tal:repeat="disc discipline_list">
+                <span tal:replace="disc"/>
+            </li>
+        </ul>
+        
+        </tal:domaine>
     </div>
 
     <div tal:condition="context/presentation" >
         <h3 >Objectifs généraux du projet</h3>
-        <div class="description" tal:content="structure context/presentation/output" />
+        <div class="description" 
+            tal:content="structure context/presentation/output" />
     </div>
-        <div tal:condition="python: hasattr(context.problematique,'output')" class="description" tal:content="structure python: context.problematique.output" />
 
     <div tal:condition="python:context.projet">
-    <h4 >Projet reconduit : <a tal:attributes="href python:context.projet">
-                            <span tal:content="python: view.projet(context.projet)"/></a></h4>
+        <h4 >Projet reconduit : <a tal:attributes="href python:context.projet">
+            <span tal:content="python: view.projet(context.projet)"/></a>
+        </h4>
     </div>
 
 
 <h4  i18n:translate="heading_auteurs"
-    tal:define="objectPath python:view.setObjectPath('/'.join(context.getPhysicalPath()),withTotal=view.canReviewContent())">Auteurs 
-       <!--     <span class="noprint"  tal:condition="view/canModifyContent">
-              <a title="Ajouter un auteur" class="addAuteur noprint" tal:attributes="href string:${view/cycle_url}/++add++ageliaco.rd2.auteur"><i class="fa fa-plus-sign-alt"></i></a>
-            </span>
-        -->
-            <span class="noprint"  tal:condition="view/canModifyContent">
-              <a title="Editer les auteurs" class="editAuteurs noprint" tal:attributes="href string:${view/cycle_url}/Auteurs"><i class="fa fa-pencil"></i></a>
-            </span>
+    tal:define="objectPath 
+        python:view.setObjectPath('/'.join(context.getPhysicalPath()),
+            withTotal=view.canReviewContent())"
+    >Auteurs 
+    <span class="noprint"  tal:condition="view/canModifyContent">
+        <a title="Editer les auteurs" class="editAuteurs noprint" 
+            tal:attributes="href string:${view/cycle_url}/Auteurs">
+            <i class="fa fa-pencil"></i></a>
+    </span>
 </h4>
             <div tal:condition="view/canReviewContent">
-                <a class="noprint"  href="#" class="heures" tal:attributes="id string:button-hide-hours">
-                <i class="fa fa-clock-o"></i></a></div>
-                    <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
+                <a class="noprint"  href="#" class="heures" 
+                    tal:attributes="id string:button-hide-hours">
+                    <i class="fa fa-clock-o"></i>
+                </a>
+            </div>
+            <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
 
 </div>
 
-
-
-<tal:fieldsets repeat="fieldset view/groups">
+<div tal:condition="view/isOldCycle"
+    tal:content="structure python:view.w['problematique'].render()">
+    problématique
+</div>
+<!--
+<div condition="python:not view.isOldCycle()">
     <a  tal:attributes="name string:${fieldset/__name__}"> </a>
     <fieldset tal:attributes="id string:form-groups-${fieldset/__name__}">
         <legend tal:content="fieldset/label"/>
         <div tal:repeat="field fieldset/fields" >
-            <h3 tal:content="python: view.w[field].label"/><a tal:attributes="name string:${field}"> </a>
-                <div class="description" tal:content="structure python:view.w[field].render()">Quels éléments de la situation présente sont à l'origine du besoin exprimé ? Justification et preuves du besoin (plan cadre, directives, etc.)</div>
+            <h3 tal:content="python: view.w[field].label"/>
+                <a tal:attributes="name string:${field}"> </a>
+                <div class="description" 
+                    tal:content="structure python:view.w[field].render()">
+                    field content
+                </div>
+        </div>   
+    </fieldset>
+</div>
+-->
+<tal:fieldsets repeat="fieldset view/groups" 
+    condition="python:not view.isOldCycle()">
+    <a  tal:attributes="name string:${fieldset/__name__}"> </a>
+    <fieldset tal:attributes="id string:form-groups-${fieldset/__name__}">
+        <legend tal:content="fieldset/label"/>
+        <div tal:repeat="field fieldset/fields" >
+            <h3 tal:content="python: view.w[field].label"/>
+                <a tal:attributes="name string:${field}"> </a>
+        <div tal:condition="python:view.isList(field)">
+            <ul>
+                <tal:item repeat="item python:getattr(context,field,None)">
+                <li class="description" 
+                    tal:content="item"
+                />
+                </tal:item>
+            </ul>
+        </div>
+        <div tal:condition="python:not view.isList(field)">
+                <div class="description" 
+                    tal:content="structure python:view.w[field].render()">
+                    field content
+                </div>
+        </div>
         </div>   
     </fieldset>
 </tal:fieldsets>
+
+<!--
+<tal:fieldsets repeat="fieldset view/groups" 
+    condition="python:not view.isOldCycle()">
+    <a  tal:attributes="name string:${fieldset/__name__}"> </a>
+    <fieldset tal:attributes="id string:form-groups-${fieldset/__name__}">
+        <legend tal:content="fieldset/label"/>
+        <div tal:repeat="field fieldset/fields" >
+            <h3 tal:content="python: view.w[field].label"/>
+                <a tal:attributes="name string:${field}"> </a>
+                <div class="description" 
+                    tal:content="structure python:view.w[field].render()">
+                    Quels éléments de la situation présente sont à l'origine 
+                    du besoin exprimé ? Justification et preuves du besoin 
+                    (plan cadre, directives, etc.)
+                </div>
+        </div>   
+    </fieldset>
+</tal:fieldsets>
+-->
 
 <div style="text-align: center;" class="printonly" ">
     <i class="fa fa-smile-o fa-2x noprint" style="color:yellow;"></i>
