@@ -64,4 +64,12 @@
         handler="ageliaco.rd2.upgrades.convert_to_new_note"
         profile="ageliaco.rd2:default"/>
 
+    <genericsetup:upgradeStep
+        title="Set participants field in old cycles"
+        description="Fields have been added or dropped"
+        source="3"
+        destination="4"
+        handler="ageliaco.rd2.upgrades.set_authors_to_cycle"
+        profile="ageliaco.rd2:default"/>
+
 </configure>

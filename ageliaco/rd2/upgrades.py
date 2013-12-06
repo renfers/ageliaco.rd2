@@ -52,7 +52,10 @@ def convert_to_new_cycle(context, logger=None):
                 
             except:
                 changed = True
-                logger.info("Could not change this field (%s) in this cycle : %s !"%(id,obj))
+                logger.info(
+                    "Could not change this field (%s) in this cycle : %s !"%\
+                        (id,obj)
+                    )
         if changed:
             count += 1
     setup.runImportStepFromProfile(PROFILE_ID, 'catalog')
@@ -102,12 +105,60 @@ def convert_to_new_note(context, logger=None):
                 
             except:
                 changed = True
-                logger.info("Could not change this field (%s) in this note : %s !"%(id,obj))
+                logger.info(
+                    "Could not change this field (%s) in this note : %s !"%\
+                        (id,obj)
+                    )
         if changed:
             count += 1
     setup.runImportStepFromProfile(PROFILE_ID, 'catalog')
     logger.info("%s Note objects converted." % count)   
+
+def set_authors_to_cycle(context, logger=None):
+    """Method for old cycle objects to set authors in 'participants' field.
+
+    When called from the import_various method, 'context' is
+    the plone site and 'logger' is the portal_setup logger.
+
+    But this method will be used as upgrade step, in which case 'context'
+    will be portal_setup and 'logger' will be None.
+
+    """
+    if logger is None:
+        # Called as upgrade step: define our own logger.
+        logger = logging.getLogger('ageliaco.rd2')
+
+    # Run the catalog.xml step as that may have defined new metadata
+    # columns.  We could instead add <depends name="catalog"/> to
+    # the registration of our import step in zcml, but doing it in
+    # code makes this method usable as upgrade step as well.
+    # Remove these lines when you have no catalog.xml file.
+    setup = getToolByName(context, 'portal_setup')
+    setup.runImportStepFromProfile(PROFILE_ID, 'catalog')
+
+    catalog = getToolByName(context, 'portal_catalog')
+    brains = catalog(portal_type='ageliaco.rd2.cycle')
+    schema = getUtility(IDexterityFTI, name='ageliaco.rd2.cycle').lookupSchema()
+    count = 0
+    for content in brains:
+        changed = False
+        obj = content.getObject()
+        attr = getattr(obj,'participants',None)
+        if attr == '':
+            for id in obj.keys():
+                subobj = obj[id]
+                if subobj.portal_type=='ageliaco.rd2.auteur':
+                    obj.participants += "%s\n" % id
+                    changed = True
+        if changed:
+            count += 1
+    setup.runImportStepFromProfile(PROFILE_ID, 'catalog')
+    logger.info("Cycle authors added to %s old cycles." % count)
     
 def upgrade_from_2_to_3(context):
     print "Upgrading from 2 to 3"
+    context.runImportStepFromProfile(default_profile, 'controlpanel') 
+
+def upgrade_from_3_to_4(context):
+    print "Upgrading from 3 to 4"
     context.runImportStepFromProfile(default_profile, 'controlpanel') 

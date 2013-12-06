@@ -169,9 +169,18 @@ def activateCycle(self, state_change):
         
         print "Parent : ", parent, contentObject.id, parent.objectIds()
         #cb_copy_data = parent.manage_cutObjects(contentObject.id)
-    if parentState != 'encours':
+    # projet and realisation sharing for auteurs
+    cyclepath = '/'.join(cycle.getPhysicalPath())
+    auteurBrains = catalog(portal_type='ageliaco.rd2.auteur',
+                    path={'query': cyclepath, 'depth': 1})
+
+    for auteur in auteurBrains:
+        parent.manage_addLocalRoles(auteur.id, ['Reader','Editor','Contributor'])
+    
+    
+    if parentState == 'draft':
         workflowTool.doActionFor(parent, "activate")
-    owners = [auteur for auteur,roles in cycle.get_local_roles() 
+    owners = [auteur for auteur,roles in cycle.get_local_roles() \
                                     if 'Owner' in roles]
     for owner in owners:
         parent.manage_addLocalRoles(owner, ['Reader','Owner'])

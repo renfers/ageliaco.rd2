@@ -353,7 +353,7 @@ def possibleAttendees(context):
                             name))
     catalog = getToolByName(context, 'portal_catalog')
     auteurBrains = catalog(portal_type='ageliaco.rd2.auteur',
-                        path={'query': cycle.virtual_url_path(), 'depth': 1})
+                        path={'query': '/'.join(cycle.getPhysicalPath()), 'depth': 1})
     for brain in auteurBrains:
         member = brain.id
         if brain.has_key('firstname') and brain.has_key('lastname'):
@@ -524,9 +524,8 @@ def setAuteur(auteur, event):
     portal_url = getToolByName(auteur, 'portal_url')
     acl_users = getToolByName(auteur, 'acl_users')
     portal = portal_url.getPortalObject() 
-    cycle = auteur.aq_parent
-
-    cycle.manage_addLocalRoles(auteur.id, ['Reader',])
+#     cycle = auteur.aq_parent
+#     cycle.manage_addLocalRoles(auteur.id, ['Reader',])
 
 
 class IProjet(form.Schema):
@@ -975,11 +974,6 @@ def aboutAuteurs(cycle, value=u""):
                 firstname = member.getProperty('firstname'),
                 lastname = member.getProperty('lastname'),
                 email = member.getProperty('email'),)
-                #sponsorasked = newparticipants[login])
-            #print "rename %s to %s" % (auteur.id, str(login).upper())
-            #auteur.id = str(login).upper()
-            #cycle[str(login).upper()] = auteur
-            #cycle.manage_renameObject(auteur.id, str(login).upper())
             cycle[auteur.id]=auteur
             cycle.manage_addLocalRoles(auteur.id, ['Reader','Owner'])
             cycle.reindexObjectSecurity()
@@ -1117,7 +1111,11 @@ class AuteursForm(crud.CrudForm,grok.View):
     #         return self.context.objectItems()
 
     def get_items(self):
-        return sorted(self.context.objectItems(), key=lambda x: x[1].lastname)        
+        retour = sorted([(id,obj) for id, obj in self.context.objectItems() \
+                        if obj.portal_type=='ageliaco.rd2.auteur'],
+                    key=lambda x: x[1].lastname
+                )
+        return retour
 
 
 class EditAuteurs(layout.FormWrapper):

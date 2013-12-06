@@ -31,7 +31,7 @@ Add Folders,N,,,,X,X,,,,
 [State],,,,,,,,,,
 Id:,archives,,,,,,,,,
 Title:,Archive,,,,,,,,,
-Description:,Le projet est en mode archive,,,,,,,,,
+Description:,Le projet est dossier archive pour propositions de projet,,,,,,,,,
 Transitions:,retract,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,X,X,X
@@ -41,26 +41,13 @@ Add portal content,N,,,,X,X,,,,
 ageliaco.rd2 : Add Cycle,N,,,,X,X,,,,X
 ,,,,,,,,,,X
 [State],,,,,,,,,,
-Id:,pending,,,,,,,,,
-Title:,En attente de publication,,,,,,,,,
-Description:,Le projet est en attente d’acceptation,,,,,,,,,
-Worklist:,Pending review,,,,,,,,,
-Worklist label:,Projet en attente d'acceptation,,,,,,,,,
-Worklist guard permission:,Review portal content,,,,,,,,,
-Transitions:,"reject, publish",,,,,,,,,
-Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,X,X,X,X
-Modify portal content,N,,,,X,,,,,X
-,,,,,,,,,,
-[State],,,,,,,,,,
 Id:,encours,,,,,,,,,
 Title:,En cours,,,,,,,,,
 Description:,Le projet est en cours,,,,,,,,,
 Worklist:,Projets en cours,,,,,,,,,
 Worklist label:,Projets en cours,,,,,,,,,
 Worklist guard permission:,Review portal content,,,,,,,,,
-Transitions:,"submit, publish, refuser",,,,,,,,,
+Transitions:,"publish, refuser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,X,,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,X,X,X,X

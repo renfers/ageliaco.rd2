@@ -48,7 +48,7 @@ ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 Id:,active,,,,,,,,,
 Title:,Actif,,,,,,,,,
 Description:,Le cycle est actif,,,,,,,,,
-Transitions:,finish,,,,,,,,,
+Transitions:,"finish, activate",,,,,,,,,
 Worklist:,Cycles en cours,,,,,,,,,
 Worklist label:,Cycles en cours,,,,,,,,,
 Worklist guard permission:,Review portal content,,,,,,,,,
