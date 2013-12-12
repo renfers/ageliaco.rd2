@@ -54,6 +54,13 @@ from plone.z3cform.crud import crud
 from Products.CMFPlone.utils import log
 from plone.z3cform import layout
 
+from AccessControl import getSecurityManager
+from AccessControl import Unauthorized
+
+# Import permission names as pseudo-constant strings from somewhere...
+# see security doc for more info
+from Products.CMFCore.permissions import ReviewPortalContent
+
 
 from zope.schema.interfaces import IContextSourceBinder
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
@@ -83,6 +90,9 @@ from yafowil.plone.form import Form
 from AccessControl.interfaces import IRoleManager
 from Products.statusmessages.interfaces import IStatusMessage
 
+def utf_8(input_str):
+    return unicode(input_str,"utf-8")
+    
 _ = MessageFactory
 
 """
@@ -341,16 +351,18 @@ def possibleAttendees(context):
     #import pdb; pdb.set_trace()
     if context.portal_type == 'ageliaco.rd2.cycle':
         cycle = context
+    elif context.portal_type == 'ageliaco.rd2.note':
+        cycle = context.aq_parent
     else:
-        #no list for internal notes (notes in a note)
         return  SimpleVocabulary(terms) 
     mt = getToolByName(context, 'portal_membership')
     for supervisor in cycle.supervisor:
         member =  mt.getMemberById(supervisor)
-        name = member.getProperty('fullname')
-        terms.append(SimpleVocabulary.createTerm(supervisor, 
-                            str(supervisor), 
-                            name))
+        if member:
+            name = member.getProperty('fullname')
+            terms.append(SimpleVocabulary.createTerm(supervisor, 
+                                str(supervisor), 
+                                name))
     catalog = getToolByName(context, 'portal_catalog')
     auteurBrains = catalog(portal_type='ageliaco.rd2.auteur',
                         path={'query': '/'.join(cycle.getPhysicalPath()), 'depth': 1})
@@ -363,6 +375,7 @@ def possibleAttendees(context):
         terms.append(SimpleVocabulary.createTerm(brain.id, 
                             str(brain.id), 
                             name))
+        terms = sorted(terms, key=lambda name: name.title)
     return SimpleVocabulary(terms)
 
 class INote(form.Schema):
@@ -969,10 +982,10 @@ def aboutAuteurs(cycle, value=u""):
         if member:
             auteur = createContent("ageliaco.rd2.auteur", 
                 id = member.getProperty('id'),
-                title = u"%s %s" % (member.getProperty('lastname'),
-                    member.getProperty('firstname')),
-                firstname = member.getProperty('firstname'),
-                lastname = member.getProperty('lastname'),
+                title = u"%s %s" % (utf_8(member.getProperty('lastname')),
+                    utf_8(member.getProperty('firstname'))),
+                firstname = utf_8(member.getProperty('firstname')),
+                lastname = utf_8(member.getProperty('lastname')),
                 email = member.getProperty('email'),)
             cycle[auteur.id]=auteur
             cycle.manage_addLocalRoles(auteur.id, ['Reader','Owner'])
@@ -1088,12 +1101,22 @@ class AuteursEditForm(crud.EditForm):
         cycleurl = self.request['URL1']
         return self.request.response.redirect(cycleurl)
 
+def adapt_schema2security(field):
+    sm = getSecurityManager()
+    reviewField = field.Fields(IAuteur).select('sponsorRD')
+    if not sm.checkPermission(ReviewPortalContent, reviewField):
+        return field.Fields(IAuteur).select('phone','email','school',
+            'sponsorasked')
+    return field.Fields(IAuteur).select('phone','email','school',
+            'sponsorasked', 'sponsorRD', 'sponsorSchool')
+
 
 class AuteursForm(crud.CrudForm,grok.View):
     #update_schema = IAuteur
     view_schema = field.Fields(IAuteur).select('id','firstname','lastname')
-    update_schema = field.Fields(IAuteur).select('phone','email','school',
-        'sponsorasked')
+    update_schema = adapt_schema2security(field)
+    
+    #field.Fields(IAuteur).select('phone','email','school','sponsorasked')
     addform_factory = crud.NullForm
     editform_factory = AuteursEditForm
     grok.context(ICycle)
@@ -1228,6 +1251,7 @@ class InterfaceView(grok.View,Form):
             if auteur.id not in auteurIDs:
                 auteurs.append(auteur)
                 auteurIDs.append(auteur.id)
+        auteurs = sorted(auteurs, key=lambda author: author.lastname)
         #import pdb; pdb.set_trace()
         return auteurs
         

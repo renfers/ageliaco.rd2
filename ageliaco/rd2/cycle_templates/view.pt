@@ -160,22 +160,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     tal:content="structure python:view.w['problematique'].render()">
     problématique
 </div>
-<!--
-<div condition="python:not view.isOldCycle()">
-    <a  tal:attributes="name string:${fieldset/__name__}"> </a>
-    <fieldset tal:attributes="id string:form-groups-${fieldset/__name__}">
-        <legend tal:content="fieldset/label"/>
-        <div tal:repeat="field fieldset/fields" >
-            <h3 tal:content="python: view.w[field].label"/>
-                <a tal:attributes="name string:${field}"> </a>
-                <div class="description" 
-                    tal:content="structure python:view.w[field].render()">
-                    field content
-                </div>
-        </div>   
-    </fieldset>
-</div>
--->
+
 <tal:fieldsets repeat="fieldset view/groups" 
     condition="python:not view.isOldCycle()">
     <a  tal:attributes="name string:${fieldset/__name__}"> </a>
@@ -202,26 +187,6 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
         </div>   
     </fieldset>
 </tal:fieldsets>
-
-<!--
-<tal:fieldsets repeat="fieldset view/groups" 
-    condition="python:not view.isOldCycle()">
-    <a  tal:attributes="name string:${fieldset/__name__}"> </a>
-    <fieldset tal:attributes="id string:form-groups-${fieldset/__name__}">
-        <legend tal:content="fieldset/label"/>
-        <div tal:repeat="field fieldset/fields" >
-            <h3 tal:content="python: view.w[field].label"/>
-                <a tal:attributes="name string:${field}"> </a>
-                <div class="description" 
-                    tal:content="structure python:view.w[field].render()">
-                    Quels éléments de la situation présente sont à l'origine 
-                    du besoin exprimé ? Justification et preuves du besoin 
-                    (plan cadre, directives, etc.)
-                </div>
-        </div>   
-    </fieldset>
-</tal:fieldsets>
--->
 
 <div style="text-align: center;" class="printonly" ">
     <i class="fa fa-smile-o fa-2x noprint" style="color:yellow;"></i>

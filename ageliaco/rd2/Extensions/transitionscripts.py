@@ -177,13 +177,12 @@ def activateCycle(self, state_change):
     for auteur in auteurBrains:
         parent.manage_addLocalRoles(auteur.id, ['Reader','Editor','Contributor'])
     
-    
     if parentState == 'draft':
         workflowTool.doActionFor(parent, "activate")
     owners = [auteur for auteur,roles in cycle.get_local_roles() \
                                     if 'Owner' in roles]
     for owner in owners:
         parent.manage_addLocalRoles(owner, ['Reader','Owner'])
-        parent.reindexObjectSecurity()
+    parent.reindexObjectSecurity()
     
     return  
