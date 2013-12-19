@@ -58,8 +58,8 @@
 </div>
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-        <h1 class="documentFirstHeading" tal:content="context/title" />
-
+        <h2 class="documentFirstHeading" tal:content="context/title" />
+        <h4 class="documentFirstHeading" tal:content="context/description" />
 <div>
 <!-- overlay triggers. overlay is referenced in the 'rel' attribute -->
         <div tal:define="picture nocall:context/picture"

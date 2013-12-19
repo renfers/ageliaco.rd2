@@ -99,7 +99,7 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect\
               return false;
             });
  
-            $( '[id^=effect-]' ).hide();
+            $( '[id^=effect-]' ).show();
           });
           </script>
        </tal:js>
@@ -180,10 +180,14 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect\
 
     <metal:projets define-macro="projets_list"
         >
+            
             <div tal:condition="view/canReviewContent">
                 <a href="#" class="heures" 
                     tal:attributes="id string:button-hide-hours">
-                <i class="fa fa-clock-o"></i></a></div>
+                    <i class="fa fa-clock-o"></i>
+                </a>
+            </div>
+            
             <tal:table>
             <table  class="table table-striped table-condensed tablesorter" 
                 id="keywordSearchTable"
@@ -262,10 +266,14 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect\
                 view.multiselect('review_state',pathDepth=2)">
                 form
             </div>  
+            
             <div tal:condition="view/canReviewContent">
                 <a href="#" class="heures" 
                     tal:attributes="id string:button-hide-hours">
-                <i class="fa fa-clock-o"></i></a></div>
+                    <i class="fa fa-clock-o"></i>
+                </a>
+            </div>
+            
             <tal:table define="cycles python:view.results()">
             <table  class="table table-striped table-condensed tablesorter" 
                 id="cyclesByStatesTable"

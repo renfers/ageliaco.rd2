@@ -146,12 +146,14 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
             <i class="fa fa-pencil"></i></a>
     </span>
 </h4>
+        
             <div tal:condition="view/canReviewContent">
                 <a class="noprint"  href="#" class="heures" 
                     tal:attributes="id string:button-hide-hours">
                     <i class="fa fa-clock-o"></i>
                 </a>
             </div>
+        
             <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
 
 </div>

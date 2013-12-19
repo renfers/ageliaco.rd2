@@ -40,10 +40,11 @@ from zope.app.content import queryContentType
 from zope.schema import getFieldsInOrder
 from plone.dexterity.interfaces import IDexterityFTI 
 from zope.component import queryUtility
-
+from z3c.form import button, field
  
 from ageliaco.rd2 import MessageFactory
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+_ = MessageFactory
 
 import ast
 
@@ -85,12 +86,19 @@ def richtext():
             'doc': "Doc",
             'title': 'Richtext'}
 
+class EditForm(dexterity.EditForm):
+    grok.context(IProjet)
+    #grok.layer(ILayer)
+    grok.name('edit')
 
+    label = _(u"Editer la présentation du projet")
+    description = _(u"Make your changes below.")
 
 class View(grok.View,Form):
     grok.context(IProjet)
     grok.require('zope2.View')
     #template = ViewPageTemplateFile('projet_templates/view.pt')
+
             
     def canReviewContent(self):
         return checkPermission('cmf.ReviewPortalContent', self.context)

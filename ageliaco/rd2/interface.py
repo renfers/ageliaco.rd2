@@ -545,8 +545,21 @@ class IProjet(form.Schema):
     """
     Projet RD
     """
-    dexterity.read_permission(start='cmf.ReviewPortalContent')
-    dexterity.write_permission(start='cmf.ReviewPortalContent')
+    title = schema.TextLine(
+            title=MessageFactory(u"Titre"),
+            description=MessageFactory(
+                u"Titre succinct"
+                ),
+            required=True,
+            max_length=80,
+        )
+    description = schema.Text(
+            title=MessageFactory(u"Sous-titre"),
+            description=MessageFactory(
+                u"Sous-titre ou titre détaillé"
+                ),
+            required=True,
+        )
     start = schema.TextLine(
             title=MessageFactory(u"Année"),
             description=MessageFactory(
@@ -643,10 +656,11 @@ class ICycle(form.Schema):
             description=MessageFactory(u"Titre bref du projet"),
             required=True,
             default=u'',
+            max_length=80,
         )
         
     description = schema.Text(
-            title=MessageFactory(u"Synopsys"),
+            title=MessageFactory(u"Synopsis"),
             description=MessageFactory(
                 u"Présentation du projet en un paragraphe"),
             required=False,
@@ -831,7 +845,7 @@ class ICycle(form.Schema):
             title=MessageFactory(u"Participants pour l'année à venir"),
             description=MessageFactory(
                 u"Mettre le login EDU de chaque " +
-                u"participant, un par ligne (ex: 'edu-travoltaj'). " +
+                u"participant, un par ligne (ex: 'edu-dupontm'). " +
                 u"La liste des auteurs sera générée automatiquement."
                 ),
             required=False,
