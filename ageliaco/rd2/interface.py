@@ -853,9 +853,9 @@ class ICycle(form.Schema):
         )    
 
     porteparole = schema.TextLine(
-            title=MessageFactory(u"Coordinateur"),
+            title=MessageFactory(u"Personne de contact"),
             description=MessageFactory(
-                u"Porte-parole du projet pour R&D (mettre le login EDU)"),
+                u"Personne de contact du projet pour R&D (mettre le login EDU)"),
             required=False,
             default=u'',
         )
@@ -865,7 +865,7 @@ class ICycle(form.Schema):
         if data.porteparole and not data.participants and \
                 data.porteparole not in data.participants.split():
             raise PorteparoleNotInParticipants(_(
-                u"Le porte-parole doit faire partie des participants"))
+                u"La personne de contact doit faire partie des participants"))
                 
         
 

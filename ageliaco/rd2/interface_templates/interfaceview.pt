@@ -149,7 +149,7 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect\
 	        tal:attributes="href python:author.getURL() + '/edit'" href="#">
 	            <i class="fa fa-pencil"></i>
             </a></li>
-            <!--        <li><a title="Supprimer cet auteur" class='delAuteur'  
+            <!--        <li><a title="Supprimer ce-tte participant-e" class='delAuteur'  
 	        tal:attributes="href python:author.getURL() + 
 	        '/delete_confirmation'" href="#"><i class="icon-remove"></i>
 
@@ -199,7 +199,7 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect\
                 </th> 
                 <th>Titre</th> 
                 <th >Cycles</th> 
-                <th>Auteurs</th> 
+                <th>Participant-e-s</th> 
             </tr> 
             </thead> 
             <tbody> 
@@ -285,7 +285,7 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect\
                 <th>Titre</th> 
                 <th >Etat</th> 
                 <th >Superviseur</th> 
-                <th>Auteurs</th> 
+                <th>Participant-e-s</th> 
             </tr> 
             </thead> 
             <tbody> 
