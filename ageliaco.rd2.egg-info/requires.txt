@@ -16,3 +16,4 @@ yafowil.plone >= 2.0.1
 yafowil.widget.richtext >= 1.3.1dev
 yafowil.widget.multiselect
 collective.wfcomment
+collective.dexteritytextindexer

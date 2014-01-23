@@ -32,6 +32,9 @@
   <element value="plone.app.dexterity.behaviors.related.IRelatedItems"/>
   <element value="plone.app.dexterity.behaviors.metadata.ICategorization"/>
   <element value="plone.app.dexterity.behaviors.metadata.IOwnership"/>
+    <element 
+     value="collective.dexteritytextindexer.behavior.IDexterityTextIndexer" />
+  <element value="plone.app.contenttypes.behaviors.leadimage.ILeadImage"/>
  </property>
  <property name="schema">ageliaco.rd2.projet.IProjet</property>
  <property

@@ -90,6 +90,8 @@ from yafowil.plone.form import Form
 from AccessControl.interfaces import IRoleManager
 from Products.statusmessages.interfaces import IStatusMessage
 
+from collective import dexteritytextindexer
+
 def utf_8(input_str):
     return unicode(input_str,"utf-8")
     
@@ -402,7 +404,7 @@ class INote(form.Schema):
         )
     
     #form.mode(sansexcuse='hidden')
-
+    dexteritytextindexer.searchable('presentation')
     presentation = RichText(
             title=MessageFactory(u"Notes de séance"),
             description=MessageFactory(
@@ -449,19 +451,21 @@ class IAuteur(form.Schema):
         )
 
 
-
+    dexteritytextindexer.searchable('lastname')
     lastname = schema.TextLine(
             title=MessageFactory(u"Nom"),
             description=MessageFactory(u"Nom de famille"),
             required=True,
         )
 
+    dexteritytextindexer.searchable('firstname')
     firstname = schema.TextLine(
             title=MessageFactory(u"Prénom"),
             description=MessageFactory(u"Prénom"),
             required=True,
         )
 
+    dexteritytextindexer.searchable('school')
     school = schema.Choice(
             title=MessageFactory(u"Ecole"),
             description=MessageFactory(u"Etablissement scolaire de référence"),
@@ -577,6 +581,7 @@ class IProjet(form.Schema):
             required=True,
         )
     
+    dexteritytextindexer.searchable('presentation')
     presentation = RichText(
             title=MessageFactory(u"Présentation"),
             description=MessageFactory(
@@ -584,10 +589,10 @@ class IProjet(form.Schema):
             required=True,
         )    
 
-    picture = NamedImage(
-            title=MessageFactory(u"Chargez une image pour le projet"),
-            required=False,
-        )
+    #     picture = NamedImage(
+    #             title=MessageFactory(u"Chargez une image pour le projet"),
+    #             required=False,
+    #         )
 
     lien = schema.TextLine(
             title=MessageFactory(u"Lien vers la réalisation"),
@@ -689,6 +694,7 @@ class ICycle(form.Schema):
             default=[],
         )
         
+    dexteritytextindexer.searchable('domaine')
     domaine = schema.Text(
             title=MessageFactory(u"Domaine(s)"),
             description=MessageFactory(
@@ -697,6 +703,7 @@ class ICycle(form.Schema):
             default=u'',
         )
 
+    dexteritytextindexer.searchable('discipline')
     discipline = schema.Text(
             title=MessageFactory(u"Discipline(s)"),
             description=MessageFactory(
@@ -705,6 +712,7 @@ class ICycle(form.Schema):
             default=u'',
         )
         
+    dexteritytextindexer.searchable('presentation')
     presentation = RichText(
             title=MessageFactory(u"Objectifs généraux du projet"),
             description=MessageFactory(
@@ -722,6 +730,7 @@ class ICycle(form.Schema):
         fields=['problematique', 'experiences', 'besoin']
     )
 
+    dexteritytextindexer.searchable('problematique')
     problematique = RichText(
             title=MessageFactory(u"Problématique"),
             description=MessageFactory(
@@ -732,6 +741,7 @@ class ICycle(form.Schema):
             default=u'',
         )    
 
+    dexteritytextindexer.searchable('experiences')
     experiences = RichText(
             title=MessageFactory(u"Expériences préalables"),
             description=MessageFactory(
@@ -744,6 +754,7 @@ class ICycle(form.Schema):
             default=u'',
         )    
 
+    dexteritytextindexer.searchable('besoin')
     besoin = RichText(
             title=MessageFactory(u"Origine du besoin"),
             description=MessageFactory(
@@ -762,6 +773,7 @@ class ICycle(form.Schema):
         fields=['cible', 'forme']
     )
     
+    dexteritytextindexer.searchable('cible')
     cible = schema.List(
         title=MessageFactory(u"Filière visée"),
         description=MessageFactory(u"Sélectionnez la filière concernée"),
@@ -771,6 +783,7 @@ class ICycle(form.Schema):
         )
     
     
+    dexteritytextindexer.searchable('forme')
     forme = RichText(
             title=MessageFactory(u"Forme du produit fini au terme du projet"),
             description=MessageFactory(
@@ -797,6 +810,7 @@ class ICycle(form.Schema):
             required=False,
         )
 
+    dexteritytextindexer.searchable('planification')
     planification = RichText(
             title=MessageFactory(u"Planification des objectifs par année"),
             description=MessageFactory(
@@ -805,6 +819,7 @@ class ICycle(form.Schema):
             default=u'',
         )    
 
+    dexteritytextindexer.searchable('production')
     production = RichText(
             title=MessageFactory(u"Production pour l'année à venir"),
             description=MessageFactory(
@@ -813,6 +828,7 @@ class ICycle(form.Schema):
             default=u'',
         )    
     
+    dexteritytextindexer.searchable('plan')
     plan = RichText(
             title=MessageFactory(u"Echéancier pour l'année à venir"),
             description=MessageFactory(
@@ -823,6 +839,7 @@ class ICycle(form.Schema):
             default=u'',
         )    
     
+    dexteritytextindexer.searchable('repartition')
     repartition = RichText(
             title=MessageFactory(u"Répartition et rôles"),
             description=MessageFactory(
@@ -831,6 +848,7 @@ class ICycle(form.Schema):
             default=u'',
         )    
 
+    dexteritytextindexer.searchable('modalites')
     modalites = RichText(
             title=MessageFactory(u"Modalités de travail"),
             description=MessageFactory(
@@ -841,6 +859,7 @@ class ICycle(form.Schema):
             default=u'',
         )    
 
+    dexteritytextindexer.searchable('participants')
     participants = schema.Text(
             title=MessageFactory(u"Participants pour l'année à venir"),
             description=MessageFactory(

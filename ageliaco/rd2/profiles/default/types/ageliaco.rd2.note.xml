@@ -30,6 +30,8 @@
  <property name="klass">plone.dexterity.content.Container</property>
  <property name="behaviors">
   <element value="plone.app.content.interfaces.INameFromTitle"/>
+    <element 
+     value="collective.dexteritytextindexer.behavior.IDexterityTextIndexer" />
  </property>
  <property name="schema">ageliaco.rd2.note.INote</property>
  <property

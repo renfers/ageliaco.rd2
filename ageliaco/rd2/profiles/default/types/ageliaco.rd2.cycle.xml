@@ -26,8 +26,10 @@
  <property name="add_permission">cmf.AddPortalContent</property>
  <property name="klass">plone.dexterity.content.Container</property>
  <property name="behaviors">
-  <element
+    <element
      value="plone.app.dexterity.behaviors.nextprevious.INextPreviousEnabled"/>
+    <element 
+     value="collective.dexteritytextindexer.behavior.IDexterityTextIndexer" />
  </property>
  <property name="schema">ageliaco.rd2.cycle.ICycle</property>
  <property

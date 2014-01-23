@@ -72,4 +72,12 @@
         handler="ageliaco.rd2.upgrades.set_authors_to_cycle"
         profile="ageliaco.rd2:default"/>
 
+    <genericsetup:upgradeStep
+        title="Projet : Replace picture attribute to lead image behaviour"
+        description="Field picture dropped, and lead-image behaviour added"
+        source="4"
+        destination="5"
+        handler="ageliaco.rd2.upgrades.convert_projet_to_leadimage"
+        profile="ageliaco.rd2:default"/>
+
 </configure>

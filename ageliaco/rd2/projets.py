@@ -59,7 +59,7 @@ class IProjets(form.Schema):
     """
     presentation = RichText(
             title=MessageFactory(u"Projets R&D"),
-            required=True,
+            required=False,
         )    
 
 

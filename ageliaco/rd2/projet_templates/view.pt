@@ -62,16 +62,6 @@
         <h4 class="documentFirstHeading" tal:content="context/description" />
 <div>
 <!-- overlay triggers. overlay is referenced in the 'rel' attribute -->
-        <div tal:define="picture nocall:context/picture"
-             tal:condition="nocall:picture">
-            <img 
-tal:attributes="src 
-    string:${context/absolute_url}/@@download/picture/${picture/filename};
-                                 height picture/_height | nothing;
-                                 width picture/_width | nothing;"
-                style="float:left;margin:0 30px 30px 0;"
-                />
-        </div>
         <span 
             tal:condition="context/presentation" 
             tal:content="structure context/presentation/output" 

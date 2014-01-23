@@ -189,7 +189,12 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
         </div>   
     </fieldset>
 </tal:fieldsets>
-
+<div  class="printonly">
+<hr>
+    <h3>Date et signature du directeur-trice : ...................... 
+    ...................... </h3>
+<hr>
+</div>
 <div style="text-align: center;" class="printonly" ">
     <i class="fa fa-smile-o fa-2x noprint" style="color:yellow;"></i>
     <span style="color: rgb(204, 0, 0); ">
