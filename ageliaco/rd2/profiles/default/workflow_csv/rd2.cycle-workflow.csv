@@ -12,7 +12,7 @@ Transitions,soumettre,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,,X,X
 Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,X,X,,X,
+Modify portal content,N,,,,X,X,X,,X,X
 Review portal content,N,,,,X,X,X,,,X
 "Add Documents, Images, and Files",N,,,,X,X,,,X,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
@@ -26,8 +26,8 @@ Transitions:,"attribuer, reject",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,,X,X
 Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,,X,,X,
-"Add Documents, Images, and Files",N,,,,X,,,,X,
+Modify portal content,N,,,,X,,,,,X
+"Add Documents, Images, and Files",N,,,,X,,,,,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
@@ -39,8 +39,8 @@ Transitions:,"activate, reject, reviser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,,X,X
 Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,,X,,X,
-"Add Documents, Images, and Files",N,,,,X,,,,X,
+Modify portal content,N,,,,X,,X,,,X
+"Add Documents, Images, and Files",N,,,,X,,,,,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
@@ -54,7 +54,7 @@ Worklist label:,Cycles en cours,,,,,,,,,
 Worklist guard permission:,Review portal content,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,X,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,,X,,X
+Access contents information,N,,,,X,X,X,X,X,X
 Modify portal content,N,,,,X,,,,,X
 "Add Documents, Images, and Files",N,,,,X,,,,,X
 ageliaco.rd2 : Add Note,N,,,,X,,,,,X
@@ -67,7 +67,7 @@ Description:,Le cycle est fini,,,,,,,,,
 Transitions:,,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,X,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,X,,,X
+Access contents information,N,,,,X,X,X,,X,X
 Modify portal content,N,,,,X,,,,,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,
 ,,,,,,,,,,
@@ -79,7 +79,7 @@ Description:,Le cycle est une archive,,,,,,,,,
 Transitions:,reproposer,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,,X,X
 Modify portal content,N,,,,X,,,,,
 "Add Documents, Images, and Files",N,,,,X,,,,,
 ageliaco.rd2 : Add Note,N,,,,X,,,,,

@@ -737,7 +737,7 @@ class ICycle(form.Schema):
                 u"Quel postulat et/ou quelles hypothèses " +
                 u"sont à l'origine du projet?"
                 ),
-            required=True,
+            required=False,
             default=u'',
         )    
 
@@ -965,7 +965,9 @@ def checkAuteurs(cycle, value=u""):
                 newparticipants[login] = login
         except:
             raise ActionExecutionError(
-                Invalid(_(u"Il y a un problème avec le ligne suivante : %s" %
+                Invalid(_(u"""Il y a un problème avec l'identifiant : %s,
+corrigez l'erreur ou supprimez la ligne pour pouvoir sauvegarder les changements et
+prenez contact avec R&D pour les identifiants qui ne passent pas!""" %
                      ligne
                      )
                 )
@@ -1021,7 +1023,7 @@ def aboutAuteurs(cycle, value=u""):
                 lastname = utf_8(member.getProperty('lastname')),
                 email = member.getProperty('email'),)
             cycle[auteur.id]=auteur
-            cycle.manage_addLocalRoles(auteur.id, ['Reader','Owner'])
+            cycle.manage_setLocalRoles(auteur.id, ['Reader','Owner','Reviewer'])
             cycle.reindexObjectSecurity()
             print "OK => id %s is in !!!" % auteur.id
             ok = True
@@ -1029,7 +1031,9 @@ def aboutAuteurs(cycle, value=u""):
                 
         if not ok:
             print "no member found for %s" % login
-            raise ActionExecutionError(Invalid(_(u"Le login suivant n'est pas reconnu : %s" % login)))
+            raise ActionExecutionError(Invalid(_(u"""Il y a un problème avec l'identifiant : %s,
+corrigez l'erreur ou supprimez la ligne pour pouvoir sauvegarder les changements et
+prenez contact avec R&D pour les identifiants qui ne passent pas!""" % login)))
 
  
 @grok.subscribe(ICycle, IObjectAddedEvent)
@@ -1047,7 +1051,7 @@ class EditForm(dexterity.EditForm):
     grok.context(ICycle)
 
         
-    @button.buttonAndHandler(_(u'Sauvegarder, pas nécessaire à la fin de chaque onglet, seulement avant déconnexion'))
+    @button.buttonAndHandler(_(u'Sauvegarder'))
     def handleApply(self, action):
         data, errors = self.extractData()
         #import pdb; pdb.set_trace()

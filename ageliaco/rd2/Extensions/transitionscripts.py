@@ -87,7 +87,13 @@ def archiveCycle(self, state_change):
 def finaliseCycle(self, state_change):
     """ sends an email to the school's director """
     print "finaliseCycle called !!!"
-    #pass
+    cycle = state_change.object
+    owners = [auteur for auteur,roles in cycle.get_local_roles() \
+                                    if 'Owner' in roles]
+    for owner in owners:
+        cycle.manage_setLocalRoles(owner, ['Reader','Owner'])
+    cycle.reindexObjectSecurity()
+
     
 def attributeCycle(self, state_change):
     """ sends an email to the school's director """
@@ -182,7 +188,7 @@ def activateCycle(self, state_change):
     owners = [auteur for auteur,roles in cycle.get_local_roles() \
                                     if 'Owner' in roles]
     for owner in owners:
-        parent.manage_addLocalRoles(owner, ['Reader','Owner'])
+        parent.manage_setLocalRoles(owner, ['Reader','Owner'])
     parent.reindexObjectSecurity()
     
     return  

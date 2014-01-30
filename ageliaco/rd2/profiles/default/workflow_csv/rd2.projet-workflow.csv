@@ -39,14 +39,11 @@ Access contents information,N,,,,X,X,X,X,X,X
 Modify portal content,N,,,,X,X,X,,,X
 Add portal content,N,,,,X,X,,,,
 ageliaco.rd2 : Add Cycle,N,,,,X,X,,,,X
-,,,,,,,,,,X
+,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,encours,,,,,,,,,
 Title:,En cours,,,,,,,,,
 Description:,Le projet est en cours,,,,,,,,,
-Worklist:,Projets en cours,,,,,,,,,
-Worklist label:,Projets en cours,,,,,,,,,
-Worklist guard permission:,Review portal content,,,,,,,,,
 Transitions:,"publish, refuser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,X,,,X,X,X,X,X,X
