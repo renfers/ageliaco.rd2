@@ -42,6 +42,7 @@ Service enseignement et formation - Secteur ressources et développement</p>
         <h1 class="documentFirstHeading" tal:content="context/title" />
         
         <div tal:replace="structure provider:plone.belowcontenttitle" />
+        <div tal:replace="structure provider:plone.abovecontentbody" />
 
 <div>
 

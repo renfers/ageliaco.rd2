@@ -259,7 +259,7 @@ class SchoolsVocabulary(object):
         for school,school_id in ecoles:
             terms.append(SimpleVocabulary.createTerm(school_id, 
                             str(school_id),
-                            school))
+                            u"%s : %s" % (school_id,school)))
         return SimpleVocabulary(terms)
 grok.global_utility(SchoolsVocabulary, name=u"ageliaco.rd2.schools")
 
@@ -549,6 +549,7 @@ class IProjet(form.Schema):
     """
     Projet RD
     """
+    dexteritytextindexer.searchable('title')
     title = schema.TextLine(
             title=MessageFactory(u"Titre"),
             description=MessageFactory(
@@ -557,6 +558,7 @@ class IProjet(form.Schema):
             required=True,
             max_length=80,
         )
+    dexteritytextindexer.searchable('description')
     description = schema.Text(
             title=MessageFactory(u"Sous-titre"),
             description=MessageFactory(
@@ -656,6 +658,7 @@ class ICycle(form.Schema):
             required=True,
         )
         
+    dexteritytextindexer.searchable('title')
     title = schema.TextLine(
             title=MessageFactory(u"Titre"),
             description=MessageFactory(u"Titre bref du projet"),
@@ -664,6 +667,7 @@ class ICycle(form.Schema):
             max_length=80,
         )
         
+    dexteritytextindexer.searchable('description')
     description = schema.Text(
             title=MessageFactory(u"Synopsis"),
             description=MessageFactory(
@@ -1121,6 +1125,8 @@ class AuteursEditForm(crud.EditForm):
     école : attachement administratif, 
     dégrèvement demandé : une heure de dégrèvement correspond 
                           à 2 demi-journées de travail par mois.
+    Numéro de téléphone (facultatif)
+    !!! Ne complétez pas les autres champs (heures R&D et heures école) !!!
     
     """
 

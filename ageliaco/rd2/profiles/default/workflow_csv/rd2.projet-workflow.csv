@@ -72,6 +72,7 @@ Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,C
 View,N,,,,X,X,,,,X
 Access contents information,N,,,,X,X,,,,X
 Modify portal content,N,,,,X,,,,,
+,,,,,,,,,,
 [Transition],,,,,,,,,,
 Id:,submit,,,,,,,,,
 Title:,Soumettre pour publication,,,,,,,,,
@@ -128,5 +129,3 @@ Title:,creer archive,,,,,,,,,
 Description:,Creation d une archive,,,,,,,,,
 Target state:,archives,,,,,,,,,
 Guard permission:,Review portal content,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,

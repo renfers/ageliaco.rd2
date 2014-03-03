@@ -77,7 +77,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
 
 
     <div tal:condition="context/description" >
-        <h4>Synopsys</h4>
+        <h4>Synopsis</h4>
         <div class="description" tal:content="structure context/description" />
     </div>
     

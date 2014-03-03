@@ -22,8 +22,7 @@
 
 
         <link rel="stylesheet" href="assets/css/prettify.css"
-tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect\
-/multi-select/css/multi-select.css"
+tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/css/multi-select.css"
          >
         <link rel="stylesheet" href="assets/css/prettify.css"
          tal:attributes="href string:

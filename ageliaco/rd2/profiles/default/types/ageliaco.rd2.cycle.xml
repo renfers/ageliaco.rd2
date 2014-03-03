@@ -11,7 +11,7 @@
     name="add_view_expr">string:${folder_url}/++add++ageliaco.rd2.cycle</property>
  <property name="link_target"></property>
  <property name="immediate_view">view</property>
- <property name="global_allow">True</property>
+ <property name="global_allow">False</property>
  <property name="filter_content_types">True</property>
  <property name="allowed_content_types">
   <element value="ageliaco.rd2.note"/>
@@ -30,6 +30,8 @@
      value="plone.app.dexterity.behaviors.nextprevious.INextPreviousEnabled"/>
     <element 
      value="collective.dexteritytextindexer.behavior.IDexterityTextIndexer" />
+    <element
+     value="plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation"/> 
  </property>
  <property name="schema">ageliaco.rd2.cycle.ICycle</property>
  <property
