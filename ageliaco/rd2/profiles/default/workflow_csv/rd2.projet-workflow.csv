@@ -22,10 +22,9 @@ Description:,Le projet est en mode depot,,,,,,,,,
 Transitions:,retract,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
 View,N,,,,X,X,X,X,X,X
-Access contents information,N,,,,X,,X,,X,X
+Access contents information,N,,,,X,X,X,,X,X
 Modify portal content,N,,,,X,X,X,,,X
 Add portal content,N,,,,X,X,,X,X,X
-ageliaco.rd2 : Add Cycle,N,,,,X,X,,X,X,X
 Add Folders,N,,,,X,X,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -38,7 +37,6 @@ View,N,,,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,X,X,X,X
 Modify portal content,N,,,,X,X,X,,,X
 Add portal content,N,,,,X,X,,,,
-ageliaco.rd2 : Add Cycle,N,,,,X,X,,,,X
 ,,,,,,,,,,
 [State],,,,,,,,,,
 Id:,encours,,,,,,,,,

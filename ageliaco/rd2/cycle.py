@@ -199,3 +199,9 @@ class EditForm(dexterity.EditForm):
     label = _(u"Proposer un projet")
     description = _(u"Make your changes below.")
 
+    def updateWidgets(self):
+        context = aq_inner(self.context)
+        portal_workflow = getToolByName(context, 'portal_workflow')
+        review_state = portal_workflow.getInfoFor(self.context, 'review_state')
+        if review_state == "draft":
+            self.widgets["supervisor"].mode = z3c.form.interfaces.HIDDEN_MODE

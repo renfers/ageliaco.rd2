@@ -10,12 +10,11 @@ Title:,Brouillon,,,,,,,,,
 Description:,Le depot de projet est en elaboration,,,,,,,,,
 Transitions,soumettre,,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,X,,X,X
-Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,X,X,,X,X
+View,N,,,,X,X,X,,,X
+Access contents information,N,,,,X,X,X,,,X
+Modify portal content,N,,,,X,X,X,,,X
 Review portal content,N,,,,X,X,X,,,X
-"Add Documents, Images, and Files",N,,,,X,X,,,X,
-ageliaco.rd2 : Add Note,N,,,,X,,,,,X
+"Add Documents, Images, and Files",N,,,,X,X,,,,
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -24,11 +23,10 @@ Title:,En soumission,,,,,,,,,
 Description:,"Le depot de projet est en finalisation (transfert de la direction ecole, attente du feu vert de la direction)",,,,,,,,,
 Transitions:,"attribuer, reject",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,X,,X,X
-Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,,,,,X
+View,N,,,,X,X,X,,,X
+Access contents information,N,,,,X,X,X,,,X
+Modify portal content,N,,,,X,X,,,,X
 "Add Documents, Images, and Files",N,,,,X,,,,,
-ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -37,11 +35,10 @@ Title:,En attribution,,,,,,,,,
 Description:,"Le depot de projet est en attribution (feu vert direction ecole, evaluation RD)",,,,,,,,,
 Transitions:,"activate, reject, reviser",,,,,,,,,
 Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,X,,X,X
-Access contents information,N,,,,X,X,X,,X,X
+View,N,,,,X,X,X,,,X
+Access contents information,N,,,,X,X,X,,,X
 Modify portal content,N,,,,X,,X,,,X
 "Add Documents, Images, and Files",N,,,,X,,,,,
-ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -57,7 +54,6 @@ View,N,,X,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,X,X,X,X
 Modify portal content,N,,,,X,,,,,X
 "Add Documents, Images, and Files",N,,,,X,,,,,X
-ageliaco.rd2 : Add Note,N,,,,X,,,,,X
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -69,7 +65,6 @@ Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,C
 View,N,,X,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,X,,X,X
 Modify portal content,N,,,,X,,,,,
-ageliaco.rd2 : Add Note,N,,,,X,,,,,
 ,,,,,,,,,,
 ,,,,,,,,,,
 [State],,,,,,,,,,
@@ -82,7 +77,6 @@ View,N,,,,X,X,X,X,X,X
 Access contents information,N,,,,X,X,X,,X,X
 Modify portal content,N,,,,X,,,,,
 "Add Documents, Images, and Files",N,,,,X,,,,,
-ageliaco.rd2 : Add Note,N,,,,X,,,,,
 ,,,,,,,,,,
 ,,,,,,,,,,
 [Transition],,,,,,,,,,

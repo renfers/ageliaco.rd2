@@ -96,6 +96,21 @@ jQuery(function($){
         }
     );
 
+    // edit dialog
+    $('.editAuteurs').prepOverlay(
+    {
+            subtype: 'ajax',
+            filter: common_content_filter,
+            cssclass: 'overlay-editAuteurs',
+            //formselector: 'form.kssattr-formname-@@edit',
+            formselector: 'form',
+            noform: function(el) {return $.plonepopups.noformerrorshow(el, 'redirect');},
+            redirect: $.plonepopups.redirectbasehref,
+            closeselector: '[name="form.button.Cancel"]',
+        width: '50%',
+        }
+    );
+
     // Delete dialog
     $('a.deleteSketchLink').prepOverlay(
     {

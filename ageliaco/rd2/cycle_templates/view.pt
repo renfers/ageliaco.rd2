@@ -138,16 +138,16 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
 <h4  i18n:translate="heading_auteurs"
     tal:define="objectPath 
         python:view.setObjectPath('/'.join(context.getPhysicalPath()),
-            withTotal=view.canReviewContent())"
+            withTotal=view.canReviewContent() or view.isOwner())"
     >PARTICIPANT-E-S
     <span class="noprint"  tal:condition="view/canModifyContent">
-        <a title="Editer les participant-e-s" class="editAuteurs noprint" 
+        <a title="Editer les participant-e-s" class='editAuteurs' 
             tal:attributes="href string:${view/cycle_url}/Auteurs">
             <i class="fa fa-pencil"></i></a>
     </span>
 </h4>
         
-            <div tal:condition="view/canReviewContent">
+            <div tal:condition="python: view.canReviewContent() or view.isOwner()">
                 <a class="noprint"  href="#" class="heures" 
                     tal:attributes="id string:button-hide-hours">
                     <i class="fa fa-clock-o"></i>
@@ -196,13 +196,15 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
 <hr>
 </div>
 <div style="text-align: center;" class="printonly" ">
-    <i class="fa fa-smile-o fa-2x noprint" style="color:yellow;"></i>
+    
     <span style="color: rgb(204, 0, 0); ">
         <strong> 
+            <i class="fa fa-smile-o fa-2x printonly" style="color:yellow;"></i>
             Ressources et développement vous remercie pour votre collaboration
+            <i class="fa fa-smile-o fa-2x printonly" style="color:yellow;"></i>
         </strong> 
     </span> 
-    <i class="fa fa-smile-o fa-2x noprint" style="color:yellow;"></i>
+    
 </div>
 
 <!-- overlayed element -->

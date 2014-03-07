@@ -43,6 +43,8 @@ from ageliaco.rd2 import MessageFactory
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 import datetime
 
+import zope.interface
+
 import z3c.form
 from z3c.form import validator
 from z3c.form import button
@@ -59,7 +61,7 @@ from AccessControl import Unauthorized
 
 # Import permission names as pseudo-constant strings from somewhere...
 # see security doc for more info
-from Products.CMFCore.permissions import ReviewPortalContent
+from Products.CMFCore.permissions import ManagePortal
 
 
 from zope.schema.interfaces import IContextSourceBinder
@@ -146,8 +148,10 @@ ECASO : école d'assistant-e-s en soins et santé communautaire
 """
 ordres = {
     "COLLEGES" : u"COLLEGES",
+    "COPAD" : u"COPAD",
     "ECG" : u"ECG",
     "INSERTION" : u"INSERTION",
+    "CFPCom" : u"CFPCom",
     "CFPPC": u"CFPPC",
     "CFPS":u"CFPS",
     "CFPS-ECASE":u"CFPS-ECASE",
@@ -474,6 +478,12 @@ class IAuteur(form.Schema):
             required=True,
         )
 
+    disciplines = schema.Text(
+            title=MessageFactory(u"Disciplines"),
+            description=MessageFactory(u"Disciplines enseignées (une par ligne)"),
+            required=False,
+        )
+
     email = schema.TextLine(
             title=MessageFactory(u"Email"),
             description=MessageFactory(u"Adresse courrielle"),
@@ -498,8 +508,8 @@ class IAuteur(form.Schema):
             default='',
         )
     
-    dexterity.read_permission(sponsorRD='cmf.ReviewPortalContent')
-    dexterity.write_permission(sponsorRD='cmf.ReviewPortalContent')
+    #dexterity.read_permission(sponsorRD='cmf.ReviewPortalContent')
+    dexterity.write_permission(sponsorRD='cmf.ManagePortal')
     sponsorRD = schema.Choice(
             title=MessageFactory(u"Dégrèvement R&D"),
             description=MessageFactory(
@@ -508,8 +518,8 @@ class IAuteur(form.Schema):
             required=False,
         )
     
-    dexterity.read_permission(sponsorSchool='cmf.ReviewPortalContent')
-    dexterity.write_permission(sponsorSchool='cmf.ReviewPortalContent')
+    #dexterity.read_permission(sponsorSchool='cmf.ReviewPortalContent')
+    dexterity.write_permission(sponsorSchool='cmf.ManagePortal')
     sponsorSchool= schema.Choice(
             title=MessageFactory(u"Dégrèvement Ecole"),
             description=MessageFactory(
@@ -986,7 +996,9 @@ def aboutAuteurs(cycle, value=u""):
     auteurBrains = catalog(portal_type='ageliaco.rd2.auteur',
                     path={'query': cyclepath, 'depth': 1})
     mt = getToolByName(cycle, 'portal_membership')
-
+    mdata = getToolByName(cycle, 'portal_memberdata')
+    mdataIds = mdata.propertyIds()
+    
     for brain in auteurBrains:
         if brain.id.upper() in [id.upper() for id in newparticipants.keys()]:
             if brain.id in newparticipants.keys():
@@ -1019,13 +1031,26 @@ def aboutAuteurs(cycle, value=u""):
         if not member: # ldap EEL keeps login in upper !!!
             member = mt.getMemberById(str(login).upper())
         if member:
+            id = member.getProperty('id')
+            if 'lastname' in mdataIds:
+                lastname = utf_8(member.getProperty('lastname'))
+            else:
+                lastname = ''
+            #import pdb;pdb.set_trace()
+            if 'firstname' in mdataIds:
+                firstname = utf_8(member.getProperty('firstname'))
+            else:
+                firstname = ''
+            if 'email' in mdataIds:
+                email = member.getProperty('email')
+            else:
+                email = ''
             auteur = createContent("ageliaco.rd2.auteur", 
-                id = member.getProperty('id'),
-                title = u"%s %s" % (utf_8(member.getProperty('lastname')),
-                    utf_8(member.getProperty('firstname'))),
-                firstname = utf_8(member.getProperty('firstname')),
-                lastname = utf_8(member.getProperty('lastname')),
-                email = member.getProperty('email'),)
+                id = id,
+                title = u"%s %s" % (lastname,firstname),
+                firstname = firstname,
+                lastname = lastname,
+                email = email,)
             cycle[auteur.id]=auteur
             cycle.manage_setLocalRoles(auteur.id, ['Reader','Owner','Reviewer'])
             cycle.reindexObjectSecurity()
@@ -1035,9 +1060,10 @@ def aboutAuteurs(cycle, value=u""):
                 
         if not ok:
             print "no member found for %s" % login
-            raise ActionExecutionError(Invalid(_(u"""Il y a un problème avec l'identifiant : %s,
+            return u"""Il y a un problème avec l'identifiant : %s,
 corrigez l'erreur ou supprimez la ligne pour pouvoir sauvegarder les changements et
-prenez contact avec R&D pour les identifiants qui ne passent pas!""" % login)))
+prenez contact avec R&D pour les identifiants qui ne passent pas!""" % login
+        return ""
 
  
 @grok.subscribe(ICycle, IObjectAddedEvent)
@@ -1061,10 +1087,12 @@ class EditForm(dexterity.EditForm):
         #import pdb; pdb.set_trace()
         # Some additional validation
         if 'participants' in data:
-            cycle = self.context
-            aboutAuteurs(cycle, data['participants'])
-            #if data['porteparole'] not in data['participants'].split():
-            #    raise ActionExecutionError(Invalid(_(u"Le porte-parole (%s) ne se trouve pas parmi les participants!" % data['porteparole'])))
+            cycle = self.context 
+            if 'porteparole' in data and data['porteparole'] and data['porteparole'] not in data['participants'].split():
+                raise ActionExecutionError(Invalid(_(u"Le porte-parole (%s) ne se trouve pas parmi les participants!" % data['porteparole'])))
+            executionErrors = aboutAuteurs(cycle, data['participants'])
+            if executionErrors:
+                raise ActionExecutionError(Invalid(_(executionErrors)))
 
         if errors:
             self.status = self.formErrorsMessage
@@ -1115,6 +1143,7 @@ class AddForm(dexterity.AddForm):
             #import pdb; pdb.set_trace()
         return self.request.response.redirect(cycle.absolute_url()+extrapath)
 
+
 class AuteursEditForm(crud.EditForm):
     """ Pigeonhole edit form.  
         Just a normal CRUD form without the form title or edit button.
@@ -1126,8 +1155,6 @@ class AuteursEditForm(crud.EditForm):
     dégrèvement demandé : une heure de dégrèvement correspond 
                           à 2 demi-journées de travail par mois.
     Numéro de téléphone (facultatif)
-    !!! Ne complétez pas les autres champs (heures R&D et heures école) !!!
-    
     """
 
     
@@ -1147,17 +1174,21 @@ class AuteursEditForm(crud.EditForm):
 def adapt_schema2security(field):
     sm = getSecurityManager()
     reviewField = field.Fields(IAuteur).select('sponsorRD')
-    if not sm.checkPermission(ReviewPortalContent, reviewField):
+    if not sm.checkPermission(ManagePortal, reviewField):
+        print "NO MANAGE ROLE FOR USER"
         return field.Fields(IAuteur).select('phone','email','school',
             'sponsorasked')
+    print "MANAGE ROLE FOR USER"
     return field.Fields(IAuteur).select('phone','email','school',
             'sponsorasked', 'sponsorRD', 'sponsorSchool')
 
 
 class AuteursForm(crud.CrudForm,grok.View):
     #update_schema = IAuteur
-    view_schema = field.Fields(IAuteur).select('id','firstname','lastname')
-    update_schema = adapt_schema2security(field)
+    #view_schema = field.Fields(IAuteur).select('id')
+    update_schema = field.Fields(IAuteur).select('id','firstname','lastname',
+            'phone','email','school',
+            'sponsorasked', 'sponsorRD', 'sponsorSchool')
     
     #field.Fields(IAuteur).select('phone','email','school','sponsorasked')
     addform_factory = crud.NullForm
@@ -1165,17 +1196,27 @@ class AuteursForm(crud.CrudForm,grok.View):
     grok.context(ICycle)
     grok.require('zope2.View')
     grok.name('Auteurs')
-    #grok.template('interface_templates/auteursEdit.pt')
-    #template = Zope3PageTemplateFile('interface_templates/auteursEdit.pt')  
-      
-    #     def updateWidgets(self):
-    #         import pdb; pdb.set_trace()
-    #         self.widgets["select"].mode = z3c.form.interfaces.HIDDEN_MODE
-        
-    #     def get_items(self):
-    #         #import pdb; pdb.set_trace()
-    #         return self.context.objectItems()
 
+    def updateWidgets(self):
+        sm = getSecurityManager()
+        workflowTool = getToolByName(self.context, "portal_workflow")
+        status = workflowTool.getStatusOf("rd2.cycle-workflow", self.context)
+        state = status["review_state"]
+        #import pdb; pdb.set_trace()
+        self.update_schema["id"].mode = z3c.form.interfaces.DISPLAY_MODE
+        self.update_schema["firstname"].mode = z3c.form.interfaces.DISPLAY_MODE
+        self.update_schema["lastname"].mode = z3c.form.interfaces.DISPLAY_MODE
+        if not sm.checkPermission(ManagePortal, self.context):
+            self.update_schema["sponsorRD"].mode = z3c.form.interfaces.DISPLAY_MODE
+            self.update_schema["sponsorSchool"].mode = z3c.form.interfaces.DISPLAY_MODE
+        else:
+            self.update_schema["sponsorRD"].mode = z3c.form.interfaces.INPUT_MODE
+            self.update_schema["sponsorSchool"].mode = z3c.form.interfaces.INPUT_MODE
+        if state != "draft":
+            self.update_schema["sponsorasked"].mode = z3c.form.interfaces.DISPLAY_MODE
+        else:
+            self.update_schema["sponsorasked"].mode = z3c.form.interfaces.INPUT_MODE
+            
     def get_items(self):
         retour = sorted([(id,obj) for id, obj in self.context.objectItems() \
                         if obj.portal_type=='ageliaco.rd2.auteur'],
@@ -1190,27 +1231,6 @@ class EditAuteurs(layout.FormWrapper):
     grok.require('zope2.View')
     grok.name('EditAuteurs')
     
-#EditAuteursView = layout.wrap_form(AuteursForm)
-        
-#     def remove(self, (id, item)):
-#         self.context.manage_deleteItems([id,])
-
-#     def demos(self):
-#         form = AuteursForm(self.context, self.request)
-#         form.update()
-#         return form
-
-#     def updateWidgets(self):
-#         """ Make sure that return URL is not visible to the user.
-#         """
-#         import pdb; pdb.set_trace()
-#         crud.CrudForm.updateWidgets(self)
-# 
-#         # Use the return URL suggested by the creator of this form
-#         # (if not acting standalone)
-#         self.widgets["sponsorRD"].mode = z3c.form.interfaces.HIDDEN_MODE
-#         self.widgets["sponsorSchool"].mode = z3c.form.interfaces.HIDDEN_MODE
-        
         
 class InterfaceView(grok.View,Form):
     grok.context(Interface)
@@ -1237,7 +1257,15 @@ class InterfaceView(grok.View,Form):
     # canReviewContent        
     def canReviewContent(self):
         return checkPermission('cmf.ReviewPortalContent', self.context)
-    
+
+    def isOwner(self):
+        mt = getToolByName(self.context, 'portal_membership')
+        if mt.isAnonymousUser(): # the user has not logged in
+            return False
+        member = mt.getAuthenticatedMember()
+        owner = self.context.getOwner()
+        print member, owner
+        return member.getName() == owner.getName()
         
     def canAddContent(self):
         return checkPermission('cmf.AddPortalContent', self.context)
