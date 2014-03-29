@@ -8,7 +8,7 @@
  <head>
     <metal:block fill-slot="style_slot" 
         tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <span tal:replace="structure view/render_css_head_slot"/>
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
      
 
       <link tal:attributes="href  
@@ -30,7 +30,7 @@ string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/css/multi-
     </metal:block>
 <metal:block fill-slot="javascript_head_slot" 
     tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-    <span tal:replace="structure view/render_js_head_slot"/>
+    <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
     <script tal:attributes="src 
 string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/js/jquery.multi-select.js"
         >
@@ -56,10 +56,11 @@ string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/js/jquery.
          <p class="documentDescription" tal:content="context/description" /> -->
 
         <div tal:replace="structure provider:plone.abovecontentbody" />
-     <div tal:content="structure view/render_projet_menu"/>        
+        
+     <div metal:use-macro="context/@@interface/macros/projet_menu"/>        
  
-    <h3>Cycles par états</h3>
-        <span tal:replace="structure view/render_cycles_by_states"/>
+    <h3>Cycles par auteurs</h3>
+        <span metal:use-macro="context/@@interface/macros/cycle_list"/>
         
 
         <div tal:replace="structure provider:plone.belowcontentbody" />

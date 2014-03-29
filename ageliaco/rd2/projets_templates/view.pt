@@ -7,11 +7,11 @@
       i18n:domain="ageliaco.rd2">
  <head>
     <metal:block1 fill-slot="style_slot">
-        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+        <div tal:replace="structure view/render_css_head_slot" />
     </metal:block1>
-    <metal:block2 fill-slot="javascript_head_slot" >
-        <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
-    </metal:block2>
+   <metal:block2 fill-slot="javascript_head_slot" >
+        <div tal:replace="structure view/render_js_head_slot" />
+   </metal:block2>
  
 </head>
 <body>
@@ -27,11 +27,21 @@ tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         <div tal:replace="structure provider:plone.belowcontenttitle" />
 
         <div tal:replace="structure provider:plone.abovecontentbody" />
+    
+<div class="pullquote" >
+<b class="fa fa-question-circle fa-3x" style="color:orange;float:right;"> </b>
+<p  style="text-align:center">Utilisez la <b>recherche</b> ci-dessous 
+à droite du tableau pour chercher un mot dans un titre ou mot-clé!
+<br>Vous pouvez aussi utiliser les menus 
+déroulants au pied des colonnes pour filtrer le résultat
+par <b>mot-clé</b> et/ou par <b>année</b>!</p>  
+</div>
+<!--    <div metal:use-macro="context/@@interface/macros/projets_menu"/> -->
 
-
-    <div metal:use-macro="context/@@interface/macros/projets_menu"/>
-
+    <div tal:replace="structure view/render_projets_table" />
+<!-- 
         <div metal:use-macro="context/@@interface/macros/published_projets"/>
+ -->
 
 
         <div tal:replace="structure provider:plone.belowcontentbody" />

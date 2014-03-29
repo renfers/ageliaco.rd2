@@ -17,3 +17,5 @@ yafowil.widget.richtext >= 1.3.1dev
 yafowil.widget.multiselect
 collective.wfcomment
 collective.dexteritytextindexer
+collective.js.datatables
+plone.memoize

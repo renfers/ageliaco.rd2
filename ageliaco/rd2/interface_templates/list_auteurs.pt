@@ -1,0 +1,84 @@
+<!-- ex: tal:define="authors python:view.authors(projet.getPath())" 
+        => authors must be defined
+    as a search result of authors -->
+    <metal:my define-macro="list_auteurs"
+        >
+<link rel="stylesheet" type="text/css" media="screen" href="++resource++jquery.datatables/media/css/jquery.dataTables.css">
+<style type="text/css">.clear{clear:both}</style>
+    <tal:block define="authors python:view.authors(view.objectPath)">
+    <table  cellpadding="0" cellspacing="0" border="0" class="display" id="example" >
+        <tbody>
+
+    <tal:auteurs tal:repeat="author authors" >
+      <tal:auteur>
+           <tr style="background-color:yellow;">
+           <td><span tal:replace="author/firstname"/> 
+            <span tal:replace="author/lastname"/>
+  
+           </td>
+            <td><span tal:condition="not:  
+                here/portal_membership/isAnonymousUser"
+                tal:content="author/email">email</span>
+                </td>
+            <td><span  tal:content="python: view.school(author.school)"/>
+            </td>  
+            </tr>
+            <tr tal:condition="python: view.canReviewContent() or view.isOwner()"  
+                tal:attributes="id string:effect-${author/id}">
+                    <td colspan="2" >
+            <table  cellpadding="0" cellspacing="0" border="0" class="display heures"
+                style="width:100%; margin-bottom:0px">
+                <thead>
+                <tr>
+            <th style="text-align:right">Dégrèvement:</th>
+            <th style="text-align:right">demandé</th>
+            <th style="text-align:right">RD</th>
+            <th style="text-align:right">Ecole</th></tr>
+            <tr><th>&nbsp;</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+                <tal:heure repeat="heure python:view.sponsorasked(author)">
+                    <td  style="text-align:right"
+                        tal:content="heure"/>
+                    </tal:heure>
+            </tr>
+            </tbody>
+            </table></td>
+            <td class="noprint"  tal:condition="view/canModifyContent"><div >
+                <ul class="the-icons">
+                    <li><a title="Editer cet auteur" class='editAuteur'  
+	        tal:attributes="href python:author.getURL() + '/edit'" href="#">
+	            <i class="fa fa-pencil"></i>
+            </a></li>
+            <!--        <li><a title="Supprimer ce-tte participant-e" class='delAuteur'  
+	        tal:attributes="href python:author.getURL() + 
+	        '/delete_confirmation'" href="#"><i class="icon-remove"></i>
+
+            </a></li>
+	        -->
+            </ul></div>
+            </td>
+        </tr>
+
+      </tal:auteur>
+    </tal:auteurs>
+        <tr tal:condition="python:view.canReviewContent() or 
+                view.canModifyContent() or view.isOwner()"
+         tal:attributes="id string:effect-${context/id}"><td colspan="3" >
+
+        <table style="width:100%; margin-bottom:0px" ><tbody><tr>
+
+            <tr style="background-color:orange;">
+                <th>Totaux</th>
+                <tal:heure repeat="heure python: view.getSponsoring()">
+                    <td  style="text-align:right"
+                        tal:content="heure"/>
+                    </tal:heure>
+            </tr></tbody>
+        </table></td>
+        </tr>  
+      </tbody>          
+    </table>
+    </tal:block>
+    </metal:my>

@@ -1,0 +1,21 @@
+<dl class="actionMenu" id="projet-menu"
+                tal:define="portal_state nocall:context/@@plone_portal_state;
+                navroot portal_state/navigation_root_url"
+                style="clear:both"
+>
+ <dt class="actionMenuHeader"> 
+    <a  href="#"  tal:condition="view/canReviewContent">Autres vues</a> 
+    </dt> 
+    <dd class="actionMenuContent"> 
+          <ul class="dropdown-menu"  role="menu" aria-labelledby="dLabel">
+            <!-- dropdown menu links -->
+                  <li class="btn-projets-menu">
+                    <a href="@@cyclesview"  
+                        tal:attributes="href 
+                            string:${here/absolute_url}/@@cyclesview">
+                        Cycles par états
+                    </a>
+                  </li>                
+          </ul>
+    </dd> 
+</dl> 

@@ -3,7 +3,7 @@ from five import grok
 from zope import schema
 
 from Products.ATContentTypes.lib import constraintypes
-
+from Products.Five import BrowserView
 from plone.directives import form, dexterity
 from zope.app.container.interfaces import IObjectAddedEvent
 
@@ -41,6 +41,8 @@ from zope.schema import getFieldsInOrder
 from plone.dexterity.interfaces import IDexterityFTI 
 from zope.component import queryUtility
 from z3c.form import button, field
+from interface import InterfaceView, schools
+from plone.memoize import view
  
 from ageliaco.rd2 import MessageFactory
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
@@ -94,15 +96,11 @@ class EditForm(dexterity.EditForm):
     label = _(u"Editer la présentation du projet")
     description = _(u"Make your changes below.")
 
-class View(grok.View,Form):
+class View(InterfaceView):
     grok.context(IProjet)
     grok.require('zope2.View')
+    grok.name('view')
     #template = ViewPageTemplateFile('projet_templates/view.pt')
-
-            
-    def canReviewContent(self):
-        return checkPermission('cmf.ReviewPortalContent', self.context)
-        
 
     def activeProjets(self):
         catalog = getToolByName(self.context, 'portal_catalog')
@@ -136,52 +134,18 @@ class View(grok.View,Form):
             return False
         return True
         
-    def canAddContent(self, context=None):
-        if not context:
-            context = self.context            
-        return checkPermission('cmf.AddPortalContent', context)
-            
-    def canModifyContent(self):
-        return checkPermission('cmf.ModifyPortalContent', self.context)
-        
-        
-    def cycles_obj(self):
-        #return a list of actual cycle objects
-        context = aq_inner(self.context)
-        catalog = getToolByName(self.context, 'portal_catalog')
-        cat = catalog(object_provides= ICycle.__identifier__,
-                   path={'query': '/'.join(context.getPhysicalPath()), 
-                         'depth': 1
-                        },
-                   sort_on="id")     
-        return cat
-        
-    def review_state(self):
-        context = aq_inner(self.context)
-        portal_workflow = getToolByName(context, 'portal_workflow')
-        review_state = portal_workflow.getInfoFor(context, 'review_state')
-        return review_state
-        
+
+    def auteur_disciplines(self,auteur):
+        if hasattr(auteur,'disciplines'):
+            return auteur.disciplines
+        return ""
+    
     def isRepository(self):
         context = aq_inner(self.context)
         portal_workflow = getToolByName(context, 'portal_workflow')
         review_state = portal_workflow.getInfoFor(context, 'review_state')
         return review_state == u'repository'
         
-
-    def contributeurs(self,cycle_id):
-        context = aq_inner(self.context)
-        catalog = getToolByName(self.context, 'portal_catalog')
-        if cycle_id in context.keys():
-            cycle = context[cycle_id]  
-            if cycle:
-                cat = catalog(object_provides= IAuteur.__identifier__,
-                           path={'query': '/'.join(cycle.getPhysicalPath()),
-                                 'depth': 1
-                                },
-                           sort_on="modified", sort_order="reverse")     
-                return cat
-        return None
     
     def hasRealisation(self):
         context = aq_inner(self.context)
@@ -204,22 +168,6 @@ class View(grok.View,Form):
         #             print "no Property 'link'"
         return ''
 
-    def notes(self, projectPath=''):
-        """Return a catalog search result of authors from a project
-        problem : same author appears several times 
-        """
-        context = aq_inner(self.context)
-        #import pdb; pdb.set_trace()
-        if not projectPath:
-            projectPath = '/'.join(context.getPhysicalPath())
-        catalog = getToolByName(self.context, 'portal_catalog')
-        cat = catalog(object_provides=[INote.__identifier__],
-                       path={'query': projectPath, 'depth': 3},
-                       sort_on="modified", sort_order="reverse")
-        
-        #import pdb; pdb.set_trace()
-        return cat
-        
     
 class CyclesView(InterfaceView):
     grok.context(IProjet)

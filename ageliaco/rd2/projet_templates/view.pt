@@ -6,13 +6,21 @@
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="ageliaco.rd2">
       
-<head>
-    <metal:block1 fill-slot="style_slot">
-        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+<head >
+<!--     <metal:block1 fill-slot="style_slot">
+        <span tal:replace="structure view/render_head_slot"/>
     </metal:block1>
-    <metal:block2 fill-slot="javascript_head_slot" >
+   <metal:block2 fill-slot="javascript_head_slot" >
         <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
     </metal:block2>
+-->
+    <metal:block1 fill-slot="style_slot">
+        <div tal:replace="structure view/render_css_head_slot" />
+    </metal:block1>
+   <metal:block2 fill-slot="javascript_head_slot" >
+        <div tal:replace="structure view/render_js_head_slot" />
+   </metal:block2>
+
 </head>     
       
 <body>
@@ -22,16 +30,21 @@
 
     <div 
         tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime;
-                navroot context/@@plone_portal_state/navigation_root_url">
-    <div metal:use-macro="context/@@interface/macros/projet_menu"/>
-<div id="realisation" tal:condition="python: view.hasLink() or view.hasRealisation()">
+                portal_state nocall:context/@@plone_portal_state;
+                navroot portal_state/navigation_root_url">
+   <div tal:content="structure view/render_projet_menu"
+        tal:condition="view/canReviewContent"/>
+<div id="realisation" tal:condition="python: not view.isRepository() and (view.hasLink() or view.hasRealisation())"
+    class="pullquote">
 <h3 tal:condition="python: view.hasLink()"><a tal:attributes="href view/hasLink">Lien vers réalisation</a></h3>
-<h3 tal:condition="python: view.hasRealisation()"><a tal:attributes="href view/hasRealisation">Réalisation</a></h3>
+<h3 tal:condition="python: view.hasRealisation()"
+    ><a tal:attributes="href view/hasRealisation">Réalisation</a></h3>
 </div>
-<div  tal:condition="python:len(view.cycles_obj())" id="cycleList">
-<h3 class="cycleListTitle">Cycles</h3>
+<div  tal:condition="python:len(view.cycles())"
+    class="cycleList greypullquote">
+<h3 class="cycleListTitle">Propositions de projet</h3>
 <ul class="cycleList" >
-        <tal:block repeat="cycle view/cycles_obj">
+        <tal:block repeat="cycle view/cycles">
 	    <li class="genericButton" ><a   
 	        tal:content="cycle/id" 
 	        tal:attributes="href python:cycle.getURL();
@@ -42,20 +55,9 @@
         </tal:block>
 </ul>
 </div>
-<div  tal:condition="notes" tal:define="notes view/notes" id="cycleList">
-<h3 class="cycleListTitle">Notes de séances</h3>
-<ul class="cycleList" >
-        <tal:block repeat="note notes">
-	    <li class="genericButton" ><a class='editAuteur'  
-	        tal:content="note/Title" 
-	        tal:attributes="href python:note.getURL();
-	                        title note/Title" href="#">
-	        Cycle id
-            </a></li>
-        
-        </tal:block>
-</ul>
-</div>
+
+        <div class="noprint" tal:content="structure view/render_notes"/>
+
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
         <h2 class="documentFirstHeading" tal:content="context/title" />
@@ -68,11 +70,14 @@
             />
         
 </div> 
-<div id="create_newcycle" 
-tal:condition="python:view.isRepository() and \
-not here.portal_membership.isAnonymousUser()">
-  <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">
-  Proposer un projet</a>
+
+<div tal:condition="python:view.isRepository() and view.isAnonymous()">
+    <div id="create_newcycle" >
+      <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">
+      Proposer un projet</a>
+    </div>
+    <hr/>
+<div tal:replace="structure view/render_cycleauteurs" />
 </div>
 
 

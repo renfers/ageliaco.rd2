@@ -1,0 +1,68 @@
+     <tal:js  define="navroot context/@@plone_portal_state/navigation_root_url">
+        <script type="text/javascript" 
+    tal:attributes="src string:${navroot}/++resource++ageliaco.rd2/projet.js"
+            src="#">
+        </script>
+        
+<!-- 
+        <script type="text/javascript"  
+    tal:attributes="src string:${navroot}/++resource++plone.app.jquerytools.js">
+         </script>
+         
+        <script type="text/javascript"  
+    tal:attributes="src string:
+        ${navroot}/++resource++plone.app.jquerytools.form.js">
+         </script>
+
+        <script type="text/javascript"  
+            tal:attributes="src string:
+                ${navroot}/++resource++plone.app.jquerytools.overlayhelpers.js">
+         </script>
+ -->
+<!-- 
+        <script type="text/javascript"  
+            tal:attributes="src string:
+                ${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.js">
+         </script>
+        <script type="text/javascript"  
+                tal:attributes="src string:
+                    ${navroot}/++resource++ageliaco.rd2/prettify.min.js">
+        </script>
+ -->
+<!-- 
+        <script type="text/javascript"  
+                tal:attributes="src string:
+                    ${navroot}/++resource++yafowil.widget.richtext/widget.js">
+        </script>        
+ -->
+<!-- 
+        <script type="text/javascript"  
+                tal:attributes="src string:
+                ${navroot}/++resource++ageliaco.rd2/jquery.tablesorter.min.js">
+        </script>
+
+        <script >
+        $(document).ready(function() { 
+            // call the tablesorter plugin, the magic happens in the markup 
+            $("table").tablesorter(); 
+        }); 
+        </script>
+          <script>
+          $(function() {
+            // run the currently selected effect
+            function runEffect() {
+              // run the effect
+              $( '[id^=effect-]' ).toggle( "slide");
+            };
+  
+            // set effect from select menu value
+            $( '[id^=button-]' ).click(function() {
+              runEffect();
+              return false;
+            });
+ 
+            $( '[id^=effect-]' ).show();
+          });
+          </script>
+ -->
+       </tal:js>

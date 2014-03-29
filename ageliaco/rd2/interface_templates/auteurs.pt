@@ -1,0 +1,14 @@
+ <div class="auteurs">
+    <h4  i18n:translate="heading_auteurs"
+        tal:define="objectPath 
+            python:view.setObjectPath('/'.join(context.getPhysicalPath()),
+                withTotal=view.canReviewContent() or view.isOwner())"
+        >PARTICIPANT-E-S
+        <span class="noprint"  tal:condition="view/canModifyContent">
+            <a title="Editer les participant-e-s"  
+                tal:attributes="href string:${view/cycle_url}/Auteurs">
+                <i class="fa fa-pencil"></i></a>
+        </span>
+    </h4>
+         <span tal:replace="structure view/render_list_auteurs"/>
+ </div>

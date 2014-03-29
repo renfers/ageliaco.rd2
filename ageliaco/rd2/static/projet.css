@@ -1,3 +1,70 @@
+
+#content .callout {
+background: #272626;
+padding: 1em;
+border-left: 1em solid #64421D;
+clear: both;
+color: orange;
+box-shadow: 10px 10px 55px #221000;
+opacity: 0.8;
+}
+#content .pullquote {
+    clear: right;
+    color: #444444;
+    background-color: #FFFFC1;
+    float: right;
+    font-size: 1.0em;
+    font-weight: bold;
+    letter-spacing: -0.08em !important;
+    line-height: 1.25em;
+    margin: 1em 1em 0.5em 0.5em;
+    padding-top : 10px;
+    padding-bottom : 10px;
+    padding-left : 10px;
+    padding-right : 10px;
+    width: 35%;
+	border-bottom:0.1em solid #aaa;	
+	border-top:0.1em solid #fff;	
+	border-left:0.1em solid #fff;	
+	border-right:0.1em solid #aaa;	
+-moz-box-shadow: 10px 10px 55px #221000;
+-webkit-box-shadow: 10px 10px 55px #221000;
+box-shadow: 10px 10px 55px #221000;
+
+    -webkit-transform: rotate(6deg);
+    -moz-transform: rotate(6deg);
+    -o-transform: rotate(6deg);
+    writing-mode: lr-tb;
+}
+#content .greypullquote {
+    clear: right;
+    color: #444444;
+    background-color: #CCC;
+    float: right;
+    font-size: 1.0em;
+    font-weight: bold;
+    letter-spacing: -0.08em !important;
+    line-height: 1.25em;
+    margin: 1em 1em 0.5em 0.5em;
+    padding-top : 10px;
+    padding-bottom : 10px;
+    padding-left : 10px;
+    padding-right : 10px;
+    width: 35%;
+	border-bottom:0.1em solid #aaa;	
+	border-top:0.1em solid #fff;	
+	border-left:0.1em solid #fff;	
+	border-right:0.1em solid #aaa;	
+-moz-box-shadow: 10px 10px 55px #221000;
+-webkit-box-shadow: 10px 10px 55px #221000;
+box-shadow: 10px 10px 55px #221000;
+
+    -webkit-transform: rotate(6deg);
+    -moz-transform: rotate(6deg);
+    -o-transform: rotate(6deg);
+    writing-mode: lr-tb;
+}
+
 th.ProjectAuthors,th.ProjectTitle{
     width : 45%;
 }
@@ -56,16 +123,11 @@ fieldset, .editionComment {
     width: auto;
 }
 #content legend {
-    border-color: rgb(204,0,0);
-    border-image: none;
-    border-style: none none solid;
-    border-width: 0.1em;
-    background-color: #eee;
     text-outline: 2px 2px #c00;
     font-size: 300%;
     font-weight:900;
     color: rgb(204,0,0);
-    padding: 0.2em;
+    padding: 1em 0.2em 1em 0.2em;
 }
 
 div#content fieldset {
@@ -128,7 +190,7 @@ h4 {
         position: static;
         width: auto;
     }
-    
+    .filtered,
     .noprint {
         display:none;
     }
@@ -141,7 +203,6 @@ h4 {
         font-family:Georgia,Serif;
         color: rgb(204,0,0);
     }
-
 } 
 
 #kss-spinner {

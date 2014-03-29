@@ -1,0 +1,36 @@
+     <tal:css  
+        tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+<!-- 
+        <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:
+    ${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.css"
+            />
+        <link rel="stylesheet" href="bootstrap/js/themes/blue/style.css" 
+            type="text/css" media="print, projection, screen"
+            tal:attributes="href string:
+                ${navroot}/++resource++ageliaco.rd2/themes/blue/style.css"
+         />
+ -->
+
+<!-- 
+
+        <link rel="stylesheet" href="assets/css/prettify.css"
+tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/css/multi-select.css"
+         />
+        <link rel="stylesheet" href="assets/css/prettify.css"
+         tal:attributes="href string:
+            ${navroot}/++resource++yafowil.widget.multiselect/widget.css"
+         />
+ -->
+      <link rel="stylesheet" href="assets/css/font-awesome.css"
+         tal:attributes="href string:
+    ${navroot}/++resource++ageliaco.rd2/font-awesome/css/font-awesome.min.css"
+         />
+        <link rel="stylesheet" type="text/css" 
+            tal:attributes="href string:
+                ${navroot}/++resource++ageliaco.rd2/projet.css"
+            />
+     </tal:css>
+     
+
+

@@ -1,0 +1,51 @@
+    <metal:projets_menu define-macro="projets_menu"
+        >
+        <div class="btn-group"  
+        tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            Autres vues
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu"  role="menu" aria-labelledby="dLabel">
+            <!-- dropdown menu links -->
+              <li class="btn-projets-menu active">
+                    <a href="#"  
+                        tal:attributes="href string:${here/absolute_url}">
+                        Projets terminés
+                    </a>
+                </li>
+              <li class="btn-projets-menu">
+                    <a href="@@stateview" 
+                    tal:attributes="href 
+                        string:${here/absolute_url}/@@stateview">
+                    Projets par états
+                    </a>
+                </li>
+              <li class="btn-projets-menu">
+                    <a href="@@keywordview"  
+                        tal:attributes="href 
+                            string:${here/absolute_url}/@@keywordview">
+                        Recherche par mots-clé
+                    </a>
+                </li>
+              <li class="btn-projets-menu">
+                    <a href="@@localsearch"  
+                        tal:attributes="href 
+                            string:${here/absolute_url}/@@localsearch">
+                        Recherche dans les projets
+                    </a>
+                </li>
+              <li class="btn-projets-menu" 
+                tal:condition="not:  here/portal_membership/isAnonymousUser">
+                    <a href="@@cyclesview"  
+                        tal:attributes="href 
+                            string:${here/absolute_url}/@@cyclesview">
+                        Cycles par états
+                    </a>
+                </li>
+          </ul>
+        
+        </div>                
+
+    </metal:projets_menu>
+

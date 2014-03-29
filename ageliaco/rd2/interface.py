@@ -10,6 +10,7 @@ ldap filter for R&D :
 """
 import os.path
 
+from Products.Five import BrowserView
 from five import grok
 from zope import schema
 from plone.namedfile import field as namedfile
@@ -24,7 +25,7 @@ import plone.dexterity.browser
 from plone.dexterity.utils import createContentInContainer
 from plone.dexterity.utils import createContent
 from plone.dexterity.interfaces import IDexterityFTI
-
+from zope.interface import implements
 
 from plone.directives import form, dexterity
 from plone.app.textfield import RichText
@@ -55,6 +56,7 @@ from plone.z3cform.crud import crud
 # for debug purpose => log(...)
 from Products.CMFPlone.utils import log
 from plone.z3cform import layout
+from plone.memoize import view
 
 from AccessControl import getSecurityManager
 from AccessControl import Unauthorized
@@ -152,7 +154,7 @@ ordres = {
     "ECG" : u"ECG",
     "INSERTION" : u"INSERTION",
     "CFPCom" : u"CFPCom",
-    "CFPPC": u"CFPPC",
+    "CFPC": u"CFPC",
     "CFPS":u"CFPS",
     "CFPS-ECASE":u"CFPS-ECASE",
     "CFPS-ECASO":u"CFPS-ECASO",
@@ -170,7 +172,7 @@ ordres = {
     "CFPT-AUTOMOBILE":u"CFPT-AUTOMOBILE",
     "CFPT-HORLOGERIE":u"CFPT-HORLOGERIE",
     "CFPT-INFORMATIQUE":u"CFPT-INFORMATIQUE",
-    "CFPSH":u"CFPSHR",
+    "CFPSHR":u"CFPSHR",
     "CFPSHR-ECGEI":u"CFPSHR-ECGEI",
     "CFPNE":u"CFPNE",
     "CFPAA":u"CFPAA",
@@ -1231,7 +1233,32 @@ class EditAuteurs(layout.FormWrapper):
     grok.require('zope2.View')
     grok.name('EditAuteurs')
     
-        
+
+# class CSSHeadSlotView(BrowserView):
+#     implements(Interface)
+#     # Nested templates which render different parts of template
+#     head_slot_template = ViewPageTemplateFile("interface_templates/css_head_slot.pt")
+#          
+#     def render_css_head_slot(self):
+#         return self.css_head_slot_template()
+# 
+# class JSHeadSlotView(BrowserView):
+#     implements(Interface)
+#     # Nested templates which render different parts of template
+#     js_head_slot_template = ViewPageTemplateFile("interface_templates/js_head_slot.pt")
+#          
+#     def render_js_head_slot(self):
+#         return self.js_head_slot_template()
+# 
+# class ProjetMenuView(BrowserView):
+#     implements(Interface)
+#     # Nested templates which render different parts of template
+#     projet_menu_template = ViewPageTemplateFile("interface_templates/projet_menu.pt")
+#     
+#     def render_projet_menu(self):
+#         return self.projet_menu_template()
+    
+       
 class InterfaceView(grok.View,Form):
     grok.context(Interface)
     grok.require('zope2.View')
@@ -1247,17 +1274,135 @@ class InterfaceView(grok.View,Form):
         "author.school,ordre,author.sponsorasked,author.sponsorRD," + \
         "author.sponsorSchool"
     keyword_dict = {}
+
+    projets_menu_template = ViewPageTemplateFile("interface_templates/projets_menu.pt")
+    cycle_list_template = ViewPageTemplateFile("interface_templates/cycle_list.pt")
+    cycles_by_states_template = ViewPageTemplateFile("interface_templates/cycles_by_states.pt")
+    list_auteurs_template = ViewPageTemplateFile("interface_templates/list_auteurs.pt")    
+    css_head_slot_template = ViewPageTemplateFile("interface_templates/css_head_slot.pt")
+    js_head_slot_template = ViewPageTemplateFile("interface_templates/js_head_slot.pt")
+    projet_menu_template = ViewPageTemplateFile("interface_templates/projet_menu.pt")
+    projets_table_template = ViewPageTemplateFile("projets_templates/projets-table.pt")
+    cycleauteurs_template = ViewPageTemplateFile("interface_templates/cycleauteurs.pt")
+    localauteurs_template = ViewPageTemplateFile("cycle_templates/localauteurs.pt")
+    notes_template = ViewPageTemplateFile("interface_templates/notes.pt")
+    auteurs_template = ViewPageTemplateFile("interface_templates/auteurs.pt")
+        
+    def render_auteurs(self):
+        return self.auteurs_template()
+        
+    def render_notes(self):
+        return self.notes_template()
+        
+    def render_localauteurs(self):
+        return self.localauteurs_template()
+                
+    def render_cycleauteurs(self):
+        return self.cycleauteurs_template()
+                    
+    def render_projets_table(self):
+        return self.projets_table_template()
+    
+    def render_projet_menu(self):
+        return self.projet_menu_template()
          
+    def render_js_head_slot(self):
+        return self.js_head_slot_template()
+         
+    def render_css_head_slot(self):
+        return self.css_head_slot_template()
+         
+    def render_cycle_list(self):
+        return self.cycle_list_template()
+    
+    def render_cycles_by_states(self):
+        return self.cycles_by_states_template()
+    
+    def render_list_auteurs(self):
+        return self.list_auteurs_template()
+    
     def set2float(self,value):
         if not value:
             return 0.0
         else:
             return float(value)
+    
+    def auteur_disciplines(self,auteur):
+        if hasattr(auteur,'disciplines'):
+            return auteur.disciplines
+        return ""
+    
             
-    # canReviewContent        
-    def canReviewContent(self):
-        return checkPermission('cmf.ReviewPortalContent', self.context)
+    def whichState(self):
+        if self.canReviewContent():
+            return 'all'
+        elif self.isAnonymous():
+            return ['published']
+        return  ['encours','published']
 
+    def tags(self,brain):
+        ret = ""
+        subjects = sorted(brain.Subject)
+        for sub in subjects:
+            ret += sub
+            ret += '\n'
+        return ret
+
+    @view.memoize
+    def disciplines(self,projectPath):
+        context = aq_inner(self.context)
+        #import pdb; pdb.set_trace()
+        if not projectPath:
+            projectPath = '/'.join(context.getPhysicalPath())
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides=[ICycle.__identifier__],
+                       path={'query': projectPath, 'depth': 2},
+                       sort_on="modified", sort_order="reverse")
+        disc = []
+        if len(cat):
+            try:
+                obj = cat[0].getObject()
+                if hasattr(obj,'disciplines'):
+                    disc = obj.disciplines.split()
+            except Unauthorized:
+                return ""
+        #import pdb; pdb.set_trace()
+        ret = ""
+        for d in disc:
+            ret += d
+            ret += "\n"
+            
+        return ret
+
+    @view.memoize
+    def domaines(self,projectPath):
+        context = aq_inner(self.context)
+        #import pdb; pdb.set_trace()
+        if not projectPath:
+            projectPath = '/'.join(context.getPhysicalPath())
+        catalog = getToolByName(self.context, 'portal_catalog')
+        cat = catalog(object_provides=[ICycle.__identifier__],
+                       path={'query': projectPath, 'depth': 2},
+                       sort_on="modified", sort_order="reverse")
+        disc = []
+        if len(cat):
+            try:
+                obj = cat[0].getObject()
+                if hasattr(obj,'domaines'):
+                    disc = obj.domaines.split()
+            except Unauthorized:
+                return ""
+        #import pdb; pdb.set_trace()
+        ret = ""
+        for d in disc:
+            ret += d
+            ret += "\n"            
+        return ret
+        
+    def isAnonymous(self):
+        mt = getToolByName(self.context, 'portal_membership')
+        return mt.isAnonymousUser()
+        
     def isOwner(self):
         mt = getToolByName(self.context, 'portal_membership')
         if mt.isAnonymousUser(): # the user has not logged in
@@ -1267,8 +1412,14 @@ class InterfaceView(grok.View,Form):
         print member, owner
         return member.getName() == owner.getName()
         
-    def canAddContent(self):
-        return checkPermission('cmf.AddPortalContent', self.context)
+    # canReviewContent        
+    def canReviewContent(self):
+        return checkPermission('cmf.ReviewPortalContent', self.context)
+
+    def canAddContent(self, context=None):
+        if not context:
+            context = self.context            
+        return checkPermission('cmf.AddPortalContent', context)
         
     def canModifyContent(self):
         return checkPermission('cmf.ModifyPortalContent', self.context)
@@ -1287,7 +1438,7 @@ class InterfaceView(grok.View,Form):
     def getObjectPath(self):
         return self.objectPath
         
-        
+    @view.memoize    
     def notes(self, projectPath=''):
         """Return a catalog search result of authors from a project
         problem : same author appears several times 
@@ -1304,6 +1455,7 @@ class InterfaceView(grok.View,Form):
         #import pdb; pdb.set_trace()
         return cat
         
+    @view.memoize    
     def authors(self, projectPath=''):
         """Return a catalog search result of authors from a project
         problem : same author appears several times 
@@ -1332,12 +1484,17 @@ class InterfaceView(grok.View,Form):
         else:
             return {}
 
+    def ordre(self,school):
+        if school and school in schools:
+            return schools[school][2]
+        return ''
+        
     def sponsorasked(self,auteur):
         context = aq_inner(self.context)
         author = auteur.getObject()
         ordre = ''
         if author.school in schools.keys():
-            ordre = schools[author.school][1]
+            ordre = schools[author.school][2]
         oneauthor = "\n%s,%s,%s,%s,%s,%s,%d,%d"% \
             (auteur.getPath().split('/')[-2],
             author.id,author.lastname,
@@ -1357,6 +1514,27 @@ class InterfaceView(grok.View,Form):
                             self.set2float(author.sponsorRD)
         return (author.sponsorasked,author.sponsorRD,author.sponsorSchool)
         
+    @view.memoize
+    def review_state(self):
+        context = aq_inner(self.context)
+        portal_workflow = getToolByName(context, 'portal_workflow')
+        review_state = portal_workflow.getInfoFor(context, 'review_state')
+        return review_state
+        
+    @view.memoize_contextless
+    def cycle_state(self,review_state):
+        wtool = getToolByName(self.context, 'portal_workflow', None)
+        cycles = dict([(w.id,w.title) 
+            for w in wtool['rd2.cycle-workflow'].states.values()])
+        return cycles[review_state]
+    
+    @view.memoize_contextless
+    def projet_state(self,review_state):
+        wtool = getToolByName(self.context, 'portal_workflow', None)
+        projets = dict([(w.id,w.title) 
+            for w in wtool['rd2.projet-workflow'].states.values()])
+        return projets[review_state]
+
     def __call__(self):
         if 'search.csvexport' in self.request.keys() and \
                 self.request['search.csvexport'] == ' export csv':
@@ -1492,10 +1670,29 @@ class InterfaceView(grok.View,Form):
                        sort_on='sortable_title')
         return cat
 
-    def cycles(self, projectPath, wf_state='all'):
+
+    def contributeurs(self,cycle_id):
+        context = aq_inner(self.context)
+        if context.portal_type == 'ageliaco.rd2.cycle':
+            context = context.aq_parent
+        catalog = getToolByName(self.context, 'portal_catalog')
+        if cycle_id in context.keys():
+            cycle = context[cycle_id]  
+            if cycle:
+                cat = catalog(object_provides= IAuteur.__identifier__,
+                           path={'query': '/'.join(cycle.getPhysicalPath()),
+                                 'depth': 1
+                                },
+                           sort_on="modified", sort_order="reverse")     
+                return cat
+        return None
+
+    def cycles(self, projectPath='', wf_state='all'):
         """Return a catalog search result of cycles from a project
         """
         context = aq_inner(self.context)
+        if not projectPath:
+            projectPath = '/'.join(context.getPhysicalPath())
         catalog = getToolByName(self.context, 'portal_catalog')
         if wf_state == 'all':
             cat = catalog(object_provides= ICycle.__identifier__,
@@ -1506,6 +1703,25 @@ class InterfaceView(grok.View,Form):
                        review_state=wf_state,
                        path={'query': projectPath, 'depth': 2},
                        sort_on='sortable_title')
+
+                    
+    def localcycles(self):
+        #return a list of actual cycle objects
+        context = aq_inner(self.context)
+        cycles = {}
+        catalog = getToolByName(self.context, 'portal_catalog')
+        if context.portal_type == 'ageliaco.rd2.cycle':
+            parent = context.aq_parent
+            cat = catalog(object_provides= ICycle.__identifier__,
+                            path={'query': '/'.join(parent.getPhysicalPath()), 'depth': 1})
+            cycles = {c.id:c for c in cat if c.id==context.id}
+            #import pdb; pdb.set_trace()
+            return cycles
+        else:
+            cat = self.cycles('/'.join(context.getPhysicalPath()))
+        for cycle in cat:
+            cycles[cycle.id] = cycle   
+        return cycles
 
     def getPortal(self):
         return getSite()

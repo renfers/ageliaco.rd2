@@ -1,0 +1,293 @@
+<link rel="stylesheet" type="text/css" media="screen" href="++resource++jquery.datatables/media/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" media="screen" href="++resource++jquery.datatables/extras/TableTools/media/css/TableTools.css">
+<script type="text/javascript" src="++resource++jquery.datatables.js"></script>
+<script type="text/javascript" src="++resource++jquery.datatables/extras/TableTools/media/js/ZeroClipboard.js"></script>
+<script type="text/javascript" src="++resource++jquery.datatables/extras/TableTools/media/js/TableTools.js"></script>
+<style type="text/css">.clear{clear:both}</style>
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+	<thead>
+		<tr>
+			<th class="filtered">Auteur</th>
+			<th>Prénom</th>
+			<th>Nom</th>
+			<th>Email</th>
+			<th class="filtered">Disciplines</th>
+			<th class="filtered">Ecole</th>
+			<th class="filtered">Filière</th>
+			<th>Demandé</th>
+			<th>Heures RD</th>
+			<th>Heures Ecole</th>
+		</tr>
+	</thead>
+	<tbody tal:define="cycles view/localcycles">
+	    <tal:cycles repeat="cycleId cycles/keys"
+	                condition="cycles">
+		    <tal:auteurs define="cycle python:cycles[cycleId];
+		                        auteurs python:view.contributeurs(cycleId);
+		                        cycleURL cycle/getURL;">
+                <tr tal:repeat="auteur auteurs">
+                <tal:auteur define="obj auteur/getObject;
+                                    auteurURL python:auteur.getURL()+'/edit';
+                                    auteurId auteur/id">
+                    <td >
+                        <a  tal:attributes="href auteurURL"
+                            tal:content="auteurId"  
+                            tal:condition="view/canModifyContent"
+                            class='editAuteur'/>
+                    
+                    </td>
+                    <td tal:content="python:auteur.firstname"></td>
+                    <td tal:content="python:auteur.lastname"></td>
+                    <td tal:content="python:auteur.email"></td>
+                    <td tal:content="python:view.auteur_disciplines(obj)"></td>
+                    <td tal:content="python:auteur.school"></td>
+                    <td tal:content="python:view.ordre(auteur.school)"></td>
+                    <td class="sponsorasked" tal:content="python:obj.sponsorasked"></td>
+                    <td class="sponsorRD" tal:content="python:obj.sponsorRD"></td>
+                    <td class="sponsorSchool" tal:content="python:obj.sponsorSchool"></td>
+                </tal:auteur>
+                </tr>
+            </tal:auteurs>
+        </tal:cycles>
+    </tbody>
+	<tfoot>
+		<tr>
+			<th class="filtered">Auteur</th>
+			<th>Prénom</th>
+			<th>Nom</th>
+			<th>Email</th>
+			<th class="filtered">Disciplines</th>
+			<th class="filtered">Ecole</th>
+			<th class="filtered">Filière</th>
+			<th class="sponsorasked">Demandé</th>
+			<th class="sponsorRD">Heures RD</th>
+			<th class="sponsorSchool">Heures Ecole</th>
+		</tr>
+	</tfoot>
+</table>
+
+<script>
+(function($) {
+/*
+ * Function: fnGetColumnData
+ * Purpose:  Return an array of table values from a particular column.
+ * Returns:  array string: 1d data array
+ * Inputs:   object:oSettings - dataTable settings object. This is always the last argument past to the function
+ *           int:iColumn - the id of the column to extract the data from
+ *           bool:bUnique - optional - if set to false duplicated values are not filtered out
+ *           bool:bFiltered - optional - if set to false all the table data is used (not only the filtered)
+ *           bool:bIgnoreEmpty - optional - if set to false empty values are not filtered from the result array
+ * Author:   Benedikt Forchhammer <b.forchhammer /AT\ mind2.de>
+ */
+$.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
+    // check that we have a column id
+    if ( typeof iColumn == "undefined" ) return new Array();
+     
+    // by default we only want unique data
+    if ( typeof bUnique == "undefined" ) bUnique = true;
+     
+    // by default we do want to only look at filtered data
+    if ( typeof bFiltered == "undefined" ) bFiltered = true;
+     
+    // by default we do not want to include empty values
+    if ( typeof bIgnoreEmpty == "undefined" ) bIgnoreEmpty = true;
+     
+    // list of rows which we're going to loop through
+    var aiRows;
+     
+    // use only filtered rows
+    if (bFiltered == true) aiRows = oSettings.aiDisplay;
+    // use all rows
+    else aiRows = oSettings.aiDisplayMaster; // all row numbers
+ 
+    // set up data array   
+    var asResultData = new Array();
+     
+    for (var i=0,c=aiRows.length; i<c; i++) {
+        iRow = aiRows[i];
+        var aData = this.fnGetData(iRow);
+        var sValue = aData[iColumn];
+         
+        // ignore empty values?
+        if (bIgnoreEmpty == true && sValue.length == 0) continue;
+ 
+        // ignore unique values?
+        else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
+         
+        // else push the value onto the result data array
+        else asResultData.push(sValue);
+    }
+     
+    return asResultData;
+}}(jQuery));
+
+ 
+function frsort(a,b) {
+ // We're comparing each a & b pair using the localeCompare string method,
+ // which takes into account the accents and their sort order in most accented 
+ // latin-based languages by default. You can actually specify regional
+ // language rules with another parameter, but I leave that as a research
+ // task for the reader.
+ return a.localeCompare(b);
+ // When we hand this information back to the sort routine, it can properly
+ // order our list.
+ }
+ 
+ 
+// function fnCreateSelect( aData )
+// {
+//     var r='<select><option value=""></option>', i, iLen=aData.length;
+//     for ( i=0 ; i<iLen ; i++ )
+//     {
+//         r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
+//     }
+//     return r+'</select>';
+// }
+function fnCreateSelect( aData )
+{
+    var r='<select><option value=""></option>', i, iLen=aData.length;
+    var mylist = [];
+    for ( i=0 ; i<iLen ; i++ )
+    {
+        var alist = aData[i].split('\n'), jLen=0, j=0;
+        jLen=alist.length;
+        for ( j=0; j<jLen; j++ ) {
+            var mot = jQuery(alist[j]).text();
+            if (mot.length > 0) {
+            }
+            else {
+                mot = alist[j];
+            }
+            var len = mot.length;
+            if ((len > 0) ) {
+                if (mylist.indexOf(mot) == -1){
+                    mylist.push(mot);
+                }
+            }
+        }
+    }
+    //alert(mylist);
+        mylist.sort(frsort);
+        jLen = mylist.length;
+        for ( j=0; j<jLen; j++ ) {
+            r += '<option value="'+mylist[j]+'">'+mylist[j]+'</option>';
+        }
+        //alert(r);
+    return r+'</select>';
+}
+ 
+
+function sumColumn(n) {
+  var dataArray = $('#example')._('td:nth-child(n)', {"filter": "applied"});
+  var sum = 0;
+ 
+  for (var i=0, len=dataArray.length; i < len; i++) {
+    sum += +dataArray[i];
+  }
+ 
+  return sum;
+}
+ 
+$(document).ready(function() {
+    /* Initialise the DataTable */
+    var oTable = $('#example').dataTable( {
+        "oLanguage": {
+            "sSearch": "Rechercher:",
+            "sUrl": "@@collective.js.datatables.translation"
+        },
+        "sDom": 'T<"clear">lfrtip',
+        "oTableTools": {
+            "sSwfPath": "++resource++jquery.datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf"
+        },
+        "fnFooterCallback": function( nRow, aaData, iStart, iEnd, aiDisplay )
+        {
+            var nCells = nRow.getElementsByTagName('th');
+            nCells[7].innerHTML = 0 ;       
+            nCells[8].innerHTML = 0 ;       
+            nCells[9].innerHTML = 0 ;       
+            var sum10 = 0;
+            var sum11 = 0;
+            var sum12 = 0;
+            var localnum = 0;
+            //alert(aiDisplay);
+            for (var i = 0; i < aaData.length; i++) {
+                if ($.inArray(i, aiDisplay) != -1){
+                
+                //alert(aaData[i]);alert(String(sum10) + " " + String(i));
+                    sum10 += Number(aaData[i][7]) ;
+                    sum11 += Number(aaData[i][8]) ;
+                    sum12 += Number(aaData[i][9]) ;
+       
+                }
+            }
+            nCells[7].innerHTML = sum10 ;       
+            nCells[8].innerHTML = sum11 ;       
+            nCells[9].innerHTML = sum12 ;       
+        },
+        
+    } );
+    /* Add a select menu for each TH element in the table footer */
+    $("tfoot th").each( function ( i ) {
+        var theCell = this;
+             if (this.className == 'filtered') { 
+            
+            this.innerHTML = fnCreateSelect( oTable.fnGetColumnData(i) );
+            $('select', this).change( function () {
+                oTable.fnFilter( $(this).val(), i );
+            } );
+            }
+            else {
+//                this.innerHTML=0;
+/*            
+var str = this.className;
+
+switch (str) {
+    case 'sponsorasked':
+        var dataArray = oTable._('td:nth-child(10)', {"filter": "applied"});
+        var sum = 0;
+        var localnum = 0;
+        for (var i=0, len=dataArray.length; i < len; i++) {
+            localnum = +dataArray[i];
+            if (!isNaN(localnum)){
+                sum += localnum;
+            }
+        }
+        this.innerHTML=sum;
+
+        break;
+
+    case 'sponsorSchool':
+        var dataArray = oTable._('td:nth-child(12)', {"filter": "applied"});
+        var sum = 0;
+        var localnum = 0;
+        for (var i=0, len=dataArray.length; i < len; i++) {
+            localnum = +dataArray[i];
+            if (!isNaN(localnum)){
+                sum += localnum;
+            }
+        }
+        this.innerHTML=sum;
+
+        break;
+    case 'sponsorRD':
+        var dataArray = oTable._('td:nth-child(11)', {"filter": "applied"});
+        var sum = 0;
+        var localnum = 0;
+        for (var i=0, len=dataArray.length; i < len; i++) {
+            localnum = +dataArray[i];
+            if (!isNaN(localnum)){
+                sum += localnum;
+            }
+        }
+        this.innerHTML=sum;
+
+        break;
+    default:
+    }
+    */ 
+    }
+
+    } );    
+} );
+</script>

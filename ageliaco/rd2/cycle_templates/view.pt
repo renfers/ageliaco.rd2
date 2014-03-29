@@ -8,12 +8,21 @@
       
  <head>
     <metal:block fill-slot="style_slot">
-        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+        <span tal:replace="structure view/render_css_head_slot"/>
     </metal:block>
-    <metal:block fill-slot="javascript_head_slot" >
+<!--    <metal:block fill-slot="javascript_head_slot" >
         <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
     </metal:block>
- 
+    
+    <metal:block fill-slot="style_slot">
+        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+    </metal:block>
+
+--> 
+
+    <metal:block fill-slot="javascript_head_slot" >
+        <span tal:replace="structure view/render_js_head_slot"/>
+    </metal:block>
 </head>
       
 <body>
@@ -75,10 +84,14 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     <span  tal:content="context/id"/>
 </h4>
 
+<div class="noprint" tal:content="structure view/render_auteurs"/>
 
-    <div tal:condition="context/description" >
+<div class="noprint" tal:content="structure view/render_notes"/>
+
+    <div >
         <h4>Synopsis</h4>
-        <div class="description" tal:content="structure context/description" />
+        <div class="description" tal:content="structure context/description" 
+            tal:condition="context/description" />
     </div>
     
     <div tal:condition="python:context.supervisor and \
@@ -97,10 +110,12 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
 
 <div >
 
-    <div tal:condition="context/domaine" >
+    <div >
         <h3>Domaine(s)</h3>
-        <tal:domaine define="domaine context/domaine">
-        <ul tal:define="domaine_list python:domaine.split('\n')">
+        <tal:domaine define="domaine context/domaine"
+            tal:condition="context/domaine" >
+        <ul tal:define="domaine_list python:domaine.split('\n')"
+           >
             <li tal:repeat="domain domaine_list">
                 <span tal:replace="domain"/>
             </li>
@@ -110,10 +125,12 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     </div>
 
 
-    <div tal:condition="context/discipline" >
+    <div >
         <h3>Discipline(s)</h3>
-        <tal:domaine define="discipline context/discipline">
-        <ul tal:define="discipline_list python:discipline.split('\n')">
+        <tal:domaine define="discipline context/discipline"
+            tal:condition="context/discipline">
+        <ul tal:define="discipline_list python:discipline.split('\n')"
+             >
             <li tal:repeat="disc discipline_list">
                 <span tal:replace="disc"/>
             </li>
@@ -122,9 +139,9 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
         </tal:domaine>
     </div>
 
-    <div tal:condition="context/presentation" >
+    <div  >
         <h3 >Objectifs généraux du projet</h3>
-        <div class="description" 
+        <div class="description" tal:condition="context/presentation"
             tal:content="structure context/presentation/output" />
     </div>
 
@@ -133,28 +150,6 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
             <span tal:content="python: view.projet(context.projet)"/></a>
         </h4>
     </div>
-
-
-<h4  i18n:translate="heading_auteurs"
-    tal:define="objectPath 
-        python:view.setObjectPath('/'.join(context.getPhysicalPath()),
-            withTotal=view.canReviewContent() or view.isOwner())"
-    >PARTICIPANT-E-S
-    <span class="noprint"  tal:condition="view/canModifyContent">
-        <a title="Editer les participant-e-s" class='editAuteurs' 
-            tal:attributes="href string:${view/cycle_url}/Auteurs">
-            <i class="fa fa-pencil"></i></a>
-    </span>
-</h4>
-        
-            <div tal:condition="python: view.canReviewContent() or view.isOwner()">
-                <a class="noprint"  href="#" class="heures" 
-                    tal:attributes="id string:button-hide-hours">
-                    <i class="fa fa-clock-o"></i>
-                </a>
-            </div>
-        
-            <span metal:use-macro="context/@@interface/macros/list_auteurs"/>
 
 </div>
 
@@ -168,7 +163,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     <a  tal:attributes="name string:${fieldset/__name__}"> </a>
     <fieldset tal:attributes="id string:form-groups-${fieldset/__name__}">
         <legend tal:content="fieldset/label"/>
-        <div tal:repeat="field fieldset/fields" >
+        <div tal:repeat="field fieldset/fields" style="background-color:#eee;">
             <h3 tal:content="python: view.w[field].label"/>
                 <a tal:attributes="name string:${field}"> </a>
         <div tal:condition="python:view.isList(field)">
@@ -207,13 +202,6 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     
 </div>
 
-<!-- overlayed element -->
-<div class="apple_overlay" id="overlay">
-
-	<!-- the external content is loaded inside this tag -->
-	<div class="contentWrap"></div>
-
-</div>
        <div tal:replace="structure provider:plone.belowcontentbody" /> 
 
     </tal:main-macro>
