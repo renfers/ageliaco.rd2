@@ -8,10 +8,10 @@
       
  <head>
     <metal:block fill-slot="style_slot">
-        <span metal:use-macro="context/@@interface/macros/css_head_slot"/>
+        <span tal:replace="structure view/render_css_head_slot"/>
     </metal:block>
     <metal:block fill-slot="javascript_head_slot" >
-        <span metal:use-macro="context/@@interface/macros/js_head_slot"/>
+        <span tal:replace="structure view/render_js_head_slot"/>
     </metal:block>
  
 </head>
