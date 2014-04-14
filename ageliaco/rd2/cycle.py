@@ -74,15 +74,17 @@ class View(InterfaceView, dexterity.DisplayForm):
     def isList(self,fieldname):
         context = aq_inner(self.context)
         data = None
-        try:
-            data = getattr(context,fieldname,None)
-        except:
-            return False
+        #try:
+        data = getattr(context,fieldname,None)
+        #except:
+        #    return False
         if data:
+            #import pdb; pdb.set_trace()
             return type(data)== list
         return False
     
-        return year < 2014 and month < 9
+        #return year < 2014 and month < 9
+
     def isOldCycle(self):
         context = aq_inner(self.context)
         date = context.CreationDate()
@@ -145,36 +147,41 @@ class View(InterfaceView, dexterity.DisplayForm):
     
 @indexer(ICycle)
 def searchableIndexer(context):
-    try:
-        retour = u""
-        all = (
-                context.id,
-                context.title, 
-                context.description, 
-                context.projet,
-                context.domaine,
-                context.discipline,
-                context.problematique, 
-                context.presentation,
-                context.experiences,
-                context.besoin,
-                context.cible,
-                context.pro,
-                context.forme,
-                context.planification,
-                context.plan,
-                context.repartition,
-                context.modalites,
-                context.participants,
-                context.porteparole,
-                )
-        for elem in all:
-            retour += u" %s" % elem
-        return retour
+    #try:
+    retour = u""
+    all = (
+            context.id,
+            context.title, 
+            context.description, 
+            context.projet,
+            context.domaine,
+            context.discipline,
+            context.problematique, 
+            context.presentation,
+            context.experiences,
+            context.besoin,
+            #u' '.join(context.cible),
+            context.pro,
+            context.forme,
+            context.planification,
+            context.plan,
+            context.repartition,
+            context.modalites,
+            context.participants,
+            context.porteparole,
+            )
+    for elem in all:
+        if elem:
+            if type(elem)==list:
+                s = u' '.join(elem)
+            else:
+                s = elem
+            retour += u" %s" % s
+    return retour
             
-    except:
-        log( 'tOO BAD an INDEX (bad cycle) : ' + context.absolute_url())
-        return u""        
+    #except:
+    #    log( 'tOO BAD an INDEX (bad cycle) : ' + context.absolute_url())
+    #    return u""        
 grok.global_adapter(searchableIndexer, name="SearchableText")
 
 

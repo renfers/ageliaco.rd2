@@ -52,6 +52,9 @@ from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from interface import ICycle, IAuteur, InterfaceView
+_ = MessageFactory
+
+
 
 class IProjets(form.Schema):
     """
@@ -62,7 +65,38 @@ class IProjets(form.Schema):
             required=False,
         )    
 
+    # contexte Fieldset
+    form.fieldset(
+        'vocabulaires',
+        label=_(u"Vocabulaires"),
+        fields=['filieres', 'schools', 'domaines',
+                'disciplines', 'sponsorships']
+    )
 
+    filieres = schema.Text(title=u"Filières",
+                description=u"Tapez une ligne par filière",
+                required=False,
+            )
+    schools = schema.Text(title=u"Ecoles",
+                description=u"format => CIGLE,nom école,FILIERE,LOGIN_DIRECTEUR",
+                )
+    domaines = schema.Text(title=u"Domaines d'étude",
+                description=u"Tapez une ligne par domaine",
+                required=False,
+            )
+    disciplines = schema.Text(title=u"Disciplines",
+                description=u"Tapez une ligne par discipline",
+                required=False,
+            )
+    #     schools = schema.List(title=u"Ecoles",
+    #             description=u"Ecoles, avec leur filière et leur directeur",
+    #             value_type=schema.Object(ISchool, title=u"Ecole"),
+    #             required=False,)
+    sponsorships = schema.Text(title=u"Heures de dégrevement",
+                description=u"Tapez une ligne par valeur",
+                required=False,
+            )
+    
 
     
         

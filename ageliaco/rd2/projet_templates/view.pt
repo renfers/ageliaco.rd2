@@ -71,13 +71,14 @@
         
 </div> 
 
-<div tal:condition="python:view.isRepository() and view.isAnonymous()">
+<div tal:condition="python:view.isRepository() and not view.isAnonymous()">
     <div id="create_newcycle" >
       <a class="btn btn-large btn-info" href="++add++ageliaco.rd2.cycle">
       Proposer un projet</a>
     </div>
     <hr/>
 <div tal:replace="structure view/render_cycleauteurs" />
+
 </div>
 
 

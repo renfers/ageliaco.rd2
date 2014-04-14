@@ -50,7 +50,7 @@
                     <td tal:content="python:auteur.firstname"></td>
                     <td tal:content="python:auteur.lastname"></td>
                     <td tal:content="python:auteur.email"></td>
-                    <td tal:content="python:view.auteur_disciplines(obj)"></td>
+                    <td tal:content="python:view.auteur_disciplines_str(obj)"></td>
                     <td tal:content="python:auteur.school"></td>
                     <td tal:content="python:view.ordre(auteur.school)"></td>
                     <td class="sponsorasked" tal:content="python:obj.sponsorasked"></td>
@@ -166,7 +166,11 @@ function fnCreateSelect( aData )
         var alist = aData[i].split('\n'), jLen=0, j=0;
         jLen=alist.length;
         for ( j=0; j<jLen; j++ ) {
-            var mot = jQuery(alist[j]).text();
+            var mot = alist[j];
+            if (mot.indexOf('<') > -1) {
+                mot = jQuery(mot).text();
+            }
+            mot = mot.trim();
             if (mot.length > 0) {
             }
             else {

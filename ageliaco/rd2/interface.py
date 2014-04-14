@@ -9,6 +9,7 @@ ldap filter for R&D :
  (memberof=CN=INVITES-EXTERNES,ou=GLOBAL,ou=PO,ou=PO,ou=EEL,o=GRP,dc=EEL))
 """
 import os.path
+from Products.CMFPlone.utils import safe_unicode
 
 from Products.Five import BrowserView
 from five import grok
@@ -35,7 +36,7 @@ from plone.indexer import indexer
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import IVocabularyFactory
-from zope.schema.vocabulary import SimpleVocabulary
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 import unicodedata
 from zope.interface import invariant, Invalid, Interface
 from plone.z3cform.interfaces import IWrappedForm
@@ -66,6 +67,7 @@ from AccessControl import Unauthorized
 from Products.CMFCore.permissions import ManagePortal
 
 
+from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.interfaces import IContextSourceBinder
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.app.container.interfaces import IObjectAddedEvent
@@ -75,6 +77,7 @@ from plone.namedfile.field import NamedImage
 from plone.formwidget.autocomplete import AutocompleteFieldWidget
 from z3c.form.browser.checkbox import CheckBoxFieldWidget
 from z3c.form import field
+from plone.app.widgets.dx import SelectWidget
 
 from zope.interface import invariant, Invalid
 
@@ -96,6 +99,16 @@ from Products.statusmessages.interfaces import IStatusMessage
 
 from collective import dexteritytextindexer
 
+
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
+
+import unicodedata
+
+def remove_accents(input_str):
+    nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
+    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
+    
 def utf_8(input_str):
     return unicode(input_str,"utf-8")
     
@@ -148,36 +161,36 @@ ECASE : école d'assistant-e-s socio-éducativ-ve-s
 ECASO : école d'assistant-e-s en soins et santé communautaire
  
 """
-ordres = {
-    "COLLEGES" : u"COLLEGES",
-    "COPAD" : u"COPAD",
-    "ECG" : u"ECG",
-    "INSERTION" : u"INSERTION",
-    "CFPCom" : u"CFPCom",
-    "CFPC": u"CFPC",
-    "CFPS":u"CFPS",
-    "CFPS-ECASE":u"CFPS-ECASE",
-    "CFPS-ECASO":u"CFPS-ECASO",
-    "CFPS-ESHYD":u"CFPS-ESHYD",
-    "CFPS-FORAD":u"CFPS-FORAD",
-    "CFPS-ECLAB":u"CFPS-ECLAB",
-    "CFPS-CUISI":u"CFPS-CUISI",
-    "CFPS-ECAME":u"CFPS-ECAME",
-    "CFPS-ESPOD":u"CFPS-ESPOD",
-    "CFPS-ESEDE":u"CFPS-ESEDE",
-    "CFPS-ESAMB":u"CFPS-ESAMB",
-    "CFPT":u"CFPT",
-    "CFPT-MECATRONIQUE":u"CFPT-MECATRONIQUE",
-    "CFPT-ELECTRONIQUE":u"CFPT-ELECTRONIQUE",
-    "CFPT-AUTOMOBILE":u"CFPT-AUTOMOBILE",
-    "CFPT-HORLOGERIE":u"CFPT-HORLOGERIE",
-    "CFPT-INFORMATIQUE":u"CFPT-INFORMATIQUE",
-    "CFPSHR":u"CFPSHR",
-    "CFPSHR-ECGEI":u"CFPSHR-ECGEI",
-    "CFPNE":u"CFPNE",
-    "CFPAA":u"CFPAA",
-    }
-
+# ordres = {
+#     "COLLEGES" : u"COLLEGES",
+#     "COPAD" : u"COPAD",
+#     "ECG" : u"ECG",
+#     "INSERTION" : u"INSERTION",
+#     "CFPCom" : u"CFPCom",
+#     "CFPC": u"CFPC",
+#     "CFPS":u"CFPS",
+#     "CFPS-ECASE":u"CFPS-ECASE",
+#     "CFPS-ECASO":u"CFPS-ECASO",
+#     "CFPS-ESHYD":u"CFPS-ESHYD",
+#     "CFPS-FORAD":u"CFPS-FORAD",
+#     "CFPS-ECLAB":u"CFPS-ECLAB",
+#     "CFPS-CUISI":u"CFPS-CUISI",
+#     "CFPS-ECAME":u"CFPS-ECAME",
+#     "CFPS-ESPOD":u"CFPS-ESPOD",
+#     "CFPS-ESEDE":u"CFPS-ESEDE",
+#     "CFPS-ESAMB":u"CFPS-ESAMB",
+#     "CFPT":u"CFPT",
+#     "CFPT-MECATRONIQUE":u"CFPT-MECATRONIQUE",
+#     "CFPT-ELECTRONIQUE":u"CFPT-ELECTRONIQUE",
+#     "CFPT-AUTOMOBILE":u"CFPT-AUTOMOBILE",
+#     "CFPT-HORLOGERIE":u"CFPT-HORLOGERIE",
+#     "CFPT-INFORMATIQUE":u"CFPT-INFORMATIQUE",
+#     "CFPSHR":u"CFPSHR",
+#     "CFPSHR-ECGEI":u"CFPSHR-ECGEI",
+#     "CFPNE":u"CFPNE",
+#     "CFPAA":u"CFPAA",
+#     }
+# 
 # professionnelles = {
 #     "CFPPC": u"CFPPC",
 #     "CFPS":u"CFPS",
@@ -203,91 +216,211 @@ ordres = {
 #     "CFPAA":u"CFPAA",
 #     }
     
-schools = {
-    'CALV' : ['CALV',u"collège Calvin",u"COLLEGES"],
-    'CAND' : ['CAND',u"collège de Candolle",u"COLLEGES"],
-    'CLAP' : ['CLAP',u"collège Claparède",u"COLLEGES"],
-    'ROUS' : ['ROUS',u"collège Rousseau",u"COLLEGES"],
-    'SAUS' : ['SAUS',u"collège de Saussure",u"COLLEGES"],
-    'SISM' : ['SISM',u"collège Sismondi",u"COLLEGES"],
-    'VOLT' : ['VOLT',u"collège Voltaire",u"COLLEGES"],
-    'STAEL' : ['STAEL',u"collège de Staël",u"COLLEGES"],
-    'COPAD' : ['COPAD',u"collège pour adultes Alice-Rivaz",u"COLLEGES"],
-    'CEBOU' : ['CEBOU',u"EC Nicolas-Bouvier",u"CFPPC"],
-    'CECHA' : ['CECHA',u"CEC André-Chavanne",u"CFPPC"],
-    'CEGOU' : ['CEGOU',u"CEC Emilie-Gourd",u"CFPPC"],
-    'STITE' : ['STITE',u"EC Aimée-Stitelmann",u"CFPPC"],
-    'BGRIE' : ['BGRIE',u"EC Bougeries",u"CFPPC"],
-    'CFPAA' : ['CFPAA',u"centre de formation professionnelle arts appliqués",u"CFP"],
-    'CFPC' : ['CFPC',u"centre de formation professionnelle construction",u"CFP"],
-    'CFPSHR' : ['CFPSHR',u"centre de formation professionnelle service hôtellerie restauration",u"CFP"],
-    'CFPT' : ['CFPT',u"centre de formation professionnelle technique",u"CFP"],
-    'CFPne' : ['CFPne',u"centre de formation professionnelle nature et environnement",u"CFP"],
-    'CFPS' : ['CFPS',u"centre de formation professionnelle santé social",u"CFP"],
-    'ESPOD' : ['ESPOD',u"école supérieure des podologues",u"CFP"],
-    'ESHYD' : ['ESHYD',u"école supérieure des hygiénistes dentaires",u"CFP"],
-    'ESAME' : ['ESAME',u"école supérieure des assistant-e-s de médecin",u"CFP"],
-    'ECLAB' : ['ECLAB',u"école des métiers du laboratoire",u"CFP"],
-    'ESEDE' : ['ESEDE',u"école supérieure d'éducatrices et d'éducateurs de l'enfance",u"CFP"],
-    'ESAMB' : ['ESAMB',u"école supérieure des ambulancier-ère-s",u"CFP"],
-    'CUISI' : ['CUISI',u"filière romande de cuisinier-ère-s en diététique",u"CFP"],
-    'FORAD' : ['FORAD',u"formation d'assistant-e-s dentaires",u"CFP"],
-    'ECGEI' : ['ECGEI',u"école des gestionnaires en intendance",u"CFP"],
-    'ECASE' : ['ECASE',u"école d'assistant-e-s socio-éducativ-ve-s",u"CFP"],
-    'ECASO' : ['ECASO',u"école d'assistant-e-s en soins et santé communautaire",u"CFP"],
-    'DUNAN' : ['DUNAN',u"ECG Henry-Dunant",u"ECG"],
-    'PIAGE' : ['PIAGE',u"ECG Jean-Piaget",u"ECG"],
-    'MAILL' : ['MAILL',u"ECG Ella-Maillart",u"ECG"],
-    'ACPO' : ['ACPO',u"service de l'accueil du postobligatoire",u"INSERTION"],
-    'CTP' : ['CTP',u"centre de la transition professionnelle",u"INSERTION"],
-    }
+# schools = {
+#     'CALV' : ['CALV',u"collège Calvin",u"COLLEGES"],
+#     'CAND' : ['CAND',u"collège de Candolle",u"COLLEGES"],
+#     'CLAP' : ['CLAP',u"collège Claparède",u"COLLEGES"],
+#     'ROUS' : ['ROUS',u"collège Rousseau",u"COLLEGES"],
+#     'SAUS' : ['SAUS',u"collège de Saussure",u"COLLEGES"],
+#     'SISM' : ['SISM',u"collège Sismondi",u"COLLEGES"],
+#     'VOLT' : ['VOLT',u"collège Voltaire",u"COLLEGES"],
+#     'STAEL' : ['STAEL',u"collège de Staël",u"COLLEGES"],
+#     'COPAD' : ['COPAD',u"collège pour adultes Alice-Rivaz",u"COLLEGES"],
+#     'CEBOU' : ['CEBOU',u"EC Nicolas-Bouvier",u"CFPPC"],
+#     'CECHA' : ['CECHA',u"CEC André-Chavanne",u"CFPPC"],
+#     'CEGOU' : ['CEGOU',u"CEC Emilie-Gourd",u"CFPPC"],
+#     'STITE' : ['STITE',u"EC Aimée-Stitelmann",u"CFPPC"],
+#     'BGRIE' : ['BGRIE',u"EC Bougeries",u"CFPPC"],
+#     'CFPAA' : ['CFPAA',u"centre de formation professionnelle arts appliqués",u"CFP"],
+#     'CFPC' : ['CFPC',u"centre de formation professionnelle construction",u"CFP"],
+#     'CFPSHR' : ['CFPSHR',u"centre de formation professionnelle service hôtellerie restauration",u"CFP"],
+#     'CFPT' : ['CFPT',u"centre de formation professionnelle technique",u"CFP"],
+#     'CFPne' : ['CFPne',u"centre de formation professionnelle nature et environnement",u"CFP"],
+#     'CFPS' : ['CFPS',u"centre de formation professionnelle santé social",u"CFP"],
+#     'ESPOD' : ['ESPOD',u"école supérieure des podologues",u"CFP"],
+#     'ESHYD' : ['ESHYD',u"école supérieure des hygiénistes dentaires",u"CFP"],
+#     'ESAME' : ['ESAME',u"école supérieure des assistant-e-s de médecin",u"CFP"],
+#     'ECLAB' : ['ECLAB',u"école des métiers du laboratoire",u"CFP"],
+#     'ESEDE' : ['ESEDE',u"école supérieure d'éducatrices et d'éducateurs de l'enfance",u"CFP"],
+#     'ESAMB' : ['ESAMB',u"école supérieure des ambulancier-ère-s",u"CFP"],
+#     'CUISI' : ['CUISI',u"filière romande de cuisinier-ère-s en diététique",u"CFP"],
+#     'FORAD' : ['FORAD',u"formation d'assistant-e-s dentaires",u"CFP"],
+#     'ECGEI' : ['ECGEI',u"école des gestionnaires en intendance",u"CFP"],
+#     'ECASE' : ['ECASE',u"école d'assistant-e-s socio-éducativ-ve-s",u"CFP"],
+#     'ECASO' : ['ECASO',u"école d'assistant-e-s en soins et santé communautaire",u"CFP"],
+#     'DUNAN' : ['DUNAN',u"ECG Henry-Dunant",u"ECG"],
+#     'PIAGE' : ['PIAGE',u"ECG Jean-Piaget",u"ECG"],
+#     'MAILL' : ['MAILL',u"ECG Ella-Maillart",u"ECG"],
+#     'ACPO' : ['ACPO',u"service de l'accueil du postobligatoire",u"INSERTION"],
+#     'CTP' : ['CTP',u"centre de la transition professionnelle",u"INSERTION"],
+#     }
+# 
+# sponsorships = {"0":[u"0",0],
+#     0.25:[u"0.25",0.25],
+#     0.5:[u"0.5",0.5],
+#     0.75:[u"0.75",0.75],
+#     1.0:[u"1.0",1.0],
+#     1.25:[u"1.25",1.25],
+#     1.5:[u"1.5",1.5],
+#     1.75:[u"1.75",1.75],
+#     2.0:[u"2.0",2.0],
+#     2.25:[u"2.25",2.25],
+#     2.5:[u"2.5",2.5],
+#     2.75:[u"2.75",2.75],
+#     3.0:[u"3.0",3.0]}
 
-sponsorships = {"0":[u"0",0],
-    0.25:[u"0.25",0.25],
-    0.5:[u"0.5",0.5],
-    0.75:[u"0.75",0.75],
-    1.0:[u"1.0",1.0],
-    1.25:[u"1.25",1.25],
-    1.5:[u"1.5",1.5],
-    1.75:[u"1.75",1.75],
-    2.0:[u"2.0",2.0],
-    2.25:[u"2.25",2.25],
-    2.5:[u"2.5",2.5],
-    2.75:[u"2.75",2.75],
-    3.0:[u"3.0",3.0]}
+
+def getProjetsParent(context):
+    if not context:
+        return None
+    if context.portal_type == 'ageliaco.rd2.projets':
+        return context
+    urltool = getToolByName(context, 'portal_url')
+    portal = urltool.getPortalObject()
+    if context == portal:
+        return None
+    parent = context.aq_parent
+    return getProjetsParent(parent)
 
 class SchoolsVocabulary(object):
     grok.implements(IVocabularyFactory)
     def __call__(self, context):
         terms = []
-        ecoles = [(value[1],key) for key,value in schools.iteritems()]
-        ecoles.sort()
-        for school,school_id in ecoles:
-            terms.append(SimpleVocabulary.createTerm(school_id, 
-                            str(school_id),
-                            u"%s : %s" % (school_id,school)))
+        projets = getProjetsParent(context)
+        #import pdb; pdb.set_trace()
+        if projets == None:
+            return None
+        ecoles = projets.schools
+        if ecoles:
+            maListe = [x.strip() for x in ecoles.split(u'\n')]
+            for ordre in sorted(maListe):
+                school = ordre.split(',')
+                if len(school)>0:
+                    terms.append(SimpleVocabulary.createTerm(school[0], 
+                                         str(remove_accents(school[0])),
+                                         u"%s : %s"%(school[0],school[1])))
+        #         ecoles = [(value[1],key) for key,value in schools.iteritems()]
+        #         ecoles.sort()
+        #         for school,school_id in ecoles:
+        #             terms.append(SimpleVocabulary.createTerm(school_id, 
+        #                             str(school_id),
+        #                             u"%s : %s" % (school_id,school)))
         return SimpleVocabulary(terms)
 grok.global_utility(SchoolsVocabulary, name=u"ageliaco.rd2.schools")
+    
+class SchoolOrdreVocabulary(object):
+    grok.implements(IVocabularyFactory)
+    def __call__(self, context):
+        terms = []
+        projets = getProjetsParent(context)
+        #import pdb; pdb.set_trace()
+        if projets == None:
+            return None
+        ecoles = projets.schools
+        if ecoles:
+            maListe = [x.strip() for x in ecoles.split(u'\n')]
+            for ordre in sorted(maListe):
+                school = ordre.split(',')
+                if len(school)>0:
+                    terms.append(SimpleVocabulary.createTerm(school[0], 
+                                         str(remove_accents(school[0])),
+                                         school[2]))
+        #         ecoles = [(value[1],key) for key,value in schools.iteritems()]
+        #         ecoles.sort()
+        #         for school,school_id in ecoles:
+        #             terms.append(SimpleVocabulary.createTerm(school_id, 
+        #                             str(school_id),
+        #                             u"%s : %s" % (school_id,school)))
+        return SimpleVocabulary(terms)
+grok.global_utility(SchoolOrdreVocabulary, name=u"ageliaco.rd2.schoolOrdre")
 
 class OrdresEnseignementVocabulary(object):
     grok.implements(IVocabularyFactory)
     def __call__(self, context):
         terms = []
-        for ordre in sorted(ordres.keys()):
-            terms.append(SimpleVocabulary.createTerm(ordre, 
-                            str(ordre),
-                            ordres[ordre]))
+        #import pdb; pdb.set_trace()
+        urltool = getToolByName(context, 'portal_url')
+        portal = urltool.getPortalObject()
+        projets = getProjetsParent(context)
+        if projets == None:
+            return None
+        filieres = projets.filieres
+        if filieres:
+            maListe = [x.strip() for x in filieres.split(u'\n')]
+            for ordre in sorted(maListe):
+                terms.append(SimpleVocabulary.createTerm(ordre, 
+                                         str(remove_accents(ordre)),
+                                         ordre))
+        #         for ordre in sorted(ordres.keys()):
+        #             terms.append(SimpleVocabulary.createTerm(ordre, 
+        #                             str(ordre),
+        #                             ordres[ordre]))
+        #import pdb; pdb.set_trace()
+
         return SimpleVocabulary(terms)
 grok.global_utility(OrdresEnseignementVocabulary, name=u"ageliaco.rd2.ordres")
+
+class DomainesEnseignementVocabulary(object):
+    grok.implements(IVocabularyFactory)
+    def __call__(self, context):
+        terms = []
+        #import pdb; pdb.set_trace()
+        urltool = getToolByName(context, 'portal_url')
+        portal = urltool.getPortalObject()
+        projets = getProjetsParent(context)
+        if projets == None:
+            return None
+        domaines = projets.domaines
+        if domaines:
+            maListe = [x.strip() for x in domaines.split(u'\n')]
+            for ordre in sorted(maListe):
+                terms.append(SimpleVocabulary.createTerm(ordre, 
+                                         str(remove_accents(ordre)),
+                                         ordre))
+        return SimpleVocabulary(terms)
+grok.global_utility(DomainesEnseignementVocabulary, name=u"ageliaco.rd2.domaines")
+
+class DisciplinesVocabulary(object):
+    grok.implements(IVocabularyFactory)
+    def __call__(self, context):
+        terms = []
+        #import pdb; pdb.set_trace()
+        urltool = getToolByName(context, 'portal_url')
+        portal = urltool.getPortalObject()
+        projets = getProjetsParent(context)
+        if projets == None:
+            return None
+        disciplines = projets.disciplines
+        if disciplines:
+            maListe = [x.strip() for x in disciplines.split(u'\n')]
+            #import pdb; pdb.set_trace()
+            for ordre in sorted(maListe):
+                terms.append(SimpleVocabulary.createTerm(ordre, 
+                                         str(remove_accents(ordre)),
+                                         ordre))
+        return SimpleVocabulary(terms)
+grok.global_utility(DisciplinesVocabulary, name=u"ageliaco.rd2.disciplines")
 
 class SponsorshipVocabulary(object):
     grok.implements(IVocabularyFactory)
     def __call__(self, context):
         terms = []
-        for sponsorship in sorted(sponsorships.keys()):
-            terms.append(SimpleVocabulary.createTerm(sponsorship, 
-                            str(sponsorship), 
-                            sponsorships[sponsorship][0]))
+        urltool = getToolByName(context, 'portal_url')
+        portal = urltool.getPortalObject()
+        projets = getProjetsParent(context)
+        if projets == None:
+            return None
+        sponsorships = projets.sponsorships
+        if sponsorships:
+            maListe = [x.strip() for x in sponsorships.split(u'\n')]
+            for ordre in sorted(maListe):
+                terms.append(SimpleVocabulary.createTerm(ordre, 
+                                         str(remove_accents(ordre)),
+                                         ordre))
+        #         for sponsorship in sorted(sponsorships.keys()):
+        #             terms.append(SimpleVocabulary.createTerm(sponsorship, 
+        #                             str(sponsorship), 
+        #                             sponsorships[sponsorship][0]))
         return SimpleVocabulary(terms)
 grok.global_utility(SponsorshipVocabulary, name=u"ageliaco.rd2.sponsorship")
 
@@ -384,7 +517,8 @@ def possibleAttendees(context):
                             str(brain.id), 
                             name))
         terms = sorted(terms, key=lambda name: name.title)
-    return SimpleVocabulary(terms)
+    return SimpleVocabulary(terms)            
+
 
 class INote(form.Schema):
     """
@@ -421,8 +555,9 @@ class INote(form.Schema):
 @form.default_value(field=INote['title'])
 def startDefaultValue(data):
     # To get hold of the folder, do: context = data.context
+    context = data.context
     day =  datetime.datetime.today()
-    return "Note-" + day.strftime("%Y-%m-%d")
+    return context.id + "_Note-" + day.strftime("%Y-%m-%d")
 
 @grok.subscribe(INote, IObjectAddedEvent)
 def setPresence(note, event):
@@ -480,10 +615,14 @@ class IAuteur(form.Schema):
             required=True,
         )
 
-    disciplines = schema.Text(
-            title=MessageFactory(u"Disciplines"),
-            description=MessageFactory(u"Disciplines enseignées (une par ligne)"),
-            required=False,
+
+    dexteritytextindexer.searchable('disciplines')
+    form.widget('disciplines', SelectWidget, multiple='multiple', size=10) 
+    disciplines = schema.List(
+        title=MessageFactory(u"discipline(s) enseignée(s)"),
+        description=MessageFactory(u"Sélectionnez la(s) discipline(s) enseignée(s)"),
+        value_type=schema.Choice(vocabulary=u"ageliaco.rd2.disciplines"),
+        required=False,
         )
 
     email = schema.TextLine(
@@ -627,9 +766,7 @@ grok.global_adapter(projet_title, name="Title")
 @grok.subscribe(IProjet, IObjectAddedEvent)
 def setRealisation(projet, event):
     admid = 'realisation'
-    try:
-        cycles = projet[admid]
-    except KeyError: 
+    if admid not in projet.keys():
         rea = projet.invokeFactory("Folder", id=admid, title=u'Réalisation')
         #projet[admid] = rea
     
@@ -710,23 +847,32 @@ class ICycle(form.Schema):
             default=[],
         )
         
-    dexteritytextindexer.searchable('domaine')
-    domaine = schema.Text(
-            title=MessageFactory(u"Domaine(s)"),
-            description=MessageFactory(
-                u"Domaine(s) couvert(s) par le projet, un par ligne"),
-            required=False,
-            default=u'',
+    dexteritytextindexer.searchable('domaines')
+    form.widget('domaines', SelectWidget, multiple='multiple', size=10) 
+    domaines = schema.List(
+        title=MessageFactory(u"Domaine d'étude"),
+        description=MessageFactory(u"Sélectionnez le(s) domaine(s) concerné(s)"),
+        value_type=schema.Choice(vocabulary=u"ageliaco.rd2.domaines"),
+        required=False,
         )
 
-    dexteritytextindexer.searchable('discipline')
-    discipline = schema.Text(
-            title=MessageFactory(u"Discipline(s)"),
-            description=MessageFactory(
-                u"Discipline(s) concernée(s) par le projet (une par ligne)"),
-            required=False,
-            default=u'',
+    dexteritytextindexer.searchable('disciplines')
+    form.widget('disciplines', SelectWidget, multiple='multiple', size=10) 
+    disciplines = schema.List(
+        title=MessageFactory(u"Discipline visée"),
+        description=MessageFactory(u"Sélectionnez la(s) discipline(s) concernée(s)"),
+        value_type=schema.Choice(vocabulary=u"ageliaco.rd2.disciplines"),
+        required=False,
         )
+
+    #     dexteritytextindexer.searchable('discipline')
+    #     discipline = schema.Text(
+    #             title=MessageFactory(u"Discipline(s)"),
+    #             description=MessageFactory(
+    #                 u"Discipline(s) concernée(s) par le projet (une par ligne)"),
+    #             required=False,
+    #             default=u'',
+    #         )
         
     dexteritytextindexer.searchable('presentation')
     presentation = RichText(
@@ -789,13 +935,14 @@ class ICycle(form.Schema):
         fields=['cible', 'forme']
     )
     
-    dexteritytextindexer.searchable('cible')
+    #dexteritytextindexer.searchable('cible')
+    #form.widget(cible=CheckBoxFieldWidget)
+    form.widget('cible', SelectWidget, multiple='multiple', size=10) 
     cible = schema.List(
         title=MessageFactory(u"Filière visée"),
         description=MessageFactory(u"Sélectionnez la filière concernée"),
         value_type=schema.Choice(vocabulary=u"ageliaco.rd2.ordres"),
         required=False,
-        missing_value=(),
         )
     
     
@@ -879,9 +1026,12 @@ class ICycle(form.Schema):
     participants = schema.Text(
             title=MessageFactory(u"Participants pour l'année à venir"),
             description=MessageFactory(
-                u"Mettre le login EDU de chaque " +
-                u"participant, un par ligne (ex: 'edu-dupontm'). " +
-                u"La liste des auteurs sera générée automatiquement."
+    u"""Mettre le login EDU de chaque participant, un par ligne (ex: 'edu-dupontm').
+        La liste des auteurs sera générée automatiquement.
+        En cas d'erreur (si l'identifiant n'est pas dans l'annuaire), cf. la doc
+        pour voir comment tester un identifiant, mais surtout il faut supprimer
+        l'identifiant posant un problème pour pouvoir sauvegarder la session !!!
+        """
                 ),
             required=False,
             default=u'',
@@ -926,13 +1076,13 @@ def idDefaultFromContext(context):
     if len(cat): #first is last generated,if it is not a copy from an old cycle
         for cycle in cat:
             lastId = cycle.id
-            try:
-                index = lastId.split('-')[1]
-                newId =  "%s-%s" % (start,index)
-                if (newId not in context.objectIds()):
-                    return newId
-            except:
-                print "oups not good"
+            #try:
+            index = lastId.split('-')[1]
+            newId =  "%s-%s" % (start,index)
+            if (newId not in context.objectIds()):
+                return newId
+            #except:
+            #    print "oups not good"
     index = len(cat)
             
     newId =  "%s-%s" % (start,index)
@@ -1056,7 +1206,7 @@ def aboutAuteurs(cycle, value=u""):
             cycle[auteur.id]=auteur
             cycle.manage_setLocalRoles(auteur.id, ['Reader','Owner','Reviewer'])
             cycle.reindexObjectSecurity()
-            print "OK => id %s is in !!!" % auteur.id
+            #print "OK => id %s is in !!!" % auteur.id
             ok = True
 
                 
@@ -1169,7 +1319,7 @@ class AuteursEditForm(crud.EditForm):
     def handleCancel(self, action):
         """User cancelled. Redirect back to the front page.
         """
-        print self.request['URL1']
+        #print self.request['URL1']
         cycleurl = self.request['URL1']
         return self.request.response.redirect(cycleurl)
 
@@ -1177,10 +1327,10 @@ def adapt_schema2security(field):
     sm = getSecurityManager()
     reviewField = field.Fields(IAuteur).select('sponsorRD')
     if not sm.checkPermission(ManagePortal, reviewField):
-        print "NO MANAGE ROLE FOR USER"
+        #print "NO MANAGE ROLE FOR USER"
         return field.Fields(IAuteur).select('phone','email','school',
             'sponsorasked')
-    print "MANAGE ROLE FOR USER"
+    #print "MANAGE ROLE FOR USER"
     return field.Fields(IAuteur).select('phone','email','school',
             'sponsorasked', 'sponsorRD', 'sponsorSchool')
 
@@ -1287,6 +1437,11 @@ class InterfaceView(grok.View,Form):
     localauteurs_template = ViewPageTemplateFile("cycle_templates/localauteurs.pt")
     notes_template = ViewPageTemplateFile("interface_templates/notes.pt")
     auteurs_template = ViewPageTemplateFile("interface_templates/auteurs.pt")
+    cycles_auteurs_table_template = \
+        ViewPageTemplateFile("projet_templates/cycles_auteurs_table.pt")
+        
+    def render_cycles_auteurs_table(self):
+        return self.cycles_auteurs_table_template()
         
     def render_auteurs(self):
         return self.auteurs_template()
@@ -1328,9 +1483,17 @@ class InterfaceView(grok.View,Form):
             return float(value)
     
     def auteur_disciplines(self,auteur):
-        if hasattr(auteur,'disciplines'):
+        if hasattr(auteur,'disciplines') and type(auteur.disciplines)==list:
             return auteur.disciplines
-        return ""
+        return []
+
+    def auteur_disciplines_str(self,auteur):
+        if hasattr(auteur,'disciplines') and type(auteur.disciplines)==list:
+            ret = u""
+            for disc in auteur.disciplines:
+                ret += disc + u"\n"
+            return ret
+        return u""
     
             
     def whichState(self):
@@ -1358,20 +1521,21 @@ class InterfaceView(grok.View,Form):
         cat = catalog(object_provides=[ICycle.__identifier__],
                        path={'query': projectPath, 'depth': 2},
                        sort_on="modified", sort_order="reverse")
-        disc = []
+        disc = set()
         if len(cat):
-            try:
-                obj = cat[0].getObject()
-                if hasattr(obj,'disciplines'):
-                    disc = obj.disciplines.split()
-            except Unauthorized:
-                return ""
+            #try:
+            for cycle in cat:
+                obj = cycle.getObject()
+                if hasattr(obj,'disciplines') and obj.disciplines:
+                    dom = set(obj.disciplines)
+                    disc = disc | dom #union of sets
+            #except Unauthorized:
+            #    return ""
         #import pdb; pdb.set_trace()
         ret = ""
-        for d in disc:
+        for d in sorted(disc):
             ret += d
-            ret += "\n"
-            
+            ret += "\n"            
         return ret
 
     @view.memoize
@@ -1384,17 +1548,19 @@ class InterfaceView(grok.View,Form):
         cat = catalog(object_provides=[ICycle.__identifier__],
                        path={'query': projectPath, 'depth': 2},
                        sort_on="modified", sort_order="reverse")
-        disc = []
+        disc = set()
         if len(cat):
-            try:
-                obj = cat[0].getObject()
-                if hasattr(obj,'domaines'):
-                    disc = obj.domaines.split()
-            except Unauthorized:
-                return ""
+            #try:
+            for cycle in cat:
+                obj = cycle.getObject()
+                if hasattr(obj,'domaines') and obj.domaines:
+                    dom = set(obj.domaines)
+                    disc = disc | dom #union of sets
+            #except Unauthorized:
+            #    return ""
         #import pdb; pdb.set_trace()
         ret = ""
-        for d in disc:
+        for d in sorted(disc):
             ret += d
             ret += "\n"            
         return ret
@@ -1409,7 +1575,7 @@ class InterfaceView(grok.View,Form):
             return False
         member = mt.getAuthenticatedMember()
         owner = self.context.getOwner()
-        print member, owner
+        #print member, owner
         return member.getName() == owner.getName()
         
     # canReviewContent        
@@ -1484,17 +1650,20 @@ class InterfaceView(grok.View,Form):
         else:
             return {}
 
+    @view.memoize    
     def ordre(self,school):
-        if school and school in schools:
-            return schools[school][2]
-        return ''
+        factory = getUtility(IVocabularyFactory, 'ageliaco.rd2.schoolOrdre')
+        vocabulary = factory(self.context)
+        try:
+            return vocabulary.getTerm(school).title
+            
+        except LookupError:
+            return u''
         
     def sponsorasked(self,auteur):
         context = aq_inner(self.context)
         author = auteur.getObject()
-        ordre = ''
-        if author.school in schools.keys():
-            ordre = schools[author.school][2]
+        ordre = self.ordre(author.school)
         oneauthor = "\n%s,%s,%s,%s,%s,%s,%d,%d"% \
             (auteur.getPath().split('/')[-2],
             author.id,author.lastname,
@@ -1697,7 +1866,7 @@ class InterfaceView(grok.View,Form):
         if wf_state == 'all':
             cat = catalog(object_provides= ICycle.__identifier__,
                            path={'query': projectPath, 'depth': 1},
-                           sort_on="modified", sort_order="reverse")  
+                           sort_on="id")  
             return cat      
         return catalog(object_provides=[ICycle.__identifier__],
                        review_state=wf_state,
@@ -1715,10 +1884,10 @@ class InterfaceView(grok.View,Form):
             cat = catalog(object_provides= ICycle.__identifier__,
                             path={'query': '/'.join(parent.getPhysicalPath()), 'depth': 1})
             cycles = {c.id:c for c in cat if c.id==context.id}
-            #import pdb; pdb.set_trace()
             return cycles
         else:
             cat = self.cycles('/'.join(context.getPhysicalPath()))
+        #import pdb; pdb.set_trace()
         for cycle in cat:
             cycles[cycle.id] = cycle   
         return cycles
@@ -1727,10 +1896,22 @@ class InterfaceView(grok.View,Form):
         return getSite()
         
     def school(self,pseudo):
-        try:
-            return schools[pseudo][0]
-        except:
+        projets = getProjetsParent(self.context)
+        #import pdb; pdb.set_trace()
+        if projets == None:
             return pseudo
+        ecoles = projets.schools
+        if ecoles:
+            maListe = [x.strip() for x in ecoles.split(u'\n')]
+            schooldict = {}
+            for ordre in sorted(maListe):
+                school = ordre.split(',')
+                if school[0]== pseudo:
+                    return school[1] 
+        #try:
+        return pseudo
+        #except:
+        #    return pseudo
         
     def cycle_state(self,review_state):
         wtool = getToolByName(self.context, 'portal_workflow', None)

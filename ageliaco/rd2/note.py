@@ -98,9 +98,13 @@ class View(InterfaceView):
         now = datetime.datetime.now()
         catalog = getToolByName(self.context, 'portal_catalog')
         # yesterday
-        start =  datetime.datetime(now.year,now.month,now.day - 1)
+        #import pdb; pdb.set_trace()
+        if now.day > 1:
+            day = now.day - 1
+        
+        start =  datetime.datetime(now.year,now.month,day)
         # Twelve months future
-        end = datetime.datetime(now.year + 1,now.month,now.day)  
+        end = datetime.datetime(now.year + 1,now.month,day)  
         date_range_query = {'query': (start, end), 'range': 'min:max'}
         cat = catalog(portal_type='Event',
                         start = date_range_query,

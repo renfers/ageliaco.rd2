@@ -26,6 +26,14 @@ tal:define="navroot context/@@plone_portal_state/navigation_root_url">
 
         <div tal:replace="structure provider:plone.belowcontenttitle" />
 
+    <dl class="greypullquote" tal:define="projets python:view.projets('repository')"
+        tal:condition="python:len(projets)>0">
+        <dt tal:repeat="projet projets">
+            <a tal:content="projet/title" 
+                tal:attributes="href projet/getPath">projet</a>
+        </dt>
+    </dl>
+
         <div tal:replace="structure provider:plone.abovecontentbody" />
     
 <div class="pullquote" >

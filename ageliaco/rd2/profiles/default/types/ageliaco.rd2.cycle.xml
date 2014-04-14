@@ -30,8 +30,6 @@
      value="plone.app.dexterity.behaviors.nextprevious.INextPreviousEnabled"/>
     <element 
      value="collective.dexteritytextindexer.behavior.IDexterityTextIndexer" />
-    <element
-     value="plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation"/> 
  </property>
  <property name="schema">ageliaco.rd2.cycle.ICycle</property>
  <property

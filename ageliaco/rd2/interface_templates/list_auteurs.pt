@@ -20,7 +20,13 @@
                 here/portal_membership/isAnonymousUser"
                 tal:content="author/email">email</span>
                 </td>
-            <td><span  tal:content="python: view.school(author.school)"/>
+            <td tal:define="disciplines python:view.auteur_disciplines(author.getObject())">
+            <span  tal:content="python: view.school(author.school)"/>
+            <ul tal:condition="python:disciplines">
+                <li tal:repeat="disc disciplines">
+                    <span tal:replace="disc"/>
+                </li>
+            </ul>
             </td>  
             </tr>
             <tr tal:condition="python: view.canReviewContent() or view.isOwner()"  

@@ -74,7 +74,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     <span  tal:content="context/id"/>
 </h4>
 
-<div class="noprint" tal:content="structure view/render_auteurs"/>
+<div tal:content="structure view/render_auteurs"/>
 
 <div class="noprint" tal:content="structure view/render_notes"/>
 
@@ -99,12 +99,12 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
 
 
 <div >
-
     <div >
         <h3>Domaine(s)</h3>
-        <tal:domaine define="domaine context/domaine"
-            tal:condition="context/domaine" >
-        <ul tal:define="domaine_list python:domaine.split('\n')"
+<!-- old properties -->
+        <tal:domaine 
+             condition="python:hasattr(context,'domaine')">
+        <ul tal:define="domaine_list python:context.domaine.split('\n')"
            >
             <li tal:repeat="domain domaine_list">
                 <span tal:replace="domain"/>
@@ -112,22 +112,47 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
         </ul>
         
         </tal:domaine>
+<!-- end old properties -->
+        <tal:domaines
+            condition="python:hasattr(context,'domaines')">
+        <ul tal:define="domaine_list context/domaines"
+           >
+            <li tal:repeat="domain domaine_list">
+                <span tal:replace="domain"/>
+            </li>
+        </ul>
+        
+        </tal:domaines>
     </div>
 
 
     <div >
         <h3>Discipline(s)</h3>
-        <tal:domaine define="discipline context/discipline"
-            tal:condition="context/discipline">
-        <ul tal:define="discipline_list python:discipline.split('\n')"
+<!-- old properties -->        
+        <tal:discipline 
+            condition="python:hasattr(context,'discipline')">
+        <ul tal:define="discipline_list python:context.discipline.split('\n')"
              >
             <li tal:repeat="disc discipline_list">
                 <span tal:replace="disc"/>
             </li>
         </ul>
         
-        </tal:domaine>
+        </tal:discipline>
+<!-- end old properties -->
+        <tal:disciplines 
+           condition="python:hasattr(context,'disciplines')">
+        <ul tal:define="discipline_list context/disciplines"
+             >
+            <li tal:repeat="disc discipline_list">
+                <span tal:replace="disc"/>
+            </li>
+        </ul>
+        
+        </tal:disciplines>
+
     </div>
+
 
     <div  >
         <h3 >Objectifs généraux du projet</h3>
@@ -180,7 +205,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     ...................... </h3>
 <hr>
 </div>
-<div style="text-align: center;" class="printonly" ">
+<div class="printonly" style="text-align: center;"  >
     
     <span style="color: rgb(204, 0, 0); ">
         <strong> 

@@ -5,6 +5,8 @@ from interface import ICycle
 from zope.component import getUtility
 from plone.dexterity.interfaces import IDexterityFTI
 
+from plone.registry.interfaces import IRegistry
+
 PROFILE_ID='profile-ageliaco.rd2:default'
 
 def convert_to_new_cycle(context, logger=None):
@@ -212,4 +214,6 @@ def upgrade_from_3_to_4(context):
     
 def upgrade_from_3_to_4(context):
     print "Upgrading from 4 to 5"
-    context.runImportStepFromProfile(default_profile, 'controlpanel')     
+    context.runImportStepFromProfile(default_profile, 'controlpanel')   
+    
+    

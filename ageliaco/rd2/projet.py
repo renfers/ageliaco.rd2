@@ -41,7 +41,7 @@ from zope.schema import getFieldsInOrder
 from plone.dexterity.interfaces import IDexterityFTI 
 from zope.component import queryUtility
 from z3c.form import button, field
-from interface import InterfaceView, schools
+from interface import InterfaceView
 from plone.memoize import view
  
 from ageliaco.rd2 import MessageFactory
@@ -100,8 +100,11 @@ class View(InterfaceView):
     grok.context(IProjet)
     grok.require('zope2.View')
     grok.name('view')
-    #template = ViewPageTemplateFile('projet_templates/view.pt')
+    template = ViewPageTemplateFile('projet_templates/view.pt')
 
+    #     def __call__(self):
+    #         return self.view_template()
+        
     def activeProjets(self):
         catalog = getToolByName(self.context, 'portal_catalog')
         cat = catalog(portal_type='ageliaco.rd2.projet',
@@ -135,10 +138,10 @@ class View(InterfaceView):
         return True
         
 
-    def auteur_disciplines(self,auteur):
-        if hasattr(auteur,'disciplines'):
-            return auteur.disciplines
-        return ""
+    #     def auteur_disciplines(self,auteur):
+    #         if hasattr(auteur,'disciplines'):
+    #             return auteur.disciplines
+    #         return ""
     
     def isRepository(self):
         context = aq_inner(self.context)
@@ -173,4 +176,12 @@ class CyclesView(InterfaceView):
     grok.context(IProjet)
     grok.require('zope2.View')
     grok.name('cyclesview')
+    pass
+
+class CyclesAuteursTableView(InterfaceView):
+    grok.context(IProjet)
+    grok.require('zope2.View')
+    grok.name('cycles_auteurs_tableview')
+    #cycles_auteurs_table_template = ViewPageTemplateFile('projet_templates/cycles_auteurs_table.pt')
+
     pass
