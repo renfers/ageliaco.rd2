@@ -1511,8 +1511,9 @@ class InterfaceView(grok.View,Form):
             ret += '\n'
         return ret
 
-    @view.memoize
-    def disciplines(self,projectPath):
+    #@view.memoize
+    def disciplines(self,projectPath=""):
+        #print projectPath
         context = aq_inner(self.context)
         #import pdb; pdb.set_trace()
         if not projectPath:
@@ -1523,14 +1524,15 @@ class InterfaceView(grok.View,Form):
                        sort_on="modified", sort_order="reverse")
         disc = set()
         if len(cat):
-            #try:
-            for cycle in cat:
-                obj = cycle.getObject()
-                if hasattr(obj,'disciplines') and obj.disciplines:
-                    dom = set(obj.disciplines)
-                    disc = disc | dom #union of sets
-            #except Unauthorized:
-            #    return ""
+            try:
+                for cycle in cat:
+                    obj = cycle.getObject()
+                    if hasattr(obj,'disciplines') and obj.disciplines:
+                        dom = set(obj.disciplines)
+                        disc = disc | dom #union of sets
+            except Unauthorized:
+                print projectPath
+                return ""
         #import pdb; pdb.set_trace()
         ret = ""
         for d in sorted(disc):
@@ -1538,8 +1540,8 @@ class InterfaceView(grok.View,Form):
             ret += "\n"            
         return ret
 
-    @view.memoize
-    def domaines(self,projectPath):
+    #@view.memoize
+    def domaines(self,projectPath=''):
         context = aq_inner(self.context)
         #import pdb; pdb.set_trace()
         if not projectPath:
@@ -1550,14 +1552,15 @@ class InterfaceView(grok.View,Form):
                        sort_on="modified", sort_order="reverse")
         disc = set()
         if len(cat):
-            #try:
-            for cycle in cat:
-                obj = cycle.getObject()
-                if hasattr(obj,'domaines') and obj.domaines:
-                    dom = set(obj.domaines)
-                    disc = disc | dom #union of sets
-            #except Unauthorized:
-            #    return ""
+            try:
+                for cycle in cat:
+                    obj = cycle.getObject()
+                    if hasattr(obj,'domaines') and obj.domaines:
+                        dom = set(obj.domaines)
+                        disc = disc | dom #union of sets
+            except Unauthorized:
+                print projectPath
+                return ""
         #import pdb; pdb.set_trace()
         ret = ""
         for d in sorted(disc):
@@ -1576,7 +1579,10 @@ class InterfaceView(grok.View,Form):
         member = mt.getAuthenticatedMember()
         owner = self.context.getOwner()
         #print member, owner
-        return member.getName() == owner.getName()
+        try:
+            return member.getName() == owner.getName()
+        except AttributeError: # getName: does it function with dexterity?
+            return False
         
     # canReviewContent        
     def canReviewContent(self):

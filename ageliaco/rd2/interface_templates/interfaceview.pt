@@ -10,7 +10,7 @@
     <metal:css_head define-macro="css_head_slot">
      <tal:css  
         tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <link rel="stylesheet" type="text/css" 
+<!--        <link rel="stylesheet" type="text/css" 
             tal:attributes="href string:
     ${navroot}/++resource++ageliaco.rd2/bootstrap/css/bootstrap.css"
             />
@@ -19,7 +19,7 @@
             tal:attributes="href string:
                 ${navroot}/++resource++ageliaco.rd2/themes/blue/style.css"
          />
-
+-->
 
         <link rel="stylesheet" href="assets/css/prettify.css"
 tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/multi-select/css/multi-select.css"
@@ -30,7 +30,7 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
          />
       <link rel="stylesheet" href="assets/css/font-awesome.css"
          tal:attributes="href string:
-    ${navroot}/++resource++ageliaco.rd2/font-awesome/css/font-awesome.min.css"
+    ${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome.min.css"
          />
         <link rel="stylesheet" type="text/css" 
             tal:attributes="href string:
@@ -61,10 +61,11 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
             tal:attributes="src string:
                 ${navroot}/++resource++plone.app.jquerytools.overlayhelpers.js">
          </script>
-        <script type="text/javascript"  
+ <!--       <script type="text/javascript"  
             tal:attributes="src string:
                 ${navroot}/++resource++ageliaco.rd2/bootstrap/js/bootstrap.js">
          </script>
+-->
         <script type="text/javascript"  
                 tal:attributes="src string:
                     ${navroot}/++resource++ageliaco.rd2/prettify.min.js">
@@ -73,11 +74,11 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
                 tal:attributes="src string:
                     ${navroot}/++resource++yafowil.widget.richtext/widget.js">
         </script>        
-        <script type="text/javascript"  
+<!--        <script type="text/javascript"  
                 tal:attributes="src string:
                 ${navroot}/++resource++ageliaco.rd2/jquery.tablesorter.min.js">
         </script>
-
+-->
         <script >
         $(document).ready(function() { 
             // call the tablesorter plugin, the magic happens in the markup 

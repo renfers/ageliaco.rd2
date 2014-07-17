@@ -103,7 +103,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
         <h3>Domaine(s)</h3>
 <!-- old properties -->
         <tal:domaine 
-             condition="python:hasattr(context,'domaine')">
+             condition="python:hasattr(context,'domaine') and context.domaine">
         <ul tal:define="domaine_list python:context.domaine.split('\n')"
            >
             <li tal:repeat="domain domaine_list">
@@ -130,7 +130,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
         <h3>Discipline(s)</h3>
 <!-- old properties -->        
         <tal:discipline 
-            condition="python:hasattr(context,'discipline')">
+            condition="python:hasattr(context,'discipline') and context.discipline">
         <ul tal:define="discipline_list python:context.discipline.split('\n')"
              >
             <li tal:repeat="disc discipline_list">

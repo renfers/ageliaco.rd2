@@ -153,7 +153,7 @@ def activateCycle(self, state_change):
             projet = createContentInContainer(projets,'ageliaco.rd2.projet', 
                 title=contentObject.Title(), duration=contentObject.duree, 
                 presentation=RichTextValue(
-                raw=contentObject.synopsys.raw
+                raw=contentObject.description.raw
                 ))
             try:
                 # trying to cut => won't work if on the object itself, 
