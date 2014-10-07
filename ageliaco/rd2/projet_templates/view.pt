@@ -34,7 +34,7 @@
                 navroot portal_state/navigation_root_url">
    <div tal:content="structure view/render_projet_menu"
         tal:condition="view/canReviewContent"/>
-<div id="realisation" tal:condition="python: not view.isRepository() and not view.isArchived() and (view.hasLink() or view.hasRealisation())"
+<div id="realisation" tal:condition="python: not view.isRepository() and not view.isArchive() and (view.hasLink() or view.hasRealisation())"
     class="pullquote">
 <h3 tal:condition="python: view.hasLink()"><a tal:attributes="href view/hasLink">Lien vers réalisation</a></h3>
 <h3 tal:condition="python: view.hasRealisation()"
