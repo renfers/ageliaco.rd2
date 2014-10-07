@@ -1,129 +1,128 @@
-[Workflow],,,,,,,,,,
-Id:,rd2.projet-workflow,,,,,,,,,
-Title:,Projet workflow,,,,,,,,,
-Description:,Workflow pour les projets de R et D,,,,,,,,,
-Initial state:,draft,,,,,,,,,
-,,,,,,,,,,
-[State],,,,,,,,,,
-Id:,draft,,,,,,,,,
-Title:,Brouillon,,,,,,,,,
-Description:,Le projet est en mode brouillon,,,,,,,,,
-Transitions,"activate, repose, archive",,,,,,,,,
-Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,X,X,X,X
-Modify portal content,N,,,,X,X,X,X,X,
-,,,,,,,,,,
-,,,,,,,,,,
-[State],,,,,,,,,,
-Id:,repository,,,,,,,,,
-Title:,Depot,,,,,,,,,
-Description:,Le projet est en mode depot,,,,,,,,,
-Transitions:,retract,,,,,,,,,
-Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,X,X,,,X
-Add portal content,N,,,,X,X,,X,X,X
-Add Folders,N,,,,X,X,,,,
-,,,,,,,,,,
-[State],,,,,,,,,,
-Id:,archives,,,,,,,,,
-Title:,Archive,,,,,,,,,
-Description:,Le projet est dossier archive pour propositions de projet,,,,,,,,,
-Transitions:,retract,,,,,,,,,
-Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,X,X,X,X
-Modify portal content,N,,,,X,X,X,,,X
-Add portal content,N,,,,X,X,,,,
-,,,,,,,,,,
-[State],,,,,,,,,,
-Id:,encours,,,,,,,,,
-Title:,En cours,,,,,,,,,
-Description:,Le projet est en cours,,,,,,,,,
-Transitions:,"publish, refuser",,,,,,,,,
-Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,X,,,X,X,X,X,X,X
-Access contents information,N,,,,X,X,X,X,X,X
-Add portal content,N,,,,X,X,X,,X,X
-Modify portal content,N,,,,X,X,X,,,X
-ageliaco.rd2 : Add Cycle,N,,,,X,,,,,
-,,,,,,,,,,
-[State],,,,,,,,,,
-Id:,published,,,,,,,,,
-Title:,Public,,,,,,,,,
-Description:,Le projet est publie,,,,,,,,,
-Transitions:,retract,,,,,,,,,
-Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,Y,X,,,X,X,X,X,X,X
-Access contents information,Y,X,,,X,X,X,X,X,X
-Add portal content,N,,,,X,X,X,,X,
-Modify portal content,Y,,,,X,X,,,,
-,,,,,,,,,,
-[State],,,,,,,,,,
-Id:,nonpublic,,,,,,,,,
-Title:,Non Public,,,,,,,,,
-Description:,Le projet est pas publie (refus),,,,,,,,,
-Transitions:,retract,,,,,,,,,
-Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer
-View,N,,,,X,X,,,,X
-Access contents information,N,,,,X,X,,,,X
-Modify portal content,N,,,,X,,,,,
-,,,,,,,,,,
-[Transition],,,,,,,,,,
-Id:,submit,,,,,,,,,
-Title:,Soumettre pour publication,,,,,,,,,
-Description:,Soumettre le projet pour publication,,,,,,,,,
-Target state:,pending,,,,,,,,,
-Guard permission:,Request review,,,,,,,,,
-,,,,,,,,,,
-[Transition],,,,,,,,,,
-Id:,reject,,,,,,,,,
-Title:,Rejeter,,,,,,,,,
-Description:,Rejet du projet pour publication,,,,,,,,,
-Target state:,encours,,,,,,,,,
-Guard permission:,Review portal content,,,,,,,,,
-,,,,,,,,,,
-[Transition],,,,,,,,,,
-Id:,refuser,,,,,,,,,
-Title:,Refuser,,,,,,,,,
-Description:,Rejet du projet pour publication,,,,,,,,,
-Target state:,nonpublic,,,,,,,,,
-Guard permission:,Review portal content,,,,,,,,,
-,,,,,,,,,,
-[Transition],,,,,,,,,,
-Id:,publish,,,,,,,,,
-Title:,Publier,,,,,,,,,
-Description:,Publication du projet,,,,,,,,,
-Target state:,published,,,,,,,,,
-Guard permission:,Review portal content,,,,,,,,,
-Script after:,ageliaco.rd2.Extensions.transitionscripts.publishProjet,,,,,,,,,
-,,,,,,,,,,
-[Transition],,,,,,,,,,
-Id:,activate,,,,,,,,,
-Title:,Activer,,,,,,,,,
-Description:,Activation du projet,,,,,,,,,
-Target state:,encours,,,,,,,,,
-Guard permission:,Review portal content,,,,,,,,,
-,,,,,,,,,,
-[Transition],,,,,,,,,,
-Id:,retract,,,,,,,,,
-Title:,Retirer,,,,,,,,,
-Description:,Retraction du projet,,,,,,,,,
-Target state:,draft,,,,,,,,,
-Guard permission:,Review portal content,,,,,,,,,
-,,,,,,,,,,
-[Transition],,,,,,,,,,
-Id:,repose,,,,,,,,,
-Title:,creer depot,,,,,,,,,
-Description:,Creation d un depot,,,,,,,,,
-Target state:,repository,,,,,,,,,
-Guard permission:,Review portal content,,,,,,,,,
-,,,,,,,,,,
-[Transition],,,,,,,,,,
-Id:,archive,,,,,,,,,
-Title:,creer archive,,,,,,,,,
-Description:,Creation d une archive,,,,,,,,,
-Target state:,archives,,,,,,,,,
-Guard permission:,Review portal content,,,,,,,,,
+[Workflow],,,,,,,,,,,
+Id:,rd2.projet-workflow,,,,,,,,,,
+Title:,Projet workflow,,,,,,,,,,
+Description:,Workflow pour les projets de R et D,,,,,,,,,,
+Initial state:,draft,,,,,,,,,,
+,,,,,,,,,,,
+[State],,,,,,,,,,,
+Id:,draft,,,,,,,,,,
+Title:,Brouillon,,,,,,,,,,
+Description:,Le projet est en mode brouillon,,,,,,,,,,
+Transitions,"activate, repose, archive",,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer,Site Administrator
+View,N,,,,X,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X,X
+Modify portal content,N,,,,X,X,X,X,X,,X
+,,,,,,,,,,,
+,,,,,,,,,,,
+[State],,,,,,,,,,,
+Id:,repository,,,,,,,,,,
+Title:,Depot,,,,,,,,,,
+Description:,Le projet est en mode depot,,,,,,,,,,
+Transitions:,retract,,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer,Site Administrator
+View,N,,,,X,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,,X,X,X
+Modify portal content,N,,,,X,X,X,,,X,X
+Add portal content,N,,,,X,X,,X,X,X,X
+Add Folders,N,,,,X,X,,,,,X
+,,,,,,,,,,,
+[State],,,,,,,,,,,
+Id:,archives,,,,,,,,,,
+Title:,Archive,,,,,,,,,,
+Description:,Le projet est dossier archive pour propositions de projet,,,,,,,,,,
+Transitions:,retract,,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer,Site Administrator
+View,N,,,,X,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X,X
+Modify portal content,N,,,,X,X,X,,,X,X
+Add portal content,N,,,,X,X,,,,,X
+,,,,,,,,,,,
+[State],,,,,,,,,,,
+Id:,encours,,,,,,,,,,
+Title:,En cours,,,,,,,,,,
+Description:,Le projet est en cours,,,,,,,,,,
+Transitions:,"publish, refuser",,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer,Site Administrator
+View,N,X,,,X,X,X,X,X,X,X
+Access contents information,N,,,,X,X,X,X,X,X,X
+Add portal content,N,,,,X,X,X,,X,X,X
+Modify portal content,N,,,,X,X,X,,,X,X
+,,,,,,,,,,,
+[State],,,,,,,,,,,
+Id:,published,,,,,,,,,,
+Title:,Public,,,,,,,,,,
+Description:,Le projet est publie,,,,,,,,,,
+Transitions:,retract,,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer,Site Administrator
+View,Y,X,,,X,X,X,X,X,X,X
+Access contents information,Y,X,,,X,X,X,X,X,X,X
+Add portal content,N,,,,X,X,X,,X,,X
+Modify portal content,Y,,,,X,X,,,,,X
+,,,,,,,,,,,
+[State],,,,,,,,,,,
+Id:,nonpublic,,,,,,,,,,
+Title:,Non Public,,,,,,,,,,
+Description:,Le projet est pas publie (refus),,,,,,,,,,
+Transitions:,retract,,,,,,,,,,
+Permissions,Acquire,Anonymous,Authenticated,Member,Manager,Owner,Editor,Reader,Contributor,Reviewer,Site Administrator
+View,N,,,,X,X,,,,X,X
+Access contents information,N,,,,X,X,,,,X,X
+Modify portal content,N,,,,X,,,,,,X
+,,,,,,,,,,,
+[Transition],,,,,,,,,,,
+Id:,submit,,,,,,,,,,
+Title:,Soumettre pour publication,,,,,,,,,,
+Description:,Soumettre le projet pour publication,,,,,,,,,,
+Target state:,pending,,,,,,,,,,
+Guard permission:,Request review,,,,,,,,,,
+,,,,,,,,,,,
+[Transition],,,,,,,,,,,
+Id:,reject,,,,,,,,,,
+Title:,Rejeter,,,,,,,,,,
+Description:,Rejet du projet pour publication,,,,,,,,,,
+Target state:,encours,,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,,
+,,,,,,,,,,,
+[Transition],,,,,,,,,,,
+Id:,refuser,,,,,,,,,,
+Title:,Refuser,,,,,,,,,,
+Description:,Rejet du projet pour publication,,,,,,,,,,
+Target state:,nonpublic,,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,,
+,,,,,,,,,,,
+[Transition],,,,,,,,,,,
+Id:,publish,,,,,,,,,,
+Title:,Publier,,,,,,,,,,
+Description:,Publication du projet,,,,,,,,,,
+Target state:,published,,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,,
+Script after:,ageliaco.rd2.Extensions.transitionscripts.publishProjet,,,,,,,,,,
+,,,,,,,,,,,
+[Transition],,,,,,,,,,,
+Id:,activate,,,,,,,,,,
+Title:,Activer,,,,,,,,,,
+Description:,Activation du projet,,,,,,,,,,
+Target state:,encours,,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,,
+,,,,,,,,,,,
+[Transition],,,,,,,,,,,
+Id:,retract,,,,,,,,,,
+Title:,Retirer,,,,,,,,,,
+Description:,Retraction du projet,,,,,,,,,,
+Target state:,draft,,,,,,,,,,
+Guard permission:,Review portal content,,,,,,,,,,
+,,,,,,,,,,,
+[Transition],,,,,,,,,,,
+Id:,repose,,,,,,,,,,
+Title:,creer depot,,,,,,,,,,
+Description:,Creation d un depot,,,,,,,,,,
+Target state:,repository,,,,,,,,,,
+Guard role:,Manager,,,,,,,,,,
+,,,,,,,,,,,
+[Transition],,,,,,,,,,,
+Id:,archive,,,,,,,,,,
+Title:,creer archive,,,,,,,,,,
+Description:,Creation d une archive,,,,,,,,,,
+Target state:,archives,,,,,,,,,,
+Guard role:,Manager,,,,,,,,,,

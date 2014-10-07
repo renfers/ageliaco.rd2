@@ -147,7 +147,13 @@ class View(InterfaceView):
         context = aq_inner(self.context)
         portal_workflow = getToolByName(context, 'portal_workflow')
         review_state = portal_workflow.getInfoFor(context, 'review_state')
-        return review_state == u'repository'
+        return review_state in (u'repository')
+        
+    def isArchive(self):
+        context = aq_inner(self.context)
+        portal_workflow = getToolByName(context, 'portal_workflow')
+        review_state = portal_workflow.getInfoFor(context, 'review_state')
+        return review_state in (u'archives')
         
     
     def hasRealisation(self):
