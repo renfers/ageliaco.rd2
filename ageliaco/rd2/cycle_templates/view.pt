@@ -29,7 +29,7 @@
 <br />Département de l'instruction publique, de la culture et du sport
 <br />Enseignement secondaire II postobligatoire<br />
 <b>Direction générale<br /></b>
-Service enseignement et formation - Secteur ressources et développement</p>
+Service enseignement et formation</p>
 
 <h4 style="text-align : center;">Proposition de projet</h4>
 
@@ -210,7 +210,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     <span style="color: rgb(204, 0, 0); ">
         <strong> 
             <i class="fa fa-smile-o fa-2x printonly" style="color:yellow;"></i>
-            Ressources et développement vous remercie pour votre collaboration
+            Le Service Enseignement et Formation vous remercie pour votre collaboration
             <i class="fa fa-smile-o fa-2x printonly" style="color:yellow;"></i>
         </strong> 
     </span> 
