@@ -16,7 +16,7 @@
 			<th class="filtered">Ecole</th>
 			<th class="filtered">Filière</th>
 			<th>Demandé</th>
-			<th>Heures RD</th>
+			<th>Heures SEF</th>
 			<th>Heures Ecole</th>
 		</tr>
 	</thead>
@@ -61,7 +61,7 @@
 			<th class="filtered">Ecole</th>
 			<th class="filtered">Filière</th>
 			<th class="sponsorasked">Demandé</th>
-			<th class="sponsorRD">Heures RD</th>
+			<th class="sponsorRD">Heures SEF</th>
 			<th class="sponsorSchool">Heures Ecole</th>
 		</tr>
 	</tfoot>

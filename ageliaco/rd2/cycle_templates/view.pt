@@ -31,7 +31,7 @@
 <b>Direction générale<br /></b>
 Service enseignement et formation</p>
 
-<h4 style="text-align : center;">Proposition de projet</h4>
+<h4 style="text-align : center;">Proposition projet pédagogique</h4>
 
 </div>
 
@@ -86,7 +86,7 @@ string:${context/absolute_url}/content_status_modify?workflow_action=soumettre"
     
     <div tal:condition="python:context.supervisor and \
                         type(context.supervisor)==list">
-    <h3 >Accompagnateur R&D </h3>
+    <h3 >Accompagnateur SEF </h3>
         <ul>
             <tal:supervisor repeat="supervisor context/supervisor">
             <li class="description" 
