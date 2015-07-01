@@ -22,10 +22,12 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
             ${navroot}/++resource++yafowil.widget.multiselect/widget.css"
          />
  -->
-      <link rel="stylesheet" href="assets/css/font-awesome.css"
+ <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<!--      <link rel="stylesheet" href="assets/css/font-awesome.css"
          tal:attributes="href string:
     ${navroot}/++resource++ageliaco.rd2/awesome/css/font-awesome.min.css"
          />
+-->
         <link rel="stylesheet" type="text/css" 
             tal:attributes="href string:
                 ${navroot}/++resource++ageliaco.rd2/projet.css"
