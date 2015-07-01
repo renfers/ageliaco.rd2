@@ -47,7 +47,7 @@
         <tal:block repeat="cycle view/cycles">
 	    <li class="genericButton" ><a   
 	        tal:content="cycle/id" 
-	        tal:attributes="href python:cycle.getURL();
+	        tal:attributes="href python:cycle.getPath();
 	                        title cycle/Title" href="#">
 	        Cycle id
             </a></li>

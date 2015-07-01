@@ -37,7 +37,7 @@ tal:define="navroot context/@@plone_portal_state/navigation_root_url">
                <tal:block repeat="item python:view.results()">
                   <li>
                      <a tal:content="item/Title"
-                        tal:attributes="href item/getURL|item/absolute_url"></a>
+                        tal:attributes="href item/getPath|item/absolute_url"></a>
                   </li>
                </tal:block>
             </ul>
@@ -131,14 +131,14 @@ tal:define="navroot context/@@plone_portal_state/navigation_root_url">
                         tal:define="oddrow repeat/projet/odd;"> 
                         <td  class="ProjectTitle">
                         <span > 
-                        <a tal:attributes="href projet/getURL"
+                        <a tal:attributes="href projet/getPath"
                            tal:content="projet/Title" />
                         </span>
                       </td>
                       <td   class="ProjectCycles">
                        <span 
                        tal:repeat="cycle python:view.cycles(projet.getPath())">
-                        <a tal:attributes="href cycle/getURL"
+                        <a tal:attributes="href cycle/getPath"
                            tal:content="cycle/id" /> <br/>
                         </span>
                       </td>
@@ -173,14 +173,14 @@ python:view.setObjectPath(projet.getPath(),withTotal=view.canReviewContent())">
                         tal:define="oddrow repeat/projet/odd;"> 
                         <td  class="ProjectTitle">
                         <span > 
-                        <a tal:attributes="href projet/getURL"
+                        <a tal:attributes="href projet/getPath"
                            tal:content="projet/Title" />
                         </span>
                       </td>
                       <td  class="ProjectCycles">
                        <span 
                        tal:repeat="cycle python:view.cycles(projet.getPath())">
-                        <a tal:attributes="href cycle/getURL"
+                        <a tal:attributes="href cycle/getPath"
                            tal:content="cycle/id" /> <br/>
                         </span>
                       </td>

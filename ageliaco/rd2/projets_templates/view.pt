@@ -30,7 +30,7 @@ tal:define="navroot context/@@plone_portal_state/navigation_root_url">
         tal:condition="python:len(projets)>0">
         <dt tal:repeat="projet projets">
             <a tal:content="projet/title" 
-                tal:attributes="href projet/getURL">projet</a>
+                tal:attributes="href projet/getPath">projet</a>
         </dt>
     </dl>
 

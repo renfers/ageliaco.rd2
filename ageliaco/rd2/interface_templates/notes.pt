@@ -6,7 +6,7 @@
         <tal:block repeat="note notes">
 	    <li class="genericButton" ><a class='editAuteur'  
 	        tal:content="note/Title" 
-	        tal:attributes="href python:note.getURL();
+	        tal:attributes="href python:note.getPath();
 	                        title note/Title" href="#">
 	        Cycle id
             </a></li>

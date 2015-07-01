@@ -24,11 +24,10 @@
 	    <tal:cycles repeat="cycleId cycles/keys"
 	                condition="cycles">
 		    <tal:auteurs define="cycle python:cycles[cycleId];
-		                        auteurs python:view.contributeurs(cycleId);
-		                        cycleURL cycle/getURL;">
+		                        auteurs python:view.contributeurs(cycleId);;">
                 <tr tal:repeat="auteur auteurs">
                 <tal:auteur define="obj auteur/getObject;
-                                    auteurURL python:auteur.getURL()+'/edit';
+                                    auteurURL python:auteur.getPath()+'/edit';
                                     auteurId auteur/id">
                     <td >
                         <a  tal:attributes="href auteurURL"

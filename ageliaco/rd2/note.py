@@ -99,6 +99,7 @@ class View(InterfaceView):
         catalog = getToolByName(self.context, 'portal_catalog')
         # yesterday
         #import pdb; pdb.set_trace()
+        day = 1
         if now.day > 1:
             day = now.day - 1
         else:

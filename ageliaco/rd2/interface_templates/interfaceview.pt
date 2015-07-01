@@ -144,11 +144,11 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
             <td class="noprint"  tal:condition="view/canModifyContent"><div >
                 <ul class="the-icons">
                     <li><a title="Editer cet auteur" class='editAuteur'  
-	        tal:attributes="href python:author.getURL() + '/edit'" href="#">
+	        tal:attributes="href python:author.getPath() + '/edit'" href="#">
 	            <i class="fa fa-pencil"></i>
             </a></li>
             <!--        <li><a title="Supprimer ce-tte participant-e" class='delAuteur'  
-	        tal:attributes="href python:author.getURL() + 
+	        tal:attributes="href python:author.getPath() + 
 	        '/delete_confirmation'" href="#"><i class="icon-remove"></i>
 
             </a></li>
@@ -208,20 +208,20 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
                         tal:define="oddrow repeat/projet/odd;"> 
                         <td tal:condition="view/canReviewContent">
                         <span > 
-                        <a tal:attributes="href projet/getURL"
+                        <a tal:attributes="href projet/getPath"
                            tal:content="projet/id" />
                         </span>
                       </td>
                         <td>
                         <span > 
-                        <a tal:attributes="href projet/getURL"
+                        <a tal:attributes="href projet/getPath"
                            tal:content="projet/id" />
                         </span>
                       </td>
                       <td >
                        <span 
                        tal:repeat="cycle python:view.cycles(projet.getPath())">
-                        <a tal:attributes="href cycle/getURL"
+                        <a tal:attributes="href cycle/getPath"
                            tal:content="cycle/id" /> <br/>
                         </span>
                       </td>

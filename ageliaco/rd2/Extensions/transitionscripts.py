@@ -143,7 +143,7 @@ def activateCycle(self, state_change):
                    review_state='repository')
                    
     #there should be only one ageliaco.rd2.projet object with state 'repository'
-    depot_url = cat[0].getURL()
+    depot_url = cat[0].getPath()
     objectOwner = contentObject.Creator()
     projetPath = contentObject.projet
     #import pdb; pdb.set_trace()

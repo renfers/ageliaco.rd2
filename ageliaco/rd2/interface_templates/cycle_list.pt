@@ -168,7 +168,7 @@ function fnCreateSelect( aData )
             </thead> 
             <tbody> 
                 <tal:loop tal:repeat="cycle cycles">
-                 <tal:block define="cycleURL cycle/getURL;
+                 <tal:block define="cycleURL cycle/getPath;
                                     cycleId cycle/id;
                                     cycleTitle cycle/Title;
                                     cycleState python:view.cycle_state(cycle.review_state);

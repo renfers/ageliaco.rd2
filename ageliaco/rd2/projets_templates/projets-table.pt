@@ -31,7 +31,7 @@
 	    <tal:projets repeat="projet projets"
 	                condition="projets">
                 <tr define="obj projet/getObject">
-                    <td><a tal:attributes="href projet/getURL"
+                    <td><a tal:attributes="href projet/getPath"
                         tal:content="projet/title"/></td>
                     <td tal:content="projet/Description"></td>
                     <td tal:content="python:view.projet_state(projet.review_state)"  

@@ -54,11 +54,11 @@
             <td class="noprint"  tal:condition="view/canModifyContent"><div >
                 <ul class="the-icons">
                     <li><a title="Editer cet auteur" class='editAuteur'  
-	        tal:attributes="href python:author.getURL() + '/edit'" href="#">
+	        tal:attributes="href python:author.getPath() + '/edit'" href="#">
 	            <i class="fa fa-pencil"></i>
             </a></li>
             <!--        <li><a title="Supprimer ce-tte participant-e" class='delAuteur'  
-	        tal:attributes="href python:author.getURL() + 
+	        tal:attributes="href python:author.getPath() + 
 	        '/delete_confirmation'" href="#"><i class="icon-remove"></i>
 
             </a></li>
