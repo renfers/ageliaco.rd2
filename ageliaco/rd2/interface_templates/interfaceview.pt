@@ -132,7 +132,7 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
             <table style="width:100%; margin-bottom:0px" class="heures"><tr>
             <th style="text-align:right">Dégrèvement:</th>
             <th style="text-align:right">demandé</th>
-            <th style="text-align:right">RD</th>
+            <th style="text-align:right">SEF</th>
             <th style="text-align:right">Ecole</th></tr>
             <tr><th>&nbsp;</th>
                 <tal:heure repeat="heure python:view.sponsorasked(author)">
@@ -145,7 +145,7 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
                 <ul class="the-icons">
                     <li><a title="Editer cet auteur" class='editAuteur'  
 	        tal:attributes="href python:author.getPath() + '/edit'" href="#">
-	            <i class="fa fa-pencil"></i>
+	            <i class="fa fa-pencil"> </i>
             </a></li>
             <!--        <li><a title="Supprimer ce-tte participant-e" class='delAuteur'  
 	        tal:attributes="href python:author.getPath() + 
