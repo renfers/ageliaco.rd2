@@ -35,19 +35,19 @@
                    <tr > 
                         <td>
                         <span > 
-                        <a tal:attributes="href cycle/getPath"
+                        <a tal:attributes="href cycle/getURL"
                            tal:content="cycle/id" />
                         </span>
                       </td>
                         <td>
                         <span > 
-                        <a tal:attributes="href cycle/getPath"
+                        <a tal:attributes="href cycle/getURL"
                            tal:content="cycle/Title" />
                         </span>
                       </td>
                         <td>
                         <span > 
-                        <a tal:attributes="href cycle/getPath"
+                        <a tal:attributes="href cycle/getURL"
                     tal:content="python:view.cycle_state(cycle.review_state)" />
                         </span>
                       </td>

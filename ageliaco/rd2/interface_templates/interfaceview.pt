@@ -107,7 +107,7 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
        </tal:js>
     </metal:js>
 
-<!-- ex: tal:define="authors python:view.authors(projet.getPath())" 
+<!-- ex: tal:define="authors python:view.authors(projet.getURL())" 
         => authors must be defined
     as a search result of authors -->
     <metal:my define-macro="list_auteurs"
@@ -146,11 +146,11 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
             <td class="noprint"  tal:condition="view/canModifyContent"><div >
                 <ul class="the-icons">
                     <li><a title="Editer cet auteur" class='editAuteur'  
-	        tal:attributes="href python:author.getPath() + '/edit'" href="#">
+	        tal:attributes="href python:author.getURL() + '/edit'" href="#">
 	            <i class="fa fa-pencil"> </i>
             </a></li>
             <!--        <li><a title="Supprimer ce-tte participant-e" class='delAuteur'  
-	        tal:attributes="href python:author.getPath() + 
+	        tal:attributes="href python:author.getURL() + 
 	        '/delete_confirmation'" href="#"><i class="icon-remove"></i>
 
             </a></li>
@@ -210,26 +210,26 @@ tal:attributes="href string:${navroot}/++resource++yafowil.widget.multiselect/mu
                         tal:define="oddrow repeat/projet/odd;"> 
                         <td tal:condition="view/canReviewContent">
                         <span > 
-                        <a tal:attributes="href projet/getPath"
+                        <a tal:attributes="href projet/getURL"
                            tal:content="projet/id" />
                         </span>
                       </td>
                         <td>
                         <span > 
-                        <a tal:attributes="href projet/getPath"
+                        <a tal:attributes="href projet/getURL"
                            tal:content="projet/id" />
                         </span>
                       </td>
                       <td >
                        <span 
-                       tal:repeat="cycle python:view.cycles(projet.getPath())">
-                        <a tal:attributes="href cycle/getPath"
+                       tal:repeat="cycle python:view.cycles(projet.getURL())">
+                        <a tal:attributes="href cycle/getURL"
                            tal:content="cycle/id" /> <br/>
                         </span>
                       </td>
                     <td   class="ProjectAuthors"  
                         tal:define="objectPath python:
-                        view.setObjectPath(projet.getPath(),
+                        view.setObjectPath(projet.getURL(),
                             withTotal=view.canReviewContent())">
                     <span 
                     metal:use-macro="context/@@interface/macros/list_auteurs"/>

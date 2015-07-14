@@ -27,7 +27,7 @@
 		                        auteurs python:view.contributeurs(cycleId);;">
                 <tr tal:repeat="auteur auteurs">
                 <tal:auteur define="obj auteur/getObject;
-                                    auteurURL python:auteur.getPath()+'/edit';
+                                    auteurURL python:auteur.getURL()+'/edit';
                                     auteurId auteur/id">
                     <td >
                         <a  tal:attributes="href auteurURL"
