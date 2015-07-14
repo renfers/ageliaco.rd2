@@ -61,7 +61,7 @@ class IProjets(form.Schema):
     Projets de Projet RD
     """
     presentation = RichText(
-            title=MessageFactory(u"Projets R&D"),
+            title=MessageFactory(u"Projets SEF"),
             required=False,
         )    
 

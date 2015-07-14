@@ -23,7 +23,7 @@
     <div class="documentDescription" 
          tal:condition="portal/description"
          tal:content="portal/description">Site Description</div>
-<div><hr/><p>Il s'agit d'un formulaire pour contacter le webmaster, sinon pour contacter le service R&D : <a tal:attributes="href string:$portal_url/contacts">personnes et adresse</a></p><hr/></div>
+<div><hr/><p>Il s'agit d'un formulaire pour contacter le webmaster, sinon pour contacter le SEF : <a tal:attributes="href string:$portal_url/contacts">personnes et adresse</a></p><hr/></div>
     <div tal:condition="not:email_from_address">
 
         <div i18n:translate="text_no_email_setup">

@@ -3,7 +3,7 @@
    i18n:domain="ageliaco.rd2"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
  <property name="title" i18n:translate="">projet</property>
- <property name="description" i18n:translate="">Projet RD</property>
+ <property name="description" i18n:translate="">Projet SEF</property>
  <property
     name="icon_expr">string:${portal_url}/++resource++ageliaco.rd2/SitesFolderIcon.png</property>
  <property name="factory">ageliaco.rd2.projet</property>

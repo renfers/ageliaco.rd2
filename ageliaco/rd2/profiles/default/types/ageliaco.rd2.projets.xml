@@ -6,7 +6,7 @@
   <!-- Basic metadata -->
   <property name="title" i18n:translate="">projets</property>
   <property name="description"
-    i18n:translate="">projets projet RD</property>
+    i18n:translate="">projets SEF</property>
   <property name="content_icon">folder_icon.gif</property>
   <property name="global_allow">True</property>
   <property name="filter_content_types">True</property>  

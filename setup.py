@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.10.9'
+version = '0.10.10'
 
 setup(name='ageliaco.rd2',
       version=version,
